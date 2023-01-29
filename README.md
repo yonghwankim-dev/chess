@@ -30,7 +30,7 @@
 ## 빌드 및 실행
 실행 환경 : ubuntu server 22
 ```shell
-~ $ gradlew build
+~ $ ./gradlew build
 ~ $ java -jar build/libs/chess-1.0-SNAPSHOT.jar
 ```
 
