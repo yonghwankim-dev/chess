@@ -34,4 +34,5 @@
 ~ $ java -jar build/libs/chess-1.0-SNAPSHOT.jar
 ```
 
-![image](https://user-images.githubusercontent.com/33227831/214228253-29f2e091-eb27-4507-9145-3adb8981c1fa.png)
+![image](images/img.png)
+
