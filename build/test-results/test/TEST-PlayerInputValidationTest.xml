@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="PlayerInputValidationTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2023-01-29T08:00:13" hostname="LAPTOP-LFUMP8SR" time="0.177">
+  <properties/>
+  <testcase name="[1] ?A1" classname="PlayerInputValidationTest" time="0.071"/>
+  <testcase name="[2] ?B1" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[3] ?C1" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[1] ?A9" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[2] B1" classname="PlayerInputValidationTest" time="0.0"/>
+  <testcase name="[3] ?C11" classname="PlayerInputValidationTest" time="0.0"/>
+  <testcase name="[4] awef" classname="PlayerInputValidationTest" time="0.002"/>
+  <testcase name="[5] A" classname="PlayerInputValidationTest" time="0.0"/>
+  <testcase name="[6] ABC" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[7] " classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[8]  " classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[9] !@#1" classname="PlayerInputValidationTest" time="0.003"/>
+  <testcase name="[10] 1234" classname="PlayerInputValidationTest" time="0.003"/>
+  <testcase name="[1] A0-&gt;A2" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[2] Q1-&gt;A2" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[3] " classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[4]  " classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[5] aiowejf" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[6] 32049234" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[7] @#!@#" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[8] A1A2" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[9] A11-&gt;B11" classname="PlayerInputValidationTest" time="0.002"/>
+  <testcase name="[10] AA1-&gt;A2" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[1] A1-&gt;A2" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[2] B1-&gt;D5" classname="PlayerInputValidationTest" time="0.001"/>
+  <testcase name="[3] G1-&gt;G5" classname="PlayerInputValidationTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
