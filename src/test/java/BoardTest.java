@@ -373,29 +373,29 @@ public class BoardTest {
         assertThat(positions.isEmpty()).isTrue();
     }
 
-    private Position position(int file, int rank){
+    public static Position position(int file, int rank){
         return Position.create(File.find(file), Rank.find(rank));
     }
 
-    private Pieces pieces(Board board) throws IllegalAccessException, NoSuchFieldException {
+    public Pieces pieces(Board board) throws IllegalAccessException, NoSuchFieldException {
         Field pieces_field = Board.class.getDeclaredField("pieces");
         pieces_field.setAccessible(true);
         return (Pieces) pieces_field.get(board);
     }
 
-    private List<Piece> pieceList(PieceManager manager) throws IllegalAccessException, NoSuchFieldException {
+    public List<Piece> pieceList(PieceManager manager) throws IllegalAccessException, NoSuchFieldException {
         Field pieces_list_field = manager.getClass().getDeclaredField("pieces");
         pieces_list_field.setAccessible(true);
         return (List<Piece>) pieces_list_field.get(manager);
     }
 
-    private List<Piece> filterPawns(List<Piece> pieces, Color color){
+    public List<Piece> filterPawns(List<Piece> pieces, Color color){
         return pieces.stream().filter(p->p.equalColor(color))
                               .filter(Pawn.class::isInstance)
                               .collect(Collectors.toList());
     }
 
-    private PieceManager manager(Pieces pieces) throws IllegalAccessException, NoSuchFieldException {
+    public PieceManager manager(Pieces pieces) throws IllegalAccessException, NoSuchFieldException {
         Field field = pieces.getClass().getDeclaredField("manager");
         field.setAccessible(true);
         return (PieceManager) field.get(pieces);

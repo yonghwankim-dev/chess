@@ -15,10 +15,19 @@ public class Pawn extends Piece{
 
     @Override
     public boolean isMovableDirection(Piece toPiece) {
-        Position from = lastPosition();
+        return lastPosition().isDiagonal(toPiece.lastPosition()) ?
+                isMovableDiagonal(toPiece) && equalPosition(toPiece) :
+                equalPosition(toPiece);
+    }
+
+    private boolean isMovableDiagonal(Piece toPiece){
+        return lastPosition().isDiagonal(toPiece.lastPosition()) && !toPiece.isEmpty();
+    }
+
+    private boolean equalPosition(Piece toPiece){
         Direction direction = direction(toPiece.lastPosition());
-        int diffRank = from.diffRank(toPiece.lastPosition());
-        int diffFile = from.diffFile(toPiece.lastPosition());
+        int diffRank = lastPosition().diffRank(toPiece.lastPosition());
+        int diffFile = lastPosition().diffFile(toPiece.lastPosition());
         return direction.getRankMove() == diffRank && direction.getFileMove() == diffFile;
     }
 
