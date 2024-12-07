@@ -1,5 +1,7 @@
 package co.nemo.chess.domain;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -14,8 +16,8 @@ public class Location {
 		this.rank = rank;
 	}
 
-	public static Location from(String position) {
-		String[] split = position.split("");
+	public static Location from(String location) {
+		String[] split = location.split(Strings.EMPTY);
 		final int FILE_INDEX = 0;
 		final int RANK_INDEX = 1;
 		File file = File.from(split[FILE_INDEX]);
@@ -33,10 +35,10 @@ public class Location {
 	}
 
 	// 방향에 따른 열의 대각선 위치 계산
-	public Location adjustDiagonal(int fileDirection, int fileDistance, int rowDirection, int rowDistance) {
+	public Location adjustDiagonal(Direction direction, int fileDistance, int rankDistance) {
 		// 상좌, 상우, 하좌, 하우
-		File newFile = this.file.adjustColumn(fileDirection, fileDistance);
-		Rank newRank = this.rank.plus(rowDirection * rowDistance);
+		File newFile = this.file.adjustColumn(direction, fileDistance);
+		Rank newRank = this.rank.plus(direction.getRankDirection() * rankDistance);
 		return new Location(newFile, newRank);
 	}
 

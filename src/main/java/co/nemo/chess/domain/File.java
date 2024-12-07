@@ -29,8 +29,8 @@ public enum File {
 		throw new IllegalArgumentException("invalid column value: " + column);
 	}
 
-	public File adjustColumn(int direction, int distance) {
-		int newColumn = direction * distance;
+	public File adjustColumn(Direction direction, int distance) {
+		int newColumn = direction.getFileDirection() * distance;
 		return columnOf(this.column + newColumn);
 	}
 }
