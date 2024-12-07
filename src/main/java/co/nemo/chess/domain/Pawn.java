@@ -25,8 +25,7 @@ public class Pawn implements Movable{
 		return new Pawn(location, Color.WHITE, false);
 	}
 
-	public static Pawn valueOf(File file, int rank, Color color){
-		Location location = new Location(file, rank);
+	public static Pawn valueOf(Location location, Color color){
 		return new Pawn(location, color, false);
 	}
 
@@ -46,7 +45,7 @@ public class Pawn implements Movable{
 		}else{
 			newLocation = this.location.decreaseRank(1);
 		}
-		return Pawn.valueOf(newLocation.getFile(), newLocation.getRank(), color).withMoved();
+		return Pawn.valueOf(newLocation, color).withMoved();
 	}
 
 	public Pawn moveTwoSquares() {
@@ -59,7 +58,7 @@ public class Pawn implements Movable{
 		}else{
 			newLocation = this.location.decreaseRank(2);
 		}
-		return valueOf(newLocation.getFile(), newLocation.getRank(), color).withMoved();
+		return valueOf(newLocation, color).withMoved();
 	}
 
 	public Pawn withMoved(){
