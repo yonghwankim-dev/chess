@@ -3,7 +3,7 @@ package co.nemo.chess.domain;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class Pawn implements Movable{
+public class Pawn implements Movable {
 
 	private final Location location;
 	private final Color color;
@@ -15,7 +15,7 @@ public class Pawn implements Movable{
 		this.isMoved = isMoved;
 	}
 
-	public static Pawn whitePawn(String position){
+	public static Pawn whitePawn(String position) {
 		Location location = Location.from(position);
 		return new Pawn(location, Color.WHITE, false);
 	}
@@ -25,15 +25,15 @@ public class Pawn implements Movable{
 		return new Pawn(location, Color.DARK, false);
 	}
 
-	private static Pawn valueOf(Location location, Color color){
+	private static Pawn valueOf(Location location, Color color) {
 		return new Pawn(location, color, false);
 	}
 
-	private static Pawn moved(Location location, Color color){
+	private static Pawn moved(Location location, Color color) {
 		return new Pawn(location, color, true);
 	}
 
-	private Pawn newLocation(Location location){
+	private Pawn newLocation(Location location) {
 		return valueOf(location, color);
 	}
 
@@ -44,36 +44,31 @@ public class Pawn implements Movable{
 	}
 
 	private Location calMoveLocation(int distance) {
-		int direction = getMoveDirection();
-		int newRank = direction * distance;
-		return this.location.adjustRank(newRank);
+		Direction direction = getMoveDirection();
+		return this.location.adjustRank(direction, distance);
 	}
 
-	private int getMoveDirection(){
-		final int UP = 1;
-		final int DOWN = -1;
-		return this.color == Color.WHITE ? UP : DOWN;
+	private Direction getMoveDirection() {
+		return this.color == Color.WHITE ? Direction.UP : Direction.DOWN;
 	}
 
 	public Pawn moveTwoSquares() {
-		if (isMoved){
+		if (isMoved) {
 			throw new IllegalStateException("pawn cannot move the two squares");
 		}
 		return newLocation(calMoveLocation(2)).withMoved();
 	}
 
-	public Pawn withMoved(){
+	public Pawn withMoved() {
 		return new Pawn(location, color, true);
 	}
 
 	public Pawn moveDiagonally() {
-		int direction = getMoveDirection();
+		Direction direction = getMoveDirection();
 		int distance = 1;
-		int newRank = direction * distance;
-
 		File newFile = File.B;
-		Location newLocation = this.location.adjustRank(newRank)
-											.withFile(newFile);
+		Location newLocation = this.location.adjustRank(direction, distance)
+			.withFile(newFile);
 		return moved(newLocation, color);
 	}
 

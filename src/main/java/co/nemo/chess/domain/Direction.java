@@ -20,4 +20,8 @@ public enum Direction {
 		this.fileDirection = fileDirection;
 		this.rankDirection = rankDirection;
 	}
+
+	public int calRankDistance(int value) {
+		return this.rankDirection * value;
+	}
 }

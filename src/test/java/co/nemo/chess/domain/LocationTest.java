@@ -12,7 +12,7 @@ class LocationTest {
 		// given
 		Location location = Location.from("a2");
 		// when
-		Location actual = location.adjustRank(1);
+		Location actual = location.adjustRank(Direction.UP, 1);
 		// then
 		Location expected = Location.from("a3");
 		Assertions.assertThat(actual).isEqualTo(expected);

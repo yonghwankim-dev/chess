@@ -14,7 +14,7 @@ public class Rank {
 		}
 	}
 
-	public Rank plus(int value) {
-		return new Rank(this.value + value);
+	public Rank adjustRank(Direction direction, int value) {
+		return new Rank(this.value + direction.calRankDistance(value));
 	}
 }

@@ -25,8 +25,8 @@ public class Location {
 		return new Location(file, rank);
 	}
 
-	public Location adjustRank(int rank) {
-		Rank newRank = this.rank.plus(rank);
+	public Location adjustRank(Direction direction, int distance) {
+		Rank newRank = this.rank.adjustRank(direction, distance);
 		return new Location(this.file, newRank);
 	}
 
@@ -38,7 +38,7 @@ public class Location {
 	public Location adjustDiagonal(Direction direction, int fileDistance, int rankDistance) {
 		// 상좌, 상우, 하좌, 하우
 		File newFile = this.file.adjustColumn(direction, fileDistance);
-		Rank newRank = this.rank.plus(direction.getRankDirection() * rankDistance);
+		Rank newRank = this.rank.adjustRank(direction, rankDistance);
 		return new Location(newFile, newRank);
 	}
 
