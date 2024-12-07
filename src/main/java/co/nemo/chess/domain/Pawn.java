@@ -40,26 +40,26 @@ public class Pawn implements Movable{
 
 	@Override
 	public Pawn move() {
-		int newRank;
+		Location newLocation;
 		if (color == Color.WHITE){
-			newRank = this.location.getRank() + 1;
+			newLocation = this.location.increaseRank(1);
 		}else{
-			newRank = this.location.getRank() - 1;
+			newLocation = this.location.decreaseRank(1);
 		}
-		return Pawn.valueOf(this.location.getFile(), newRank, color).withMoved();
+		return Pawn.valueOf(newLocation.getFile(), newLocation.getRank(), color).withMoved();
 	}
 
 	public Pawn moveTwoSquares() {
 		if (isMoved){
 			throw new IllegalStateException("pawn cannot move the two squares");
 		}
-		int newRank;
+		Location newLocation;
 		if (color == Color.WHITE){
-			newRank = this.location.getRank() + 2;
+			newLocation = this.location.increaseRank(2);
 		}else{
-			newRank = this.location.getRank() - 2;
+			newLocation = this.location.decreaseRank(2);
 		}
-		return valueOf(this.location.getFile(), newRank, color).withMoved();
+		return valueOf(newLocation.getFile(), newLocation.getRank(), color).withMoved();
 	}
 
 	public Pawn withMoved(){

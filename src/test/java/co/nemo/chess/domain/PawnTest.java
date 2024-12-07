@@ -21,7 +21,7 @@ class PawnTest {
 
 	@DisplayName("흑폰을 1칸 전진한다")
 	@Test
-	void test(){
+	void givenDarkPawn_whenMove_thenRankDecrease(){
 	    // given
 	    Pawn pawn = Pawn.darkPawn("a7");
 	    // when

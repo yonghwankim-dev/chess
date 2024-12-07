@@ -18,6 +18,14 @@ public class Location {
 		}
 	}
 
+	public Location increaseRank(int rank) {
+		return new Location(this.file, this.rank + rank);
+	}
+
+	public Location decreaseRank(int rank){
+		return new Location(this.file, this.rank - rank);
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s%s", file, rank);
