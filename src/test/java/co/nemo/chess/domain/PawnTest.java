@@ -1,10 +1,22 @@
 package co.nemo.chess.domain;
 
+import java.util.stream.Stream;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class PawnTest {
+	public static Stream<Arguments> directions() {
+		return Stream.of(
+			Arguments.of(Direction.UP_LEFT, "b2", "a3"),
+			Arguments.of(Direction.UP_RIGHT, "b2", "c3")
+		);
+	}
+
 	@DisplayName("백폰을 1칸 전진한다")
 	@Test
 	void move() {
@@ -65,15 +77,17 @@ class PawnTest {
 		Assertions.assertThat(throwable).isInstanceOf(IllegalStateException.class);
 	}
 
-	@DisplayName("A2 백폰은 대각선으로 이동하여 b3 흑폰을 잡는다")
-	@Test
-	void givenWhitePawn_whenMoveDiagonal_thenCatchB3BlackPawn() {
+	@DisplayName("백폰이 대각선으로 이동하여 흑폰을 잡는다")
+	@ParameterizedTest
+	@MethodSource(value = "directions")
+	void givenWhitePawn_whenMoveDiagonal_thenCatchB3BlackPawn(Direction direction, String srcPosition,
+		String dstPosition) {
 		// given
-		Pawn whitePawn = Pawn.whitePawn("a2");
+		Pawn whitePawn = Pawn.whitePawn(srcPosition);
 		// when
-		Pawn actual = whitePawn.moveDiagonally(Direction.UP_RIGHT);
+		Pawn actual = whitePawn.moveDiagonally(direction);
 		// then
-		Pawn expected = Pawn.whitePawn("b3").withMoved();
+		Pawn expected = Pawn.whitePawn(dstPosition).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 }

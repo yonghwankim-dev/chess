@@ -29,7 +29,7 @@ public enum File {
 		throw new IllegalArgumentException("invalid column value: " + column);
 	}
 
-	public File adjustColumn(Direction direction, int distance) {
+	public File adjust(Direction direction, int distance) {
 		int newColumn = direction.calFileDistance(distance);
 		return columnOf(this.column + newColumn);
 	}

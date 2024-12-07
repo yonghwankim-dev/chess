@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 public class Rank {
 	private final int value;
 
-	public Rank(int value) {
+	private Rank(int value) {
 		this.value = value;
 
 		if (this.value <= 0 || this.value >= 9) {
@@ -14,8 +14,12 @@ public class Rank {
 		}
 	}
 
-	public Rank adjustRank(Direction direction, int value) {
-		return new Rank(this.value + direction.calRankDistance(value));
+	public static Rank from(int value) {
+		return new Rank(value);
+	}
+
+	public Rank adjust(Direction direction, int value) {
+		return Rank.from(this.value + direction.calRankDistance(value));
 	}
 
 	@Override

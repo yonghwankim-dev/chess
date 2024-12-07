@@ -29,10 +29,6 @@ public class Pawn implements Movable {
 		return new Pawn(location, color, false);
 	}
 
-	private static Pawn moved(Location location, Color color) {
-		return new Pawn(location, color, true);
-	}
-
 	private Pawn newLocation(Location location) {
 		return valueOf(location, color);
 	}
@@ -63,12 +59,17 @@ public class Pawn implements Movable {
 		return new Pawn(location, color, true);
 	}
 
+	public Pawn withLocation(Location location) {
+		return new Pawn(location, color, true);
+	}
+
 	public Pawn moveDiagonally(Direction direction) {
 		int rankDistance = 1;
 		int fileDistance = 1;
-		Location newLocation = this.location.adjustRank(direction, rankDistance)
-			.adjustFile(direction, fileDistance);
-		return moved(newLocation, color);
+		Location newLocation = this.location.adjustDiagonal(direction, fileDistance, rankDistance);
+		return this
+			.withLocation(newLocation)
+			.withMoved();
 	}
 
 	@Override
