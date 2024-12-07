@@ -27,19 +27,11 @@ public class Location {
 		return new Location(file, rank);
 	}
 
-	public Location increaseRank(int rank) {
-		return new Location(this.file, this.rank + rank);
-	}
-
-	public Location decreaseRank(int rank){
-		return new Location(this.file, this.rank - rank);
-	}
-
 	public Location adjustRank(int rank) {
 		return new Location(this.file, this.rank + rank);
 	}
 
-	public Location adjustFile(File newFile) {
+	public Location withFile(File newFile) {
 		return new Location(newFile, this.rank);
 	}
 

@@ -35,7 +35,8 @@ public class Pawn implements Movable{
 
 	@Override
 	public Pawn move() {
-		Location newLocation = calMoveLocation(1);
+		int distance = 1;
+		Location newLocation = calMoveLocation(distance);
 		return Pawn.valueOf(newLocation, color).withMoved();
 	}
 
@@ -70,7 +71,7 @@ public class Pawn implements Movable{
 
 		File newFile = File.B;
 		Location newLocation = this.location.adjustRank(newRank)
-											.adjustFile(newFile);
+											.withFile(newFile);
 		return moved(newLocation, color);
 	}
 
