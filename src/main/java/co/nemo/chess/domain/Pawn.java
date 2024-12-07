@@ -63,12 +63,11 @@ public class Pawn implements Movable {
 		return new Pawn(location, color, true);
 	}
 
-	public Pawn moveDiagonally() {
-		Direction direction = getMoveDirection();
-		int distance = 1;
-		File newFile = File.B;
-		Location newLocation = this.location.adjustRank(direction, distance)
-			.withFile(newFile);
+	public Pawn moveDiagonally(Direction direction) {
+		int rankDistance = 1;
+		int fileDistance = 1;
+		Location newLocation = this.location.adjustRank(direction, rankDistance)
+			.adjustFile(direction, fileDistance);
 		return moved(newLocation, color);
 	}
 

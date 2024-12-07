@@ -17,4 +17,9 @@ public class Rank {
 	public Rank adjustRank(Direction direction, int value) {
 		return new Rank(this.value + direction.calRankDistance(value));
 	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(value);
+	}
 }

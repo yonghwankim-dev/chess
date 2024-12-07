@@ -30,7 +30,7 @@ public enum File {
 	}
 
 	public File adjustColumn(Direction direction, int distance) {
-		int newColumn = direction.getFileDirection() * distance;
+		int newColumn = direction.calFileDistance(distance);
 		return columnOf(this.column + newColumn);
 	}
 }

@@ -21,6 +21,10 @@ public enum Direction {
 		this.rankDirection = rankDirection;
 	}
 
+	public int calFileDistance(int value) {
+		return this.fileDirection * value;
+	}
+
 	public int calRankDistance(int value) {
 		return this.rankDirection * value;
 	}

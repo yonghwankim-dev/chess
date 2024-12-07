@@ -23,8 +23,10 @@ class LocationTest {
 	void withFile() {
 		// given
 		Location location = Location.from("a2");
+		Direction direction = Direction.RIGHT;
+		int distance = 1;
 		// when
-		Location actual = location.withFile(File.B);
+		Location actual = location.adjustFile(direction, distance);
 		// then
 		Location expected = Location.from("b2");
 		Assertions.assertThat(actual).isEqualTo(expected);

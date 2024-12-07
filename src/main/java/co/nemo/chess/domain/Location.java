@@ -30,7 +30,8 @@ public class Location {
 		return new Location(this.file, newRank);
 	}
 
-	public Location withFile(File newFile) {
+	public Location adjustFile(Direction direction, int distance) {
+		File newFile = this.file.adjustColumn(direction, distance);
 		return new Location(newFile, this.rank);
 	}
 

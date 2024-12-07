@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 class PawnTest {
 	@DisplayName("백폰을 1칸 전진한다")
 	@Test
-	void move(){
-	    // given
+	void move() {
+		// given
 		Pawn pawn = Pawn.whitePawn("a2");
 		// when
 		Pawn actual = pawn.move();
@@ -19,10 +19,10 @@ class PawnTest {
 
 	@DisplayName("흑폰을 1칸 전진한다")
 	@Test
-	void givenDarkPawn_whenMove_thenRankDecrease(){
-	    // given
-	    Pawn pawn = Pawn.darkPawn("a7");
-	    // when
+	void givenDarkPawn_whenMove_thenRankDecrease() {
+		// given
+		Pawn pawn = Pawn.darkPawn("a7");
+		// when
 		Pawn actual = pawn.move();
 		// then
 		Pawn expected = Pawn.darkPawn("a6").withMoved();
@@ -31,8 +31,8 @@ class PawnTest {
 
 	@DisplayName("백폰은 a9으로 이동할 수 없다")
 	@Test
-	void givenWhitePawn_whenA9_thenNotMove(){
-	    // given
+	void givenWhitePawn_whenA9_thenNotMove() {
+		// given
 		Pawn pawn = Pawn.whitePawn("a8");
 		// when
 		Throwable throwable = Assertions.catchThrowable(pawn::move);
@@ -42,23 +42,23 @@ class PawnTest {
 
 	@DisplayName("백폰은 처음 이동시 2칸 이동할 수 있다")
 	@Test
-	void moveTwoSquares(){
-	    // given
+	void moveTwoSquares() {
+		// given
 		Pawn pawn = Pawn.whitePawn("a2");
 		// when
 		Pawn actual = pawn.moveTwoSquares();
-	    // then
+		// then
 		Pawn expected = Pawn.whitePawn("a4")
-							.withMoved();
+			.withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
 	@DisplayName("이미 이동한 백폰은 2칸 전진할 수 없다")
 	@Test
-	void givenWhitePawn_whenAlreadyMoved_thenNotTwoMoveSquare(){
-	    // given
+	void givenWhitePawn_whenAlreadyMoved_thenNotTwoMoveSquare() {
+		// given
 		Pawn pawn = Pawn.whitePawn("a3")
-						.withMoved();
+			.withMoved();
 		// when
 		Throwable throwable = Assertions.catchThrowable(pawn::moveTwoSquares);
 		// then
@@ -67,12 +67,12 @@ class PawnTest {
 
 	@DisplayName("A2 백폰은 대각선으로 이동하여 b3 흑폰을 잡는다")
 	@Test
-	void givenWhitePawn_whenMoveDiagonal_thenCatchB3BlackPawn(){
-	    // given
+	void givenWhitePawn_whenMoveDiagonal_thenCatchB3BlackPawn() {
+		// given
 		Pawn whitePawn = Pawn.whitePawn("a2");
 		// when
-		Pawn actual = whitePawn.moveDiagonally();
-	    // then
+		Pawn actual = whitePawn.moveDiagonally(Direction.UP_RIGHT);
+		// then
 		Pawn expected = Pawn.whitePawn("b3").withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
