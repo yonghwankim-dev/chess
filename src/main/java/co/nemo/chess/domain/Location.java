@@ -39,6 +39,10 @@ public class Location {
 		return new Location(this.file, this.rank + rank);
 	}
 
+	public Location adjustFile(File newFile) {
+		return new Location(newFile, this.rank);
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s%s", file, rank);

@@ -66,4 +66,16 @@ class PawnTest {
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalStateException.class);
 	}
+
+	@DisplayName("A2 백폰은 대각선으로 이동하여 b3 흑폰을 잡는다")
+	@Test
+	void givenWhitePawn_whenMoveDiagonal_thenCatchB3BlackPawn(){
+	    // given
+		Pawn whitePawn = Pawn.whitePawn("a2");
+		// when
+		Pawn actual = whitePawn.captureDiagonally();
+	    // then
+		Pawn expected = Pawn.whitePawn("b3").withMoved();
+		Assertions.assertThat(actual).isEqualTo(expected);
+	}
 }
