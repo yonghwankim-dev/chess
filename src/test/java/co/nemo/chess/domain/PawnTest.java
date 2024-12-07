@@ -19,6 +19,18 @@ class PawnTest {
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
+	@DisplayName("흑폰을 1칸 전진한다")
+	@Test
+	void test(){
+	    // given
+	    Pawn pawn = Pawn.darkPawn("a7");
+	    // when
+		Pawn actual = pawn.move();
+		// then
+		Pawn expected = Pawn.darkPawn("a6").withMoved();
+		Assertions.assertThat(actual).isEqualTo(expected);
+	}
+
 	@DisplayName("백폰은 a9으로 이동할 수 없다")
 	@Test
 	void givenWhitePawn_whenA9_thenNotMove(){
@@ -32,7 +44,7 @@ class PawnTest {
 
 	@DisplayName("백폰은 처음 이동시 2칸 이동할 수 있다")
 	@Test
-	void doubleMove(){
+	void moveTwoSquares(){
 	    // given
 		Pawn pawn = Pawn.whitePawn("a2");
 		// when
