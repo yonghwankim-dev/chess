@@ -1,7 +1,5 @@
 package co.nemo.chess.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +71,7 @@ class PawnTest {
 	    // given
 		Pawn whitePawn = Pawn.whitePawn("a2");
 		// when
-		Pawn actual = whitePawn.captureDiagonally();
+		Pawn actual = whitePawn.moveDiagonally();
 	    // then
 		Pawn expected = Pawn.whitePawn("b3").withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);

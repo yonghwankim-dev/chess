@@ -9,16 +9,16 @@ public class Location {
 	private final File file;
 	private final int rank;
 
-	public Location(File file, int rank) {
+	private Location(File file, int rank) {
 		this.file = file;
 		this.rank = rank;
 
-		if (this.rank <= 0 || this.rank >= 9){
+		if (this.rank <= 0 || this.rank >= 9) {
 			throw new IllegalArgumentException("Invalid rank value: " + this.rank);
 		}
 	}
 
-	public static Location from(String position){
+	public static Location from(String position) {
 		String[] split = position.split("");
 		final int FILE_INDEX = 0;
 		final int RANK_INDEX = 1;
@@ -33,6 +33,11 @@ public class Location {
 
 	public Location withFile(File newFile) {
 		return new Location(newFile, this.rank);
+	}
+
+	// 방향에 따른 열의 대각선 위치 계산
+	public Location calDiagonalLocationBy(int direction) {
+		return new Location(File.B, 3);
 	}
 
 	@Override

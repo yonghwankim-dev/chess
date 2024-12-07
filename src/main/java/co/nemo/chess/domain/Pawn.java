@@ -33,11 +33,14 @@ public class Pawn implements Movable{
 		return new Pawn(location, color, true);
 	}
 
+	private Pawn newLocation(Location location){
+		return valueOf(location, color);
+	}
+
 	@Override
 	public Pawn move() {
 		int distance = 1;
-		Location newLocation = calMoveLocation(distance);
-		return Pawn.valueOf(newLocation, color).withMoved();
+		return newLocation(calMoveLocation(distance)).withMoved();
 	}
 
 	private Location calMoveLocation(int distance) {
@@ -56,15 +59,14 @@ public class Pawn implements Movable{
 		if (isMoved){
 			throw new IllegalStateException("pawn cannot move the two squares");
 		}
-		Location newLocation = calMoveLocation(2);
-		return valueOf(newLocation, color).withMoved();
+		return newLocation(calMoveLocation(2)).withMoved();
 	}
 
 	public Pawn withMoved(){
 		return new Pawn(location, color, true);
 	}
 
-	public Pawn captureDiagonally() {
+	public Pawn moveDiagonally() {
 		int direction = getMoveDirection();
 		int distance = 1;
 		int newRank = direction * distance;
