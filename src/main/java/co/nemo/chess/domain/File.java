@@ -1,7 +1,7 @@
 package co.nemo.chess.domain;
 
 public enum File {
-	A(1),B(2),C(3),D(4),E(5),F(6),G(7),H(8);
+	A(1), B(2), C(3), D(4), E(5), F(6), G(7), H(8);
 
 	private final int column;
 
@@ -9,14 +9,28 @@ public enum File {
 		this.column = column;
 	}
 
-	public static File from(String value){
-		if (value == null || value.isEmpty()){
+	public static File from(String value) {
+		if (value == null || value.isEmpty()) {
 			throw new IllegalArgumentException("value cannot be null or empty");
 		}
-		try{
+		try {
 			return File.valueOf(value.toUpperCase());
-		}catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("Invalid File value: " + value, e);
 		}
+	}
+
+	public static File columnOf(int column) {
+		for (File file : values()) {
+			if (file.column == column) {
+				return file;
+			}
+		}
+		throw new IllegalArgumentException("invalid column value: " + column);
+	}
+
+	public File adjustColumn(int direction, int distance) {
+		int newColumn = direction * distance;
+		return columnOf(this.column + newColumn);
 	}
 }

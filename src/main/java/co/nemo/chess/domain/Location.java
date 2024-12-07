@@ -36,8 +36,11 @@ public class Location {
 	}
 
 	// 방향에 따른 열의 대각선 위치 계산
-	public Location calDiagonalLocationBy(int direction) {
-		return new Location(File.B, 3);
+	public Location adjustDiagonal(int fileDirection, int fileDistance, int rowDirection, int rowDistance) {
+		// 상좌, 상우, 하좌, 하우
+		File newFile = this.file.adjustColumn(fileDirection, fileDistance);
+		int newRank = this.rank + (rowDirection * rowDistance);
+		return new Location(newFile, newRank);
 	}
 
 	@Override

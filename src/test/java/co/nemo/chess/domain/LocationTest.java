@@ -35,8 +35,12 @@ class LocationTest {
 	void calDiagonalLocationBy() {
 		// given
 		Location location = Location.from("a2");
+		int fileDirection = 1;
+		int fileDistance = 1;
+		int rankDirection = 1;
+		int rankDistance = 1;
 		// when
-		Location actual = location.calDiagonalLocationBy(1);
+		Location actual = location.adjustDiagonal(fileDirection, fileDistance, rankDirection, rankDistance);
 		// then
 		Location expected = Location.from("b3");
 		Assertions.assertThat(actual).isEqualTo(expected);
