@@ -18,12 +18,25 @@ public class Location {
 		}
 	}
 
+	public static Location from(String position){
+		String[] split = position.split("");
+		final int FILE_INDEX = 0;
+		final int RANK_INDEX = 1;
+		File file = File.from(split[FILE_INDEX]);
+		int rank = Integer.parseInt(split[RANK_INDEX]);
+		return new Location(file, rank);
+	}
+
 	public Location increaseRank(int rank) {
 		return new Location(this.file, this.rank + rank);
 	}
 
 	public Location decreaseRank(int rank){
 		return new Location(this.file, this.rank - rank);
+	}
+
+	public Location adjustRank(int rank) {
+		return new Location(this.file, this.rank + rank);
 	}
 
 	@Override
