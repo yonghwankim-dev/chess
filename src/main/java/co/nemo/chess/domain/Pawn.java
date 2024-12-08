@@ -5,24 +5,19 @@ import static co.nemo.chess.domain.Direction.*;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class Pawn extends AbstractChessPiece implements ForwardMovable, DiagonalMovable {
+public class Pawn extends AbstractChessPiece {
 
 	private Pawn(Location location, Color color, boolean isMoved) {
 		super(location, color, isMoved);
 	}
-	
+
 	public static AbstractChessPiece newInstance(Location location, Color color, boolean isMoved) {
 		return new Pawn(location, color, isMoved);
 	}
 
 	@Override
 	boolean canMove(Location newLocation) {
-		if (isOneForward(newLocation)) {
-			return true;
-		} else if (isTwoForward(newLocation)) {
-			return true;
-		}
-		return isDiagonalMove(newLocation);
+		return isOneForward(newLocation) || isTwoForward(newLocation) || isDiagonalMove(newLocation);
 	}
 
 	private boolean isOneForward(Location newLocation) {
@@ -80,29 +75,7 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 		return new Pawn(location, color, isMoved);
 	}
 
-	@Override
-	public AbstractChessPiece moveForwardly() {
-		int distance = 1;
-		return newLocation(calMoveLocation(distance)).withMoved();
-	}
-
 	Direction getMoveDirection() {
 		return isSameColor(Color.WHITE) ? UP : DOWN;
-	}
-
-	@Override
-	public AbstractChessPiece moveDiagonally(Direction direction) {
-		if (isSameColor(Color.WHITE) && direction != UP_LEFT && direction != UP_RIGHT) {
-			throw new IllegalArgumentException("The White Pawn can only move in the UP_LEFT or UP_RIGHT directions.");
-		} else if (isSameColor(Color.DARK) && direction != DOWN_LEFT && direction != DOWN_RIGHT) {
-			throw new IllegalArgumentException(
-				"The Dark Pawn can only move in the DOWN_LEFT or DOWN_RIGHT directions.");
-		}
-		int rankDistance = 1;
-		int fileDistance = 1;
-		Location newLocation = adjustDiagonal(direction, fileDistance, rankDistance);
-		return this
-			.withLocation(newLocation)
-			.withMoved();
 	}
 }
