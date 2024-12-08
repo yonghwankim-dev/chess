@@ -1,5 +1,7 @@
 package co.nemo.chess.domain;
 
+import static co.nemo.chess.domain.Direction.*;
+
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,8 +22,8 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 	}
 
 	@Override
-	boolean canMove(Location newLocation, Direction direction) {
-		if (isOneForward(newLocation, direction)) {
+	boolean canMove(Location newLocation) {
+		if (isOneForward(newLocation)) {
 			return true;
 		} else if (isTwoForward(newLocation)) {
 			return true;
@@ -29,31 +31,58 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 		return isDiagonalMove(newLocation);
 	}
 
-	private boolean isOneForward(Location newLocation, Direction direction) {
-		int fileDifference = diffFile(newLocation);
-		int rankDifference = diffRank(newLocation);
+	private boolean isOneForward(Location newLocation) {
+		int fileDifference = Math.abs(diffFile(newLocation));
+		int rankDifference = Math.abs(diffRank(newLocation));
+		Direction direction = calDirection(newLocation);
 		if (isSameColor(Color.WHITE)) {
-			return direction == Direction.UP && fileDifference == 0 && rankDifference == 1;
+			return direction == UP && fileDifference == 0 && rankDifference == 1;
 		} else if (isSameColor(Color.DARK)) {
-			return direction == Direction.DOWN && fileDifference == 0 && rankDifference == 1;
+			return direction == DOWN && fileDifference == 0 && rankDifference == 1;
 		} else {
 			return false;
 		}
 	}
 
 	private boolean isTwoForward(Location newLocation) {
-		int fileDifference = diffFile(newLocation);
-		int rankDifference = diffRank(newLocation);
+		int fileDifference = Math.abs(diffFile(newLocation));
+		int rankDifference = Math.abs(diffRank(newLocation));
+		Direction direction = calDirection(newLocation);
 		if (isSameColor(Color.WHITE)) {
-			return !isMoved() && fileDifference == 0 && rankDifference == 2;
+			return !isMoved() && direction == UP && fileDifference == 0 && rankDifference == 2;
 		} else if (isSameColor(Color.DARK)) {
-			return !isMoved() && fileDifference == 0 && rankDifference == -2;
+			return !isMoved() && direction == DOWN && fileDifference == 0 && rankDifference == 2;
 		} else {
 			return false;
 		}
 	}
 
 	private boolean isDiagonalMove(Location location) {
+		int fileDifference = Math.abs(diffFile(location));
+		int rankDifference = Math.abs(diffRank(location));
+		Direction direction = this.calDirection(location);
+		if (direction != UP_LEFT && direction != UP_RIGHT && direction != DOWN_LEFT && direction != DOWN_RIGHT) {
+			return false;
+		}
+		if (isSameColor(Color.WHITE)) {
+			// 상좌
+			if (direction == UP_LEFT && fileDifference == 1 && rankDifference == 1) {
+				return true;
+			}
+			// 상우
+			if (direction == UP_RIGHT && fileDifference == 1 && rankDifference == 1) {
+				return true;
+			}
+		} else {
+			// 하좌
+			if (direction == DOWN_LEFT && fileDifference == 1 && rankDifference == 1) {
+				return true;
+			}
+			// 하우
+			if (direction == DOWN_RIGHT && fileDifference == 1 && rankDifference == 1) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -69,14 +98,14 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 	}
 
 	Direction getMoveDirection() {
-		return isSameColor(Color.WHITE) ? Direction.UP : Direction.DOWN;
+		return isSameColor(Color.WHITE) ? UP : DOWN;
 	}
 
 	@Override
 	public AbstractChessPiece moveDiagonally(Direction direction) {
-		if (isSameColor(Color.WHITE) && direction != Direction.UP_LEFT && direction != Direction.UP_RIGHT) {
+		if (isSameColor(Color.WHITE) && direction != UP_LEFT && direction != UP_RIGHT) {
 			throw new IllegalArgumentException("The White Pawn can only move in the UP_LEFT or UP_RIGHT directions.");
-		} else if (isSameColor(Color.DARK) && direction != Direction.DOWN_LEFT && direction != Direction.DOWN_RIGHT) {
+		} else if (isSameColor(Color.DARK) && direction != DOWN_LEFT && direction != DOWN_RIGHT) {
 			throw new IllegalArgumentException(
 				"The Dark Pawn can only move in the DOWN_LEFT or DOWN_RIGHT directions.");
 		}

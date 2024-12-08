@@ -17,25 +17,17 @@ class PawnTest {
 		);
 	}
 
-	public static Stream<Arguments> invalidWhitePawnDirections() {
+	public static Stream<Arguments> invalidWhitePawnDiagonalDirections() {
 		String src = "b2";
 		return Stream.of(
-			Arguments.of(Direction.UP, src, "b3"),
-			Arguments.of(Direction.DOWN, src, "b1"),
-			Arguments.of(Direction.LEFT, src, "a2"),
-			Arguments.of(Direction.RIGHT, src, "c2"),
-			Arguments.of(Direction.DOWN_LEFT, "a1"),
-			Arguments.of(Direction.DOWN_RIGHT, "c1")
+			Arguments.of(Direction.DOWN_LEFT, src, "a1"),
+			Arguments.of(Direction.DOWN_RIGHT, src, "c1")
 		);
 	}
 
-	public static Stream<Arguments> invalidDarkPawnDirections() {
+	public static Stream<Arguments> invalidDarkPawnDiagonalDirections() {
 		String src = "b2";
 		return Stream.of(
-			Arguments.of(Direction.UP, src, "b3"),
-			Arguments.of(Direction.DOWN, src, "b1"),
-			Arguments.of(Direction.LEFT, src, "a2"),
-			Arguments.of(Direction.RIGHT, src, "c2"),
 			Arguments.of(Direction.UP_LEFT, src, "a3"),
 			Arguments.of(Direction.UP_RIGHT, src, "c3")
 		);
@@ -110,7 +102,7 @@ class PawnTest {
 
 	@DisplayName("백폰은 상좌, 상우 대각선을 제외한 다른 방향의 대각선은 이동 불가능하다")
 	@ParameterizedTest
-	@MethodSource(value = "invalidWhitePawnDirections")
+	@MethodSource(value = "invalidWhitePawnDiagonalDirections")
 	void givenWhitePawn_whenInvalidDirection_thenThrowsException(Direction direction, String src, String dst) {
 		// given
 		AbstractChessPiece whitePawn = Pawn.whitePawn(src);
@@ -124,7 +116,7 @@ class PawnTest {
 
 	@DisplayName("흑폰은 하좌, 화우 대각선을 제외한 다른 방향의 대각선은 이동 불가능하다")
 	@ParameterizedTest
-	@MethodSource(value = "invalidDarkPawnDirections")
+	@MethodSource(value = "invalidDarkPawnDiagonalDirections")
 	void givenDarkPawn_whenInvalidDirection_thenThrowsException(Direction direction, String src, String dst) {
 		// given
 		AbstractChessPiece darkPawn = Pawn.darkPawn(src);
