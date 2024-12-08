@@ -70,20 +70,15 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 				return true;
 			}
 			// 상우
-			if (direction == UP_RIGHT && fileDifference == 1 && rankDifference == 1) {
-				return true;
-			}
+			return direction == UP_RIGHT && fileDifference == 1 && rankDifference == 1;
 		} else {
 			// 하좌
 			if (direction == DOWN_LEFT && fileDifference == 1 && rankDifference == 1) {
 				return true;
 			}
 			// 하우
-			if (direction == DOWN_RIGHT && fileDifference == 1 && rankDifference == 1) {
-				return true;
-			}
+			return direction == DOWN_RIGHT && fileDifference == 1 && rankDifference == 1;
 		}
-		return false;
 	}
 
 	@Override
