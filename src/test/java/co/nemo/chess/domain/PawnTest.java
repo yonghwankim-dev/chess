@@ -46,12 +46,12 @@ class PawnTest {
 	@MethodSource(value = "validWhitePawnMoveLocations")
 	void givenWhitePawn_whenValidMoveLocations_thenReturnOfMovedPiece(String src, String dst) {
 		// given
-		AbstractChessPiece whitePawn = Pawn.whitePawn(src);
+		AbstractChessPiece whitePawn = PieceFactory.getInstance().whitePawn(src);
 		Location dstLocation = Location.from(dst);
 		// when
 		AbstractChessPiece actual = whitePawn.move(dstLocation);
 		// then
-		AbstractChessPiece expected = Pawn.whitePawn(dst).withMoved();
+		AbstractChessPiece expected = PieceFactory.getInstance().whitePawn(dst).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
@@ -60,7 +60,7 @@ class PawnTest {
 	@MethodSource(value = "invalidWhitePawnMoveLocations")
 	void givenWhitePawn_whenInvalidMoveLocations_thenThrowsException(String src, String dst) {
 		// given
-		AbstractChessPiece whitePawn = Pawn.whitePawn(src);
+		AbstractChessPiece whitePawn = PieceFactory.getInstance().whitePawn(src);
 		Location dstLocation = Location.from(dst);
 		// when
 		Throwable throwable = Assertions.catchThrowable(() -> whitePawn.move(dstLocation));
@@ -74,12 +74,12 @@ class PawnTest {
 	@MethodSource(value = "validDarkPawnMoveLocations")
 	void givenDarkPawn_whenValidMoveLocations_thenReturnOfMovedLocation(String src, String dst) {
 		// given
-		AbstractChessPiece darkPawn = Pawn.darkPawn(src);
+		AbstractChessPiece darkPawn = PieceFactory.getInstance().darkPawn(src);
 		Location dstLocation = Location.from(dst);
 		// when
 		AbstractChessPiece actual = darkPawn.move(dstLocation);
 		// then
-		AbstractChessPiece expected = Pawn.darkPawn(dst).withMoved();
+		AbstractChessPiece expected = PieceFactory.getInstance().darkPawn(dst).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
@@ -88,7 +88,7 @@ class PawnTest {
 	@MethodSource(value = "invalidDarkPawnMoveLocations")
 	void givenDarkPawn_whenInvalidDirection_thenThrowsException(String src, String dst) {
 		// given
-		AbstractChessPiece darkPawn = Pawn.darkPawn(src);
+		AbstractChessPiece darkPawn = PieceFactory.getInstance().darkPawn(src);
 		Location dstLocation = Location.from(dst);
 		// when
 		Throwable throwable = Assertions.catchThrowable(() -> darkPawn.move(dstLocation));
@@ -101,7 +101,7 @@ class PawnTest {
 	@Test
 	void givenWhitePawn_whenAlreadyMoved_thenNotTwoMoveSquare() {
 		// given
-		AbstractChessPiece pawn = Pawn.whitePawn("a3").withMoved();
+		AbstractChessPiece pawn = PieceFactory.getInstance().whitePawn("a3").withMoved();
 		Location dst = Location.from("a5");
 		// when
 		Throwable throwable = Assertions.catchThrowable(() -> pawn.move(dst));
