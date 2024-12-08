@@ -47,9 +47,9 @@ class PawnTest {
 		// given
 		Pawn pawn = Pawn.whitePawn("a2");
 		// when
-		Pawn actual = pawn.moveForwardly();
+		AbstractChessPiece actual = pawn.moveForwardly();
 		// then
-		Pawn expected = Pawn.whitePawn("a3").withMoved();
+		AbstractChessPiece expected = Pawn.whitePawn("a3").withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
@@ -59,9 +59,9 @@ class PawnTest {
 		// given
 		Pawn pawn = Pawn.darkPawn("a7");
 		// when
-		Pawn actual = pawn.moveForwardly();
+		AbstractChessPiece actual = pawn.moveForwardly();
 		// then
-		Pawn expected = Pawn.darkPawn("a6").withMoved();
+		AbstractChessPiece expected = Pawn.darkPawn("a6").withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
@@ -82,9 +82,9 @@ class PawnTest {
 		// given
 		Pawn pawn = Pawn.whitePawn("a2");
 		// when
-		Pawn actual = pawn.moveTwoSquares();
+		AbstractChessPiece actual = pawn.move(Location.from("a4"));
 		// then
-		Pawn expected = Pawn.whitePawn("a4")
+		AbstractChessPiece expected = Pawn.whitePawn("a4")
 			.withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
@@ -93,12 +93,13 @@ class PawnTest {
 	@Test
 	void givenWhitePawn_whenAlreadyMoved_thenNotTwoMoveSquare() {
 		// given
-		Pawn pawn = Pawn.whitePawn("a3")
+		AbstractChessPiece pawn = Pawn.whitePawn("a3")
 			.withMoved();
+		Location dst = Location.from("a5");
 		// when
-		Throwable throwable = Assertions.catchThrowable(pawn::moveTwoSquares);
+		Throwable throwable = Assertions.catchThrowable(() -> pawn.move(dst));
 		// then
-		Assertions.assertThat(throwable).isInstanceOf(IllegalStateException.class);
+		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("백폰이 대각선으로 이동하여 흑폰을 잡는다")
@@ -108,9 +109,9 @@ class PawnTest {
 		// given
 		Pawn whitePawn = Pawn.whitePawn(src);
 		// when
-		Pawn actual = whitePawn.moveDiagonally(direction);
+		AbstractChessPiece actual = whitePawn.moveDiagonally(direction);
 		// then
-		Pawn expected = Pawn.whitePawn(dst).withMoved();
+		AbstractChessPiece expected = Pawn.whitePawn(dst).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 

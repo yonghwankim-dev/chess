@@ -33,4 +33,8 @@ public enum File {
 		int newColumn = direction.calFileDistance(distance);
 		return columnOf(this.column + newColumn);
 	}
+
+	public int diff(File file) {
+		return Math.abs(this.column - file.column);
+	}
 }

@@ -22,6 +22,10 @@ public class Rank {
 		return Rank.from(this.value + direction.calRankDistance(value));
 	}
 
+	public int diff(Rank rank) {
+		return Math.abs(this.value - rank.value);
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(value);

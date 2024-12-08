@@ -35,12 +35,18 @@ public class Location {
 		return new Location(newFile, this.rank);
 	}
 
-	// 방향에 따른 열의 대각선 위치 계산
 	public Location adjustDiagonal(Direction direction, int fileDistance, int rankDistance) {
-		// 상좌, 상우, 하좌, 하우
 		File newFile = this.file.adjust(direction, fileDistance);
 		Rank newRank = this.rank.adjust(direction, rankDistance);
 		return new Location(newFile, newRank);
+	}
+
+	public int diffFile(Location location) {
+		return this.file.diff(location.file);
+	}
+
+	public int diffRank(Location location) {
+		return this.rank.diff(location.rank);
 	}
 
 	@Override

@@ -2,17 +2,11 @@ package co.nemo.chess.domain;
 
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
-public class Pawn implements ForwardMovable, DiagonalMovable {
-
-	private final Location location;
-	private final Color color;
-	private final boolean isMoved;
+@EqualsAndHashCode(callSuper = true)
+public class Pawn extends AbstractChessPiece implements ForwardMovable, DiagonalMovable {
 
 	private Pawn(Location location, Color color, boolean isMoved) {
-		this.location = location;
-		this.color = color;
-		this.isMoved = isMoved;
+		super(location, color, isMoved);
 	}
 
 	public static Pawn whitePawn(String position) {
@@ -25,62 +19,66 @@ public class Pawn implements ForwardMovable, DiagonalMovable {
 		return new Pawn(location, Color.DARK, false);
 	}
 
-	private static Pawn valueOf(Location location, Color color) {
-		return new Pawn(location, color, false);
+	@Override
+	boolean canMove(Location newLocation) {
+		if (isOneForward(newLocation)) {
+			return true;
+		}
+		return isTwoForward(newLocation);
 	}
 
-	private Pawn newLocation(Location location) {
-		return valueOf(location, color);
+	private boolean isOneForward(Location newLocation) {
+		int fileDifference = diffFile(newLocation);
+		int rankDifference = diffRank(newLocation);
+		if (isSameColor(Color.WHITE)) {
+			return fileDifference == 0 && rankDifference == 1;
+		} else if (isSameColor(Color.DARK)) {
+			return fileDifference == 0 && rankDifference == -1;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean isTwoForward(Location newLocation) {
+		int fileDifference = diffFile(newLocation);
+		int rankDifference = diffRank(newLocation);
+		if (isSameColor(Color.WHITE)) {
+			return !isMoved() && fileDifference == 0 && rankDifference == 2;
+		} else if (isSameColor(Color.DARK)) {
+			return !isMoved() && fileDifference == 0 && rankDifference == -2;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public Pawn moveForwardly() {
+	Pawn valueOf(Location location, Color color, boolean isMoved) {
+		return new Pawn(location, color, isMoved);
+	}
+
+	@Override
+	public AbstractChessPiece moveForwardly() {
 		int distance = 1;
 		return newLocation(calMoveLocation(distance)).withMoved();
 	}
 
-	private Location calMoveLocation(int distance) {
-		Direction direction = getMoveDirection();
-		return this.location.adjustRank(direction, distance);
-	}
-
-	private Direction getMoveDirection() {
-		return this.color == Color.WHITE ? Direction.UP : Direction.DOWN;
+	Direction getMoveDirection() {
+		return isSameColor(Color.WHITE) ? Direction.UP : Direction.DOWN;
 	}
 
 	@Override
-	public Pawn moveDiagonally(Direction direction) {
-		if (color == Color.WHITE && direction != Direction.UP_LEFT && direction != Direction.UP_RIGHT) {
+	public AbstractChessPiece moveDiagonally(Direction direction) {
+		if (isSameColor(Color.WHITE) && direction != Direction.UP_LEFT && direction != Direction.UP_RIGHT) {
 			throw new IllegalArgumentException("The White Pawn can only move in the UP_LEFT or UP_RIGHT directions.");
-		} else if (color == Color.DARK && direction != Direction.DOWN_LEFT && direction != Direction.DOWN_RIGHT) {
+		} else if (isSameColor(Color.DARK) && direction != Direction.DOWN_LEFT && direction != Direction.DOWN_RIGHT) {
 			throw new IllegalArgumentException(
 				"The Dark Pawn can only move in the DOWN_LEFT or DOWN_RIGHT directions.");
 		}
 		int rankDistance = 1;
 		int fileDistance = 1;
-		Location newLocation = this.location.adjustDiagonal(direction, fileDistance, rankDistance);
+		Location newLocation = adjustDiagonal(direction, fileDistance, rankDistance);
 		return this
 			.withLocation(newLocation)
 			.withMoved();
-	}
-
-	public Pawn moveTwoSquares() {
-		if (isMoved) {
-			throw new IllegalStateException("pawn cannot move the two squares");
-		}
-		return newLocation(calMoveLocation(2)).withMoved();
-	}
-
-	public Pawn withMoved() {
-		return new Pawn(location, color, true);
-	}
-
-	public Pawn withLocation(Location location) {
-		return new Pawn(location, color, true);
-	}
-
-	@Override
-	public String toString() {
-		return String.format("%s %s", color, location);
 	}
 }
