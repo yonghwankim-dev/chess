@@ -11,7 +11,9 @@ public enum Direction {
 	UP_LEFT(-1, 1),
 	UP_RIGHT(1, 1),
 	DOWN_LEFT(-1, -1),
-	DOWN_RIGHT(1, -1);
+	DOWN_RIGHT(1, -1),
+	SAME(0, 0),
+	NO_DIRECTION(0, 0);
 
 	private final int fileDirection;
 	private final int rankDirection;

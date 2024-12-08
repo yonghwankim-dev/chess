@@ -49,6 +49,34 @@ public class Location {
 		return this.rank.diff(location.rank);
 	}
 
+	public Direction calDirection(Location location) {
+		int fileDiff = location.diffFile(this);
+		int rankDiff = location.diffRank(this);
+
+		// 방향 계산
+		if (fileDiff == 0 && rankDiff > 0) {
+			return Direction.UP;
+		} else if (fileDiff == 0 && rankDiff < 0) {
+			return Direction.DOWN;
+		} else if (fileDiff < 0 && rankDiff == 0) {
+			return Direction.LEFT;
+		} else if (fileDiff > 0 && rankDiff == 0) {
+			return Direction.RIGHT;
+		} else if (fileDiff < 0 && rankDiff > 0) {
+			return Direction.UP_LEFT;
+		} else if (fileDiff > 0 && rankDiff > 0) {
+			return Direction.UP_RIGHT;
+		} else if (fileDiff < 0 && rankDiff < 0) {
+			return Direction.DOWN_LEFT;
+		} else if (fileDiff > 0 && rankDiff < 0) {
+			return Direction.DOWN_RIGHT;
+		} else if (fileDiff == 0 && rankDiff == 0) {
+			return Direction.SAME;
+		} else {
+			return Direction.NO_DIRECTION;
+		}
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s%s", file, rank);

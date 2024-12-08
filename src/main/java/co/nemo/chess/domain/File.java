@@ -35,6 +35,6 @@ public enum File {
 	}
 
 	public int diff(File file) {
-		return Math.abs(this.column - file.column);
+		return this.column - file.column;
 	}
 }

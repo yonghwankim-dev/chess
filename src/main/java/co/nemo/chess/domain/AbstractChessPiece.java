@@ -36,7 +36,9 @@ public abstract class AbstractChessPiece {
 	}
 
 	AbstractChessPiece move(Location newLocation) {
-		if (!canMove(newLocation)) {
+		// TODO: 현재 위치와 newLocation 간 방향 계산
+		Direction direction = this.location.calDirection(newLocation);
+		if (!canMove(newLocation, direction)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
 		return valueOf(newLocation, color, true);
@@ -58,7 +60,7 @@ public abstract class AbstractChessPiece {
 		return this.isMoved;
 	}
 
-	abstract boolean canMove(Location newLocation);
+	abstract boolean canMove(Location newLocation, Direction direction);
 
 	abstract AbstractChessPiece valueOf(Location location, Color color, boolean isMoved);
 

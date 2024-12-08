@@ -20,20 +20,22 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 	}
 
 	@Override
-	boolean canMove(Location newLocation) {
-		if (isOneForward(newLocation)) {
+	boolean canMove(Location newLocation, Direction direction) {
+		if (isOneForward(newLocation, direction)) {
+			return true;
+		} else if (isTwoForward(newLocation)) {
 			return true;
 		}
-		return isTwoForward(newLocation);
+		return isDiagonalMove(newLocation);
 	}
 
-	private boolean isOneForward(Location newLocation) {
+	private boolean isOneForward(Location newLocation, Direction direction) {
 		int fileDifference = diffFile(newLocation);
 		int rankDifference = diffRank(newLocation);
 		if (isSameColor(Color.WHITE)) {
-			return fileDifference == 0 && rankDifference == 1;
+			return direction == Direction.UP && fileDifference == 0 && rankDifference == 1;
 		} else if (isSameColor(Color.DARK)) {
-			return fileDifference == 0 && rankDifference == -1;
+			return direction == Direction.DOWN && fileDifference == 0 && rankDifference == 1;
 		} else {
 			return false;
 		}
@@ -49,6 +51,10 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 		} else {
 			return false;
 		}
+	}
+
+	private boolean isDiagonalMove(Location location) {
+		return false;
 	}
 
 	@Override

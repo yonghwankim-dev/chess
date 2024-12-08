@@ -23,7 +23,7 @@ public class Rank {
 	}
 
 	public int diff(Rank rank) {
-		return Math.abs(this.value - rank.value);
+		return this.value - rank.value;
 	}
 
 	@Override

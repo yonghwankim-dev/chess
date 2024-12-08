@@ -1,5 +1,7 @@
 package co.nemo.chess.domain;
 
+import static co.nemo.chess.domain.Direction.*;
+
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -36,6 +38,18 @@ class LocationTest {
 		return Stream.of(argumentsArray);
 	}
 
+	public static Stream<Arguments> validLocationWithDirection() {
+		String source = "d5";
+		String[] destinations = {"d6", "d4", "c5", "e5", "c6", "e6", "c4", "e4"};
+		Direction[] expectedDirections = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
+		int n = destinations.length;
+		Arguments[] argumentsArray = new Arguments[n];
+		for (int i = 0; i < n; i++) {
+			argumentsArray[i] = Arguments.of(source, destinations[i], expectedDirections[i]);
+		}
+		return Stream.of(argumentsArray);
+	}
+
 	@DisplayName("위치의 File(열)은 a~h 사이어야 하고, Rank(행)은 1~8 사이어야 한다")
 	@ParameterizedTest
 	@MethodSource(value = "validLocationSources")
@@ -65,7 +79,7 @@ class LocationTest {
 		// given
 		Location location = Location.from("a2");
 		// when
-		Location actual = location.adjustRank(Direction.UP, 1);
+		Location actual = location.adjustRank(UP, 1);
 		// then
 		Location expected = Location.from("a3");
 		Assertions.assertThat(actual).isEqualTo(expected);
@@ -76,10 +90,9 @@ class LocationTest {
 	void withFile() {
 		// given
 		Location location = Location.from("a2");
-		Direction direction = Direction.RIGHT;
 		int distance = 1;
 		// when
-		Location actual = location.adjustFile(direction, distance);
+		Location actual = location.adjustFile(RIGHT, distance);
 		// then
 		Location expected = Location.from("b2");
 		Assertions.assertThat(actual).isEqualTo(expected);
@@ -90,13 +103,24 @@ class LocationTest {
 	void calDiagonalLocationBy() {
 		// given
 		Location location = Location.from("a2");
-		Direction fileDirection = Direction.UP_RIGHT;
 		int fileDistance = 1;
 		int rankDistance = 1;
 		// when
-		Location actual = location.adjustDiagonal(fileDirection, fileDistance, rankDistance);
+		Location actual = location.adjustDiagonal(UP_RIGHT, fileDistance, rankDistance);
 		// then
 		Location expected = Location.from("b3");
+		Assertions.assertThat(actual).isEqualTo(expected);
+	}
+
+	@DisplayName("두 위치간에 방향성을 계산한다")
+	@ParameterizedTest
+	@MethodSource(value = "validLocationWithDirection")
+	void calDirection(String src, String dst, Direction expected) {
+		// given
+		Location srcLocation = Location.from(src);
+		// when
+		Direction actual = srcLocation.calDirection(Location.from(dst));
+		// then
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 }
