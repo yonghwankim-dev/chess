@@ -1,6 +1,6 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
-import static co.nemo.chess.domain.Direction.*;
+import static co.nemo.chess.domain.piece.Direction.*;
 
 import java.util.stream.Stream;
 

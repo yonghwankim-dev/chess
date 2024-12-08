@@ -1,4 +1,4 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -24,7 +24,7 @@ public class Location {
 		Rank rank = Rank.from(Integer.parseInt(split[RANK_INDEX]));
 		return new Location(file, rank);
 	}
-	
+
 	public LocationDifference diff(Location location) {
 		return LocationDifference.from(this, location);
 	}

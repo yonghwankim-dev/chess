@@ -1,4 +1,4 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
 public enum File {
 	A(1), B(2), C(3), D(4), E(5), F(6), G(7), H(8);
@@ -19,7 +19,7 @@ public enum File {
 			throw new IllegalArgumentException("Invalid File value: " + value, e);
 		}
 	}
-	
+
 	public int diff(File file) {
 		return this.column - file.column;
 	}

@@ -1,4 +1,4 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
 import java.util.stream.Stream;
 
@@ -50,5 +50,4 @@ class RookTest {
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
-
 }

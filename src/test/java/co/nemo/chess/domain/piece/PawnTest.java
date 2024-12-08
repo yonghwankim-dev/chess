@@ -1,4 +1,4 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.TestSupportUtils.*;
 

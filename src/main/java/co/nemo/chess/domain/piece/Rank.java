@@ -1,4 +1,4 @@
-package co.nemo.chess.domain;
+package co.nemo.chess.domain.piece;
 
 import lombok.EqualsAndHashCode;
 
@@ -17,7 +17,7 @@ public class Rank {
 	public static Rank from(int value) {
 		return new Rank(value);
 	}
-	
+
 	public int diff(Rank rank) {
 		return this.value - rank.value;
 	}
