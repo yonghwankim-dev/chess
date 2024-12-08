@@ -15,12 +15,10 @@ public class PieceFactory {
 	}
 
 	public AbstractChessPiece whitePawn(String position) {
-		Location location = Location.from(position);
-		return Pawn.newInstance(location, Color.WHITE, false);
+		return Pawn.notMovedWhitePawn(Location.from(position));
 	}
 
 	public AbstractChessPiece darkPawn(String position) {
-		Location location = Location.from(position);
-		return Pawn.newInstance(location, Color.DARK, false);
+		return Pawn.notMovedDarkPawn(Location.from(position));
 	}
 }

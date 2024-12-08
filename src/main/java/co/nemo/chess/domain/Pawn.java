@@ -13,8 +13,12 @@ public class Pawn extends AbstractChessPiece {
 		super(location, color, isMoved);
 	}
 
-	public static AbstractChessPiece newInstance(Location location, Color color, boolean isMoved) {
-		return new Pawn(location, color, isMoved);
+	public static AbstractChessPiece notMovedWhitePawn(Location location) {
+		return new Pawn(location, Color.WHITE, false);
+	}
+
+	public static AbstractChessPiece notMovedDarkPawn(Location location) {
+		return new Pawn(location, Color.DARK, false);
 	}
 
 	@Override
