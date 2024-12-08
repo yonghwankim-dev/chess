@@ -25,12 +25,26 @@ class PawnTest {
 		);
 	}
 
-	public static Stream<Arguments> invalidDarkPawnDiagonalDirections() {
-		String src = "b2";
-		return Stream.of(
-			Arguments.of(Direction.UP_LEFT, src, "a3"),
-			Arguments.of(Direction.UP_RIGHT, src, "c3")
-		);
+	public static Stream<Arguments> validDarkPawnMoveLocations() {
+		String src = "b7";
+		String[] destinations = {"a6", "b6", "b5", "c6"};
+		int n = destinations.length;
+		Arguments[] argumentsArray = new Arguments[n];
+		for (int i = 0; i < n; i++) {
+			argumentsArray[i] = Arguments.of(src, destinations[i]);
+		}
+		return Stream.of(argumentsArray);
+	}
+
+	public static Stream<Arguments> invalidDarkPawnMoveLocations() {
+		String src = "b7";
+		String[] destinations = {"a8", "a7", "c7", "c8", "b8"};
+		int n = destinations.length;
+		Arguments[] argumentsArray = new Arguments[n];
+		for (int i = 0; i < n; i++) {
+			argumentsArray[i] = Arguments.of(src, destinations[i]);
+		}
+		return Stream.of(argumentsArray);
 	}
 
 	@DisplayName("백폰을 1칸 전진한다")
@@ -114,10 +128,24 @@ class PawnTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("흑폰은 하좌, 화우 대각선을 제외한 다른 방향의 대각선은 이동 불가능하다")
+	@DisplayName("흑폰은 1칸 전진, 2칸 전진, 하좌, 하우 대각선 이동만 가능하다")
 	@ParameterizedTest
-	@MethodSource(value = "invalidDarkPawnDiagonalDirections")
-	void givenDarkPawn_whenInvalidDirection_thenThrowsException(Direction direction, String src, String dst) {
+	@MethodSource(value = "validDarkPawnMoveLocations")
+	void givenDarkPawn_whenValidMoveLocations_thenReturnOfMovedLocation(String src, String dst) {
+		// given
+		AbstractChessPiece darkPawn = Pawn.darkPawn(src);
+		Location dstLocation = Location.from(dst);
+		// when
+		AbstractChessPiece actual = darkPawn.move(dstLocation);
+		// then
+		AbstractChessPiece expected = Pawn.darkPawn(dst).withMoved();
+		Assertions.assertThat(actual).isEqualTo(expected);
+	}
+
+	@DisplayName("흑폰은 1칸 전진, 2칸 전진, 하좌, 화우 대각선 이동을 제외한 다른 이동은 불가능하다")
+	@ParameterizedTest
+	@MethodSource(value = "invalidDarkPawnMoveLocations")
+	void givenDarkPawn_whenInvalidDirection_thenThrowsException(String src, String dst) {
 		// given
 		AbstractChessPiece darkPawn = Pawn.darkPawn(src);
 		Location dstLocation = Location.from(dst);
