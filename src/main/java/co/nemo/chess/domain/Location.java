@@ -41,6 +41,10 @@ public class Location {
 		return new Location(newFile, newRank);
 	}
 
+	public LocationDifference diff(Location location) {
+		return LocationDifference.from(this, location);
+	}
+
 	public int diffFile(Location location) {
 		return this.file.diff(location.file);
 	}

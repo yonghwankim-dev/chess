@@ -46,6 +46,10 @@ public abstract class AbstractChessPiece {
 		return location.adjustDiagonal(direction, fileDistance, rankDistance);
 	}
 
+	LocationDifference diffLocation(Location location) {
+		return this.location.diff(location);
+	}
+
 	int diffFile(Location location) {
 		return this.location.diffFile(location);
 	}

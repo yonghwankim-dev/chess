@@ -2,6 +2,8 @@ package co.nemo.chess.domain;
 
 import static co.nemo.chess.domain.Direction.*;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,52 +23,48 @@ public class Pawn extends AbstractChessPiece {
 	}
 
 	private boolean isOneForward(Location newLocation) {
-		int fileDifference = Math.abs(diffFile(newLocation));
-		int rankDifference = Math.abs(diffRank(newLocation));
+		int fileDifference = 0;
+		int rankDifference = 1;
+		LocationDifference locationDifference = diffLocation(newLocation);
 		Direction direction = calDirection(newLocation);
-		if (isSameColor(Color.WHITE)) {
-			return direction == UP && fileDifference == 0 && rankDifference == 1;
-		} else if (isSameColor(Color.DARK)) {
-			return direction == DOWN && fileDifference == 0 && rankDifference == 1;
+		if (isSameColor(Color.WHITE) && direction == UP) {
+			return locationDifference.isEqualDistance(fileDifference, rankDifference);
+		} else if (isSameColor(Color.DARK) && direction == DOWN) {
+			return locationDifference.isEqualDistance(fileDifference, rankDifference);
 		} else {
 			return false;
 		}
 	}
 
 	private boolean isTwoForward(Location newLocation) {
-		int fileDifference = Math.abs(diffFile(newLocation));
-		int rankDifference = Math.abs(diffRank(newLocation));
+		int fileDifference = 0;
+		int rankDifference = 2;
 		Direction direction = calDirection(newLocation);
-		if (isSameColor(Color.WHITE)) {
-			return !isMoved() && direction == UP && fileDifference == 0 && rankDifference == 2;
-		} else if (isSameColor(Color.DARK)) {
-			return !isMoved() && direction == DOWN && fileDifference == 0 && rankDifference == 2;
+		LocationDifference locationDifference = diffLocation(newLocation);
+		if (isSameColor(Color.WHITE) && !isMoved() && direction == UP) {
+			return locationDifference.isEqualDistance(fileDifference, rankDifference);
+		} else if (isSameColor(Color.DARK) && !isMoved() && direction == DOWN) {
+			return locationDifference.isEqualDistance(fileDifference, rankDifference);
 		} else {
 			return false;
 		}
 	}
 
 	private boolean isDiagonalMove(Location location) {
-		int fileDifference = Math.abs(diffFile(location));
-		int rankDifference = Math.abs(diffRank(location));
 		Direction direction = this.calDirection(location);
-		if (direction != UP_LEFT && direction != UP_RIGHT && direction != DOWN_LEFT && direction != DOWN_RIGHT) {
+		if (!List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
 			return false;
 		}
-		if (isSameColor(Color.WHITE)) {
-			// 상좌
-			if (direction == UP_LEFT && fileDifference == 1 && rankDifference == 1) {
-				return true;
-			}
-			// 상우
-			return direction == UP_RIGHT && fileDifference == 1 && rankDifference == 1;
+
+		int fileDiff = 1;
+		int rankDiff = 1;
+		LocationDifference locationDifference = diffLocation(location);
+		if (isSameColor(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
+			return locationDifference.isEqualDistance(fileDiff, rankDiff);
+		} else if (isSameColor(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
+			return locationDifference.isEqualDistance(fileDiff, rankDiff);
 		} else {
-			// 하좌
-			if (direction == DOWN_LEFT && fileDifference == 1 && rankDifference == 1) {
-				return true;
-			}
-			// 하우
-			return direction == DOWN_RIGHT && fileDifference == 1 && rankDifference == 1;
+			return false;
 		}
 	}
 
