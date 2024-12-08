@@ -53,28 +53,29 @@ public class Location {
 		int fileDiff = location.diffFile(this);
 		int rankDiff = location.diffRank(this);
 
-		// 방향 계산
-		if (fileDiff == 0 && rankDiff > 0) {
-			return Direction.UP;
-		} else if (fileDiff == 0 && rankDiff < 0) {
-			return Direction.DOWN;
-		} else if (fileDiff < 0 && rankDiff == 0) {
-			return Direction.LEFT;
-		} else if (fileDiff > 0 && rankDiff == 0) {
-			return Direction.RIGHT;
-		} else if (fileDiff < 0 && rankDiff > 0) {
-			return Direction.UP_LEFT;
-		} else if (fileDiff > 0 && rankDiff > 0) {
-			return Direction.UP_RIGHT;
-		} else if (fileDiff < 0 && rankDiff < 0) {
-			return Direction.DOWN_LEFT;
-		} else if (fileDiff > 0 && rankDiff < 0) {
-			return Direction.DOWN_RIGHT;
-		} else if (fileDiff == 0 && rankDiff == 0) {
+		if (fileDiff == 0 && rankDiff == 0) {
 			return Direction.SAME;
-		} else {
-			return Direction.NO_DIRECTION;
 		}
+
+		if (fileDiff == 0) {
+			return rankDiff > 0 ? Direction.UP : Direction.DOWN;
+		}
+		if (rankDiff == 0) {
+			return fileDiff > 0 ? Direction.RIGHT : Direction.LEFT;
+		}
+
+		if (Math.abs(fileDiff) == Math.abs(rankDiff)) {
+			if (fileDiff < 0 && rankDiff > 0) {
+				return Direction.UP_LEFT;
+			} else if (fileDiff > 0 && rankDiff > 0) {
+				return Direction.UP_RIGHT;
+			} else if (fileDiff < 0 && rankDiff < 0) {
+				return Direction.DOWN_LEFT;
+			} else {
+				return Direction.DOWN_RIGHT;
+			}
+		}
+		return Direction.NO_DIRECTION;
 	}
 
 	@Override

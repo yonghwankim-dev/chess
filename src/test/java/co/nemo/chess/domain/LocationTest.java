@@ -40,12 +40,23 @@ class LocationTest {
 
 	public static Stream<Arguments> validLocationWithDirection() {
 		String source = "d5";
-		String[] destinations = {"d6", "d4", "c5", "e5", "c6", "e6", "c4", "e4"};
-		Direction[] expectedDirections = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
+		String[] destinations = {"d6", "d4", "c5", "e5", "c6", "e6", "c4", "e4", "d5"};
+		Direction[] expectedDirections = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, SAME};
 		int n = destinations.length;
 		Arguments[] argumentsArray = new Arguments[n];
 		for (int i = 0; i < n; i++) {
 			argumentsArray[i] = Arguments.of(source, destinations[i], expectedDirections[i]);
+		}
+		return Stream.of(argumentsArray);
+	}
+
+	public static Stream<Arguments> notCalLocations() {
+		String source = "d5";
+		String[] destinations = {"c7", "e7", "f6", "f4", "e3", "c3", "b4", "b6"};
+		int n = destinations.length;
+		Arguments[] argumentsArray = new Arguments[n];
+		for (int i = 0; i < n; i++) {
+			argumentsArray[i] = Arguments.of(source, destinations[i]);
 		}
 		return Stream.of(argumentsArray);
 	}
@@ -122,5 +133,17 @@ class LocationTest {
 		Direction actual = srcLocation.calDirection(Location.from(dst));
 		// then
 		Assertions.assertThat(actual).isEqualTo(expected);
+	}
+
+	@DisplayName("두 위치간에 방향성을 계산할 수 없으면 NO_DIRECTION을 반환한다")
+	@ParameterizedTest
+	@MethodSource(value = "notCalLocations")
+	void givenLocations_whenCalDirection_thenReturnOfNoDirection(String src, String dst) {
+		// given
+		Location srcLocation = Location.from(src);
+		// when
+		Direction actual = srcLocation.calDirection(Location.from(dst));
+		// then
+		Assertions.assertThat(actual).isEqualTo(NO_DIRECTION);
 	}
 }
