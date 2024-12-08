@@ -21,4 +21,12 @@ public class PieceFactory {
 	public AbstractChessPiece darkPawn(String position) {
 		return Pawn.notMovedDarkPawn(Location.from(position));
 	}
+
+	public AbstractChessPiece whiteRook(String position) {
+		return Rook.notMovedWhiteRook(Location.from(position));
+	}
+
+	public AbstractChessPiece darkRook(String position) {
+		return Rook.notMovedDarkRook(Location.from(position));
+	}
 }

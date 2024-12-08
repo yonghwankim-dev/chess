@@ -1,6 +1,7 @@
 package co.nemo.chess.domain;
 
-import java.util.Arrays;
+import static co.nemo.chess.TestSupportUtils.*;
+
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -15,12 +16,6 @@ class PawnTest {
 		String source = "b2";
 		String[] destinations = {"a3", "b3", "b4", "c3"};
 		return Stream.of(createArgumentsArray(source, destinations));
-	}
-
-	private static Arguments[] createArgumentsArray(String source, String[] destinations) {
-		return Arrays.stream(destinations)
-			.map(destination -> Arguments.of(source, destination))
-			.toArray(Arguments[]::new);
 	}
 
 	public static Stream<Arguments> invalidWhitePawnMoveLocations() {
