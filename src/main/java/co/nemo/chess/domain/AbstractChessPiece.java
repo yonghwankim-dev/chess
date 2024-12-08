@@ -3,7 +3,7 @@ package co.nemo.chess.domain;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public abstract class AbstractChessPiece {
+public abstract class AbstractChessPiece implements Piece {
 	private final Location location;
 	private final Color color;
 	private final boolean isMoved;
@@ -14,52 +14,28 @@ public abstract class AbstractChessPiece {
 		this.isMoved = isMoved;
 	}
 
-	AbstractChessPiece newLocation(Location location) {
-		return valueOf(location, color, false);
-	}
-
 	AbstractChessPiece withMoved() {
-		return valueOf(location, color, true);
-	}
-
-	Location calMoveLocation(int distance) {
-		Direction direction = getMoveDirection();
-		return this.location.adjustRank(direction, distance);
+		return movedPiece(location, color);
 	}
 
 	boolean isSameColor(Color color) {
 		return this.color == color;
 	}
 
-	AbstractChessPiece withLocation(Location location) {
-		return valueOf(location, color, false);
-	}
-
-	AbstractChessPiece move(Location newLocation) {
-		if (!canMove(newLocation)) {
+	@Override
+	public AbstractChessPiece move(Location destination) {
+		if (!canMove(destination)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
-		return valueOf(newLocation, color, true);
-	}
-
-	Location adjustDiagonal(Direction direction, int fileDistance, int rankDistance) {
-		return location.adjustDiagonal(direction, fileDistance, rankDistance);
+		return movedPiece(destination, color);
 	}
 
 	LocationDifference diffLocation(Location location) {
 		return this.location.diff(location);
 	}
 
-	int diffFile(Location location) {
-		return this.location.diffFile(location);
-	}
-
-	int diffRank(Location location) {
-		return this.location.diffRank(location);
-	}
-
-	boolean isMoved() {
-		return this.isMoved;
+	boolean isNotMoved() {
+		return !this.isMoved;
 	}
 
 	Direction calDirection(Location location) {
@@ -68,9 +44,7 @@ public abstract class AbstractChessPiece {
 
 	abstract boolean canMove(Location newLocation);
 
-	abstract AbstractChessPiece valueOf(Location location, Color color, boolean isMoved);
-
-	abstract Direction getMoveDirection();
+	abstract AbstractChessPiece movedPiece(Location location, Color color);
 
 	@Override
 	public String toString() {

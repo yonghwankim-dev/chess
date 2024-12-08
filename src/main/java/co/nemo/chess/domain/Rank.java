@@ -17,11 +17,7 @@ public class Rank {
 	public static Rank from(int value) {
 		return new Rank(value);
 	}
-
-	public Rank adjust(Direction direction, int value) {
-		return Rank.from(this.value + direction.calRankDistance(value));
-	}
-
+	
 	public int diff(Rank rank) {
 		return this.value - rank.value;
 	}

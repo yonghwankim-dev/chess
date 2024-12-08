@@ -19,21 +19,7 @@ public enum File {
 			throw new IllegalArgumentException("Invalid File value: " + value, e);
 		}
 	}
-
-	public static File columnOf(int column) {
-		for (File file : values()) {
-			if (file.column == column) {
-				return file;
-			}
-		}
-		throw new IllegalArgumentException("invalid column value: " + column);
-	}
-
-	public File adjust(Direction direction, int distance) {
-		int newColumn = direction.calFileDistance(distance);
-		return columnOf(this.column + newColumn);
-	}
-
+	
 	public int diff(File file) {
 		return this.column - file.column;
 	}

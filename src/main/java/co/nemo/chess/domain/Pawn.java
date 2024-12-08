@@ -41,9 +41,9 @@ public class Pawn extends AbstractChessPiece {
 		int rankDifference = 2;
 		Direction direction = calDirection(newLocation);
 		LocationDifference locationDifference = diffLocation(newLocation);
-		if (isSameColor(Color.WHITE) && !isMoved() && direction == UP) {
+		if (isSameColor(Color.WHITE) && isNotMoved() && direction == UP) {
 			return locationDifference.isEqualDistance(fileDifference, rankDifference);
-		} else if (isSameColor(Color.DARK) && !isMoved() && direction == DOWN) {
+		} else if (isSameColor(Color.DARK) && isNotMoved() && direction == DOWN) {
 			return locationDifference.isEqualDistance(fileDifference, rankDifference);
 		} else {
 			return false;
@@ -69,11 +69,7 @@ public class Pawn extends AbstractChessPiece {
 	}
 
 	@Override
-	Pawn valueOf(Location location, Color color, boolean isMoved) {
-		return new Pawn(location, color, isMoved);
-	}
-
-	Direction getMoveDirection() {
-		return isSameColor(Color.WHITE) ? UP : DOWN;
+	Pawn movedPiece(Location location, Color color) {
+		return new Pawn(location, color, true);
 	}
 }
