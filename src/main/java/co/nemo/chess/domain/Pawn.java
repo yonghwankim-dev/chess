@@ -9,12 +9,12 @@ public class Pawn extends AbstractChessPiece implements ForwardMovable, Diagonal
 		super(location, color, isMoved);
 	}
 
-	public static Pawn whitePawn(String position) {
+	public static AbstractChessPiece whitePawn(String position) {
 		Location location = Location.from(position);
 		return new Pawn(location, Color.WHITE, false);
 	}
 
-	public static Pawn darkPawn(String position) {
+	public static AbstractChessPiece darkPawn(String position) {
 		Location location = Location.from(position);
 		return new Pawn(location, Color.DARK, false);
 	}
