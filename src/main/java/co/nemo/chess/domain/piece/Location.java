@@ -1,5 +1,7 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.EqualsAndHashCode;
@@ -41,8 +43,13 @@ public class Location {
 		return location.diff(this).calDirection();
 	}
 
-	public Location plus(int file, int rank) {
-		return new Location(this.file.plus(file), this.rank.plus(rank));
+	public Optional<Location> plus(int fileValue, int rankValue) {
+		File newFile = this.file.plus(fileValue).orElse(null);
+		Rank newRank = this.rank.plus(rankValue).orElse(null);
+		if (newFile == null || newRank == null) {
+			return Optional.empty();
+		}
+		return Optional.of(new Location(newFile, newRank));
 	}
 
 	@Override

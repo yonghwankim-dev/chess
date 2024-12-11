@@ -1,9 +1,5 @@
 package co.nemo.chess.domain.piece;
 
-import java.util.List;
-
-import co.nemo.chess.domain.board.Board;
-
 public interface Piece {
 	/**
 	 * 체스 기물을 목적지로 이동시킨 다음에 이동시킨 기물을 반환한다
@@ -14,9 +10,5 @@ public interface Piece {
 	 */
 	AbstractChessPiece move(Location destination) throws IllegalArgumentException;
 
-	AbstractChessPiece move(Location destination, Board board);
-
 	boolean match(Location location);
-
-	List<Location> findPossiblePaths();
 }

@@ -1,8 +1,5 @@
 package co.nemo.chess.domain.piece;
 
-import lombok.Getter;
-
-@Getter
 public enum Direction {
 	UP(0, 1),
 	DOWN(0, -1),

@@ -1,5 +1,7 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Optional;
+
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
@@ -22,8 +24,12 @@ public class Rank {
 		return this.value - rank.value;
 	}
 
-	public Rank plus(int value) {
-		return from(this.value + value);
+	public Optional<Rank> plus(int value) {
+		try {
+			return Optional.of(from(this.value + value));
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override

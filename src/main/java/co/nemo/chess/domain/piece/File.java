@@ -1,5 +1,7 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Optional;
+
 public enum File {
 	A(1), B(2), C(3), D(4), E(5), F(6), G(7), H(8);
 
@@ -33,7 +35,11 @@ public enum File {
 		return this.column - file.column;
 	}
 
-	public File plus(int value) {
-		return valueOfColumn(this.column + value);
+	public Optional<File> plus(int value) {
+		try {
+			return Optional.of(valueOfColumn(this.column + value));
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
+		}
 	}
 }
