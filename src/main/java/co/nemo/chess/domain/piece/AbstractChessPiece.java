@@ -14,7 +14,7 @@ public abstract class AbstractChessPiece implements Piece {
 		this.isMoved = isMoved;
 	}
 
-	AbstractChessPiece withMoved() {
+	public AbstractChessPiece withMoved() {
 		return movedPiece(location, color);
 	}
 
@@ -28,6 +28,11 @@ public abstract class AbstractChessPiece implements Piece {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
 		return movedPiece(destination, color);
+	}
+
+	@Override
+	public boolean match(Location location) {
+		return this.location.equals(location);
 	}
 
 	LocationDifference diffLocation(Location location) {

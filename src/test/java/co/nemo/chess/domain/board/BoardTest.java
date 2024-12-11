@@ -12,15 +12,19 @@ class BoardTest {
 
 	@DisplayName("폰 기물과 목적지를 전달하여 보드에 접수한다")
 	@Test
-	void accept() {
+	void move() {
 		// given
-		Board board = new Board();
-		Piece whitePawn = PieceFactory.getInstance().whitePawn("a2");
-		Location destination = Location.from("a3");
+		Board board = Board.empty();
+		board.addPiece(PieceFactory.getInstance().whitePawn("a2"));
+
+		Location src = Location.from("a2");
+		Location dst = Location.from("a3");
 		// when
-		boolean actual = board.accept(whitePawn, destination);
+		boolean actual = board.move(src, dst);
 		// then
 		Assertions.assertThat(actual).isTrue();
+		Piece expected = PieceFactory.getInstance().whitePawn("a3").withMoved();
+		Assertions.assertThat(board.find(dst)).isEqualTo(expected);
+		Assertions.assertThat(board.size()).isEqualTo(1);
 	}
-
 }
