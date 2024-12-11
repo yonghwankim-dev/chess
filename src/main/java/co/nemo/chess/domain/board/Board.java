@@ -23,20 +23,20 @@ public class Board {
 		}
 	}
 
-	public boolean move(Location src, Location dst) {
-		Piece piece = pop(src);
+	public boolean movePiece(Location src, Location dst) {
+		Piece piece = popPiece(src);
 		addPiece(piece.move(dst));
 		return true;
 	}
 
-	public Piece find(Location location) {
+	public Piece finePiece(Location location) {
 		return pieces.stream()
 			.filter(p -> p.match(location))
 			.findAny()
 			.orElse(null);
 	}
 
-	public Piece pop(Location location) {
+	public Piece popPiece(Location location) {
 		Piece delPiece = pieces.stream()
 			.filter(p -> p.match(location))
 			.findAny()
