@@ -52,6 +52,10 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.diff(location);
 	}
 
+	boolean isMoved() {
+		return this.isMoved;
+	}
+
 	boolean isNotMoved() {
 		return !this.isMoved;
 	}

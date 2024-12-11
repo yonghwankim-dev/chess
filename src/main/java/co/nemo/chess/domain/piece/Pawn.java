@@ -48,6 +48,9 @@ public class Pawn extends AbstractChessPiece {
 		int rankDifference = 2;
 		Direction direction = calDirection(newLocation);
 		LocationDifference locationDifference = diffLocation(newLocation);
+		if (isMoved()) {
+			return false;
+		}
 		if (isSameColor(Color.WHITE) && isNotMoved() && direction == UP) {
 			return locationDifference.isEqualDistance(fileDifference, rankDifference);
 		} else if (isSameColor(Color.DARK) && isNotMoved() && direction == DOWN) {
