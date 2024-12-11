@@ -41,6 +41,10 @@ public class Location {
 		return location.diff(this).calDirection();
 	}
 
+	public Location plus(int file, int rank) {
+		return new Location(this.file.plus(file), this.rank.plus(rank));
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s%s", file, rank);

@@ -2,6 +2,7 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
@@ -75,5 +76,28 @@ public class Pawn extends AbstractChessPiece {
 	@Override
 	Pawn movedPiece(Location location, Color color) {
 		return new Pawn(location, color, true);
+	}
+
+	@Override
+	public List<Location> findPossiblePaths() {
+		// 한칸 전진 위치
+		Location oneForwardLocation = calOneForwardLocation();
+		// 두칸 전진 위치
+		Location twoForwardLocation = Location.from("a4");
+		// 대각선 방향
+		List<Location> diagonalLocation = List.of(Location.from("b3"));
+
+		List<Location> result = new ArrayList<>();
+		result.add(oneForwardLocation);
+		result.add(twoForwardLocation);
+		result.addAll(diagonalLocation);
+		return result;
+	}
+
+	// 폰의 현재 위치에서 한칸 전진한 위치를 계산한다
+	private Location calOneForwardLocation() {
+		int fileValue = 0;
+		int rankValue = isSameColor(Color.WHITE) ? 1 : -1;
+		return calLocation(fileValue, rankValue);
 	}
 }

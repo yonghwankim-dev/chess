@@ -2,6 +2,7 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rook extends AbstractChessPiece {
@@ -29,5 +30,11 @@ public class Rook extends AbstractChessPiece {
 	@Override
 	AbstractChessPiece movedPiece(Location location, Color color) {
 		return new Rook(location, color, true);
+	}
+
+	@Override
+	public List<Location> findPossiblePaths() {
+		// TODO: 12/11/24 implement 
+		return new ArrayList<>();
 	}
 }

@@ -20,7 +20,20 @@ public enum File {
 		}
 	}
 
+	public static File valueOfColumn(int value) {
+		for (File file : values()) {
+			if (file.column == value) {
+				return file;
+			}
+		}
+		throw new IllegalArgumentException("not found File, value=" + value);
+	}
+
 	public int diff(File file) {
 		return this.column - file.column;
+	}
+
+	public File plus(int value) {
+		return valueOfColumn(this.column + value);
 	}
 }

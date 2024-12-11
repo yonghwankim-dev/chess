@@ -1,8 +1,11 @@
 package co.nemo.chess.domain.piece;
 
+import co.nemo.chess.domain.board.Board;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 @EqualsAndHashCode
+@Slf4j
 public abstract class AbstractChessPiece implements Piece {
 	private final Location location;
 	private final Color color;
@@ -31,6 +34,18 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
+	public AbstractChessPiece move(Location destination, Board board) {
+		if (!canMove(destination)) {
+			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
+		}
+		// 출발지의 기물 제거
+		board.pollPiece(location).ifPresent(piece -> log.info("delete Piece : {}", piece));
+		// 목적지의 기물 제거
+		board.pollPiece(destination).ifPresent(piece -> log.info("delete Piece : {}", piece));
+		return movedPiece(destination, color);
+	}
+
+	@Override
 	public boolean match(Location location) {
 		return this.location.equals(location);
 	}
@@ -45,6 +60,10 @@ public abstract class AbstractChessPiece implements Piece {
 
 	Direction calDirection(Location location) {
 		return this.location.calDirection(location);
+	}
+
+	Location calLocation(int fileValue, int rankValue) {
+		return this.location.plus(fileValue, rankValue);
 	}
 
 	abstract boolean canMove(Location newLocation);

@@ -22,6 +22,10 @@ public class Rank {
 		return this.value - rank.value;
 	}
 
+	public Rank plus(int value) {
+		return from(this.value + value);
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(value);
