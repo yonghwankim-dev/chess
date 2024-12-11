@@ -1,5 +1,7 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Optional;
+
 public enum Direction {
 	UP(0, 1),
 	DOWN(0, -1),
@@ -18,5 +20,15 @@ public enum Direction {
 	Direction(int fileDirection, int rankDirection) {
 		this.fileDirection = fileDirection;
 		this.rankDirection = rankDirection;
+	}
+	
+	public Optional<File> calFile(File curFile, int distance) {
+		int value = this.fileDirection * distance;
+		return curFile.plus(value);
+	}
+
+	public Optional<Rank> calRank(Rank curRank, int distance) {
+		int value = this.rankDirection * distance;
+		return curRank.plus(value);
 	}
 }

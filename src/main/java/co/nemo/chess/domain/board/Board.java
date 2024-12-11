@@ -14,11 +14,7 @@ public class Board implements PieceMovable {
 		this.repository = repository;
 	}
 
-	public static Board empty() {
-		return new Board(PieceRepository.empty());
-	}
-
-	public static Board init(Piece... pieces) {
+	public static PieceMovable init(Piece... pieces) {
 		return new Board(PieceRepository.init(pieces));
 	}
 
@@ -30,10 +26,29 @@ public class Board implements PieceMovable {
 	// 기물의 이동 가능한 전체 경로 계산
 	@Override
 	public List<Location> findPossiblePaths(Location src) {
+		List<Location> result = new ArrayList<>();
 		// 전체 경로 중에서 조건을 만족하는 이동 가능한 경로 계산
-		// 조건1: 위치에 다른 기물이 없어야 함
-		// 조건2: 위치에 다른 기물이 있는 경우 piece가 서로 다른 색상이어야 함
-		// 조건3: 위치에 다른 기물이 없지만 특수한 조건상 이동이 가능해야함 (ex: 폰 대각선 이동)
-		return new ArrayList<>();
+		Piece piece = repository.find(src)
+			.orElseThrow(() -> new IllegalArgumentException("not found piece, location=" + src));
+		// 조건1: 위치가 비어있거나 다른색의 기물이 존재해야함
+		// 조건2: 위치에 다른 기물이 없지만 특수한 조건상 이동이 가능해야함 (ex: 폰 대각선 이동)
+		List<Location> possibleLocations = piece.findPossibleLocations();
+		for (Location location : possibleLocations) {
+			// 이동 가능한 경로에 어떤 기물이 없는 경우
+			Optional<Piece> findPiece = repository.find(location);
+			if (findPiece.isEmpty() && piece.canMove(location, repository)) {
+				result.add(location);
+				continue;
+			}
+			if (findPiece.isEmpty()) {
+				continue;
+			}
+			Piece target = findPiece.orElseThrow(
+				() -> new IllegalArgumentException("not found piece, location=" + location));
+			if (piece.canAttack(target, repository)) {
+				result.add(location);
+			}
+		}
+		return result;
 	}
 }

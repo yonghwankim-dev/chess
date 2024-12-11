@@ -24,9 +24,9 @@ public class Rank {
 		return this.value - rank.value;
 	}
 
-	public Optional<Rank> plus(int value) {
+	public Optional<Rank> plus(int distance) {
 		try {
-			return Optional.of(from(this.value + value));
+			return Optional.of(from(this.value + distance));
 		} catch (IllegalArgumentException e) {
 			return Optional.empty();
 		}

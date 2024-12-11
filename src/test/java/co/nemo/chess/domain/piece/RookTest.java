@@ -9,8 +9,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import co.nemo.chess.TestSupportUtils;
+import co.nemo.chess.domain.board.PieceRepository;
 
 class RookTest {
+
+	private final PieceRepository repository = PieceRepository.empty();
 
 	public static Stream<Arguments> validMoveLocations() {
 		String source = "a1";
@@ -32,7 +35,7 @@ class RookTest {
 		Piece rook = PieceFactory.getInstance().whiteRook(src);
 		Location dstLocation = Location.from(dst);
 		// when
-		Piece actual = rook.move(dstLocation);
+		Piece actual = rook.move(dstLocation, repository);
 		// then
 		Piece expected = PieceFactory.getInstance().whiteRook(dst).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
@@ -46,7 +49,7 @@ class RookTest {
 		Piece rook = PieceFactory.getInstance().whiteRook(src);
 		Location dstLocation = Location.from(dst);
 		// when
-		Throwable throwable = Assertions.catchThrowable(() -> rook.move(dstLocation));
+		Throwable throwable = Assertions.catchThrowable(() -> rook.move(dstLocation, repository));
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}

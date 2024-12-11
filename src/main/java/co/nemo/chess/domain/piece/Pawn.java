@@ -2,8 +2,11 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -22,8 +25,8 @@ public class Pawn extends AbstractChessPiece {
 	}
 
 	@Override
-	public boolean canMove(Location newLocation) {
-		return isOneForward(newLocation) || isTwoForward(newLocation) || isDiagonalMove(newLocation);
+	public boolean canMove(Location newLocation, PieceRepository repository) {
+		return isOneForward(newLocation) || isTwoForward(newLocation) || isDiagonalMove(newLocation, repository);
 	}
 
 	private boolean isOneForward(Location newLocation) {
@@ -54,7 +57,7 @@ public class Pawn extends AbstractChessPiece {
 		}
 	}
 
-	private boolean isDiagonalMove(Location location) {
+	private boolean isDiagonalMove(Location location, PieceRepository repository) {
 		Direction direction = this.calDirection(location);
 		if (!List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
 			return false;
@@ -64,8 +67,18 @@ public class Pawn extends AbstractChessPiece {
 		int rankDiff = 1;
 		LocationDifference locationDifference = diffLocation(location);
 		if (isSameColor(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
+			// 거리가 일치해야 하고, 흑색 기물이 존재해야 한다
+			Optional<Piece> piece = repository.find(location).filter(p -> p.isColorOf(Color.DARK));
+			if (piece.isEmpty()) {
+				return false;
+			}
 			return locationDifference.isEqualDistance(fileDiff, rankDiff);
 		} else if (isSameColor(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
+			// 거리가 일치해야 하고, 백색 기물이 존재해야 한다
+			Optional<Piece> piece = repository.find(location).filter(p -> p.isColorOf(Color.WHITE));
+			if (piece.isEmpty()) {
+				return false;
+			}
 			return locationDifference.isEqualDistance(fileDiff, rankDiff);
 		} else {
 			return false;
@@ -77,4 +90,20 @@ public class Pawn extends AbstractChessPiece {
 		return new Pawn(location, color, true);
 	}
 
+	@Override
+	public List<Location> findPossibleLocations() {
+		List<Location> result = new ArrayList<>();
+		if (isSameColor(Color.WHITE)) {
+			super.calLocation(UP, 1).ifPresent(result::add);
+			super.calLocation(UP, 2).ifPresent(result::add);
+			super.calLocation(UP_LEFT, 1).ifPresent(result::add);
+			super.calLocation(UP_RIGHT, 1).ifPresent(result::add);
+		} else {
+			super.calLocation(DOWN, 1).ifPresent(result::add);
+			super.calLocation(DOWN, 2).ifPresent(result::add);
+			super.calLocation(DOWN_LEFT, 1).ifPresent(result::add);
+			super.calLocation(DOWN_RIGHT, 1).ifPresent(result::add);
+		}
+		return result;
+	}
 }

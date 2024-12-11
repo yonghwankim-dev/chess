@@ -27,6 +27,10 @@ public class Location {
 		return new Location(file, rank);
 	}
 
+	public static Location of(File file, Rank rank) {
+		return new Location(file, rank);
+	}
+
 	public LocationDifference diff(Location location) {
 		return LocationDifference.from(this, location);
 	}
@@ -43,13 +47,13 @@ public class Location {
 		return location.diff(this).calDirection();
 	}
 
-	public Optional<Location> plus(int fileValue, int rankValue) {
-		File newFile = this.file.plus(fileValue).orElse(null);
-		Rank newRank = this.rank.plus(rankValue).orElse(null);
+	public Optional<Location> calLocation(Direction direction, int distance) {
+		File newFile = direction.calFile(file, distance).orElse(null);
+		Rank newRank = direction.calRank(rank, distance).orElse(null);
 		if (newFile == null || newRank == null) {
 			return Optional.empty();
 		}
-		return Optional.of(new Location(newFile, newRank));
+		return Optional.of(Location.of(newFile, newRank));
 	}
 
 	@Override

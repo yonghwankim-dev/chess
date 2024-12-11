@@ -4,6 +4,8 @@ import static co.nemo.chess.domain.piece.Direction.*;
 
 import java.util.List;
 
+import co.nemo.chess.domain.board.PieceRepository;
+
 public class Rook extends AbstractChessPiece {
 	Rook(Location location, Color color, boolean isMoved) {
 		super(location, color, isMoved);
@@ -18,7 +20,7 @@ public class Rook extends AbstractChessPiece {
 	}
 
 	@Override
-	public boolean canMove(Location destination) {
+	public boolean canMove(Location destination, PieceRepository repository) {
 		return canMoveStraight(destination);
 	}
 
@@ -29,5 +31,11 @@ public class Rook extends AbstractChessPiece {
 	@Override
 	AbstractChessPiece movedPiece(Location location, Color color) {
 		return new Rook(location, color, true);
+	}
+
+	@Override
+	public List<Location> findPossibleLocations() {
+		// TODO: 12/11/24
+		return null;
 	}
 }

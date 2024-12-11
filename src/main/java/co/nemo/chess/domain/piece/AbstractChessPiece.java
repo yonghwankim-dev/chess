@@ -2,6 +2,7 @@ package co.nemo.chess.domain.piece;
 
 import java.util.Optional;
 
+import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +28,8 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
-	public AbstractChessPiece move(Location destination) throws IllegalArgumentException {
-		if (!canMove(destination)) {
+	public AbstractChessPiece move(Location destination, PieceRepository repository) throws IllegalArgumentException {
+		if (!canMove(destination, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
 		return movedPiece(destination, color);
@@ -37,6 +38,14 @@ public abstract class AbstractChessPiece implements Piece {
 	@Override
 	public boolean match(Location location) {
 		return this.location.equals(location);
+	}
+
+	@Override
+	public boolean canAttack(Piece target, PieceRepository repository) {
+		if (target instanceof AbstractChessPiece piece) {
+			return this.canMove(piece.location, repository) && this.color != piece.color;
+		}
+		return false;
 	}
 
 	LocationDifference diffLocation(Location location) {
@@ -51,11 +60,16 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.calDirection(location);
 	}
 
-	Optional<Location> calLocation(int fileValue, int rankValue) {
-		return this.location.plus(fileValue, rankValue);
+	Optional<Location> calLocation(Direction direction, int distance) {
+		return this.location.calLocation(direction, distance);
 	}
 
-	public abstract boolean canMove(Location newLocation);
+	@Override
+	public boolean isColorOf(Color color) {
+		return this.color == color;
+	}
+
+	public abstract boolean canMove(Location newLocation, PieceRepository repository);
 
 	abstract AbstractChessPiece movedPiece(Location location, Color color);
 

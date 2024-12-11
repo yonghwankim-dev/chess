@@ -14,6 +14,10 @@ public class PieceFactory {
 		return PieceFactoryHelper.INSTANCE;
 	}
 
+	public AbstractChessPiece pawn(String position, Color color) {
+		return color == Color.WHITE ? whitePawn(position) : darkPawn(position);
+	}
+
 	public AbstractChessPiece whitePawn(String position) {
 		return Pawn.notMovedWhitePawn(Location.from(position));
 	}
