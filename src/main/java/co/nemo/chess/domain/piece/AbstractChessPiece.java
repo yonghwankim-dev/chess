@@ -23,7 +23,7 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
-	public AbstractChessPiece move(Location destination) {
+	public AbstractChessPiece move(Location destination) throws IllegalArgumentException {
 		if (!canMove(destination)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
