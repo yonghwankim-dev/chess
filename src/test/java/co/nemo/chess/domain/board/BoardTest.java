@@ -20,10 +20,10 @@ class BoardTest {
 		Location src = Location.from("a2");
 		Location dst = Location.from("a3");
 		// when
-		boolean actual = board.movePiece(src, dst);
+		Piece actual = board.movePiece(src, dst);
 		// then
-		Assertions.assertThat(actual).isTrue();
 		Piece expected = PieceFactory.getInstance().whitePawn("a3").withMoved();
+		Assertions.assertThat(actual).isEqualTo(expected);
 		Assertions.assertThat(board.finePiece(dst)).isEqualTo(expected);
 		Assertions.assertThat(board.size()).isEqualTo(1);
 	}
