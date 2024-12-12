@@ -51,12 +51,26 @@ public class PieceRepository {
 	 * @return the piece
 	 */
 	public Piece poll(Location location) {
-		Piece piece = find(location);
-		if (piece instanceof AbstractChessPiece abstractChessPiece) {
-			pieces.remove(abstractChessPiece);
-			return abstractChessPiece;
+		Piece findPiece = find(location);
+		if (findPiece instanceof AbstractChessPiece piece) {
+			pieces.remove(piece);
+			return piece;
 		}
 		return NullPiece.from(location);
+	}
+
+	/**
+	 * 매개변수로 전달한 Piece 객체를 제거한다.
+	 * 만약 매개변수로 전달한 Piece가 구현체 타입이 맞지 않으면 그대로 반환한다
+	 * @param delPiece 삭제할 기물
+	 * @return 삭제된 기물
+	 */
+	public Piece poll(Piece delPiece) {
+		if (delPiece instanceof AbstractChessPiece piece) {
+			pieces.remove(piece);
+			return piece;
+		}
+		return delPiece;
 	}
 
 	public boolean contains(Location location) {

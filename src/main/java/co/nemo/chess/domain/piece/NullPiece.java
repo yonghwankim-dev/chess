@@ -41,4 +41,15 @@ public class NullPiece extends AbstractChessPiece {
 	AbstractChessPiece movedPiece(Location location, Color color) {
 		throw new UnsupportedOperationException("NullPiece cannot be moved");
 	}
+
+	@Override
+	AbstractChessPiece relocatePieces(AbstractChessPiece abstractChessPiece, Location destination,
+		PieceRepository repository) {
+		throw new UnsupportedOperationException("NullPiece cannot be relocate");
+	}
+
+	@Override
+	protected AttackType calAttackType(Location destination, PieceRepository repository) {
+		return AttackType.NONE;
+	}
 }

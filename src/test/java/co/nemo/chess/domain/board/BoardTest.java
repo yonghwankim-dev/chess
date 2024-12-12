@@ -38,6 +38,8 @@ class BoardTest {
 
 	public static Stream<Arguments> validPawnMoveLocations() {
 		AbstractChessPiece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
+		AbstractChessPiece b2WhitePawn = PieceFactory.getInstance().pawn("b2", Color.WHITE);
+		AbstractChessPiece a2DarkPawn = PieceFactory.getInstance().pawn("a2", Color.DARK);
 		AbstractChessPiece a7DarkPawn = PieceFactory.getInstance().pawn("a7", Color.DARK);
 
 		AbstractChessPiece a3WhitePawn = PieceFactory.getInstance().pawn("a3", Color.WHITE).withMoved();
@@ -50,11 +52,13 @@ class BoardTest {
 		Location a5Location = Location.from("a5");
 		Location a6Location = Location.from("a6");
 		Location a7Location = Location.from("a7");
+		Location b2Location = Location.from("b2");
 		return Stream.of(
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a3Location, a3WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a4Location, a4WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a5Location, a5DarkPawn),
-			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a6Location, a6DarkPawn)
+			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a6Location, a6DarkPawn),
+			Arguments.of(new AbstractChessPiece[] {b2WhitePawn, a2DarkPawn}, b2Location, a3Location, a3WhitePawn)
 		);
 	}
 
@@ -123,13 +127,14 @@ class BoardTest {
 	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동한다")
 	@ParameterizedTest
 	@MethodSource(value = "validPawnMoveLocations")
-	void givenPawn_whenMovePiece_thenReturnMovedPiece(Piece[] pieces, Location src, Location dst, Piece expected) {
+	void givenPawn_whenMovePiece_thenReturnMovedPiece(Piece[] initPieces, Location src, Location dst, Piece expected) {
 		// given
-		PieceMovable board = Board.init(repository, pieces);
+		PieceMovable board = Board.init(repository, initPieces);
 		// when
 		Piece actual = board.movePiece(src, dst).orElseThrow();
 		// then
 		assertThat(actual).isEqualTo(expected);
 		assertThat(repository.contains(actual)).isTrue();
+		assertThat(repository.size()).isEqualTo(1);
 	}
 }

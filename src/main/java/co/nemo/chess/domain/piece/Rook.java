@@ -2,6 +2,7 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import co.nemo.chess.domain.board.PieceRepository;
@@ -35,7 +36,20 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public List<Location> findAllMoveLocations() {
-		// TODO: 12/11/24
+		// TODO: 12/12/24 implement
+		return Collections.emptyList();
+	}
+
+	@Override
+	AbstractChessPiece relocatePieces(AbstractChessPiece abstractChessPiece, Location destination,
+		PieceRepository repository) {
+		// TODO: 12/12/24 implement
+		return NullPiece.from(destination);
+	}
+
+	@Override
+	protected AttackType calAttackType(Location destination, PieceRepository repository) {
+		// TODO: 12/12/24 implement
 		return null;
 	}
 }

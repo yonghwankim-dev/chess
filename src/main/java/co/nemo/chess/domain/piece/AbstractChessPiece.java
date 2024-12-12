@@ -21,13 +21,11 @@ public abstract class AbstractChessPiece implements Piece {
 
 	@Override
 	public AbstractChessPiece move(Location destination, PieceRepository repository) throws IllegalArgumentException {
-		if (!canMove(destination, repository)) {
+		Piece target = repository.find(destination);
+		if (!canAttack(target, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
-		repository.poll(destination);
-		AbstractChessPiece newPiece = movedPiece(destination, color);
-		repository.add(newPiece);
-		return newPiece;
+		return this.relocatePieces(this, destination, repository);
 	}
 
 	@Override
@@ -47,6 +45,15 @@ public abstract class AbstractChessPiece implements Piece {
 	public boolean isColorOf(Color color) {
 		return this.color == color;
 	}
+
+	abstract AbstractChessPiece relocatePieces(AbstractChessPiece abstractChessPiece, Location destination,
+		PieceRepository repository);
+
+	AbstractChessPiece movedPiece(Location location) {
+		return movedPiece(location, color);
+	}
+
+	abstract AbstractChessPiece movedPiece(Location location, Color color);
 
 	public AbstractChessPiece withMoved() {
 		return movedPiece(location, color);
@@ -76,11 +83,11 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.calLocation(direction, distance);
 	}
 
-	abstract AbstractChessPiece movedPiece(Location location, Color color);
-
 	@Override
 	public String toString() {
 		String moved = isMoved ? "MOVED" : "NOT MOVED";
 		return String.format("%s %s %s", moved, color, location);
 	}
+
+	protected abstract AttackType calAttackType(Location destination, PieceRepository repository);
 }
