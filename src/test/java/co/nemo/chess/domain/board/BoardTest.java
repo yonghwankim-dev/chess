@@ -38,9 +38,10 @@ class BoardTest {
 
 	public static Stream<Arguments> validPawnMoveLocations() {
 		AbstractChessPiece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
-		AbstractChessPiece b2WhitePawn = PieceFactory.getInstance().pawn("b2", Color.WHITE);
-		AbstractChessPiece a2DarkPawn = PieceFactory.getInstance().pawn("a2", Color.DARK);
+		AbstractChessPiece f5WhitePawn = PieceFactory.getInstance().pawn("f5", Color.WHITE);
+		AbstractChessPiece g6WhitePawn = PieceFactory.getInstance().pawn("g6", Color.WHITE);
 		AbstractChessPiece a7DarkPawn = PieceFactory.getInstance().pawn("a7", Color.DARK);
+		AbstractChessPiece g5DarkPawn = PieceFactory.getInstance().pawn("g5", Color.DARK);
 
 		AbstractChessPiece a3WhitePawn = PieceFactory.getInstance().pawn("a3", Color.WHITE).withMoved();
 		AbstractChessPiece a4WhitePawn = PieceFactory.getInstance().pawn("a4", Color.WHITE).withMoved();
@@ -52,13 +53,15 @@ class BoardTest {
 		Location a5Location = Location.from("a5");
 		Location a6Location = Location.from("a6");
 		Location a7Location = Location.from("a7");
-		Location b2Location = Location.from("b2");
+		Location f5Location = Location.from("f5");
+		Location g6Location = Location.from("g6");
 		return Stream.of(
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a3Location, a3WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a4Location, a4WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a5Location, a5DarkPawn),
 			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a6Location, a6DarkPawn),
-			Arguments.of(new AbstractChessPiece[] {b2WhitePawn, a2DarkPawn}, b2Location, a3Location, a3WhitePawn)
+			Arguments.of(new AbstractChessPiece[] {f5WhitePawn.withMoved(), g5DarkPawn.withMoved()}, f5Location,
+				g6Location, g6WhitePawn.withMoved())
 		);
 	}
 

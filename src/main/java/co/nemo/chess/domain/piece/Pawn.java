@@ -101,9 +101,19 @@ public class Pawn extends AbstractChessPiece {
 				return false;
 			}
 			Location leftLocation = optional.get();
-			// 좌측에 적 기물이 존재하고 좌상단으로 이동이 가능하면 true 반환, 그 외는 false
+			// 좌측에 적 기물이 존재하고 상좌 대각선 이동이 가능하면 true 반환, 그 외는 false
 			Piece leftPiece = repository.find(leftLocation);
 			return leftPiece.isColorOf(Color.DARK) && locationDifference.isEqualDistance(fileDiff, rankDiff);
+		} else if (isSameColor(Color.WHITE) && direction == UP_RIGHT) {
+			// 폰의 현재 위치를 기준으로 좌측에 적 기물이 있는지 확인한다
+			Optional<Location> optional = calLocation(RIGHT, 1);
+			if (optional.isEmpty()) {
+				return false;
+			}
+			Location rightLocation = optional.get();
+			// 좌측에 적 기물이 존재하고 상우 대각선 이동이 가능하면 true 반환, 그 외는 false
+			Piece rightPiece = repository.find(rightLocation);
+			return rightPiece.isColorOf(Color.DARK) && locationDifference.isEqualDistance(fileDiff, rankDiff);
 		}
 		return false;
 	}
@@ -129,7 +139,7 @@ public class Pawn extends AbstractChessPiece {
 		}
 		return result;
 	}
-	
+
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		if (isOneForward(destination) || isTwoForward(destination) || isDiagonalMove(destination, repository)) {
@@ -138,15 +148,5 @@ public class Pawn extends AbstractChessPiece {
 			return AttackType.EN_PASSANT;
 		}
 		return AttackType.NONE;
-	}
-
-	@Override
-	AbstractChessPiece relocateNormalPieces(AbstractChessPiece piece, Location destination,
-		PieceRepository repository) {
-		repository.poll(piece);
-		repository.poll(destination);
-		AbstractChessPiece newPiece = piece.movedPiece(destination);
-		repository.add(newPiece);
-		return newPiece;
 	}
 }

@@ -25,7 +25,7 @@ public abstract class AbstractChessPiece implements Piece {
 		if (!canAttack(target, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
-		return this.relocatePieces(this, destination, repository);
+		return this.relocatePieces(destination, repository);
 	}
 
 	@Override
@@ -46,43 +46,42 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.color == color;
 	}
 
-	AbstractChessPiece relocatePieces(AbstractChessPiece piece, Location destination,
-		PieceRepository repository) {
-		AttackType type = piece.calAttackType(destination, repository);
+	private AbstractChessPiece relocatePieces(Location destination, PieceRepository repository) {
+		AttackType type = this.calAttackType(destination, repository);
 		if (type == AttackType.NORMAL) {
-			return relocateNormalPieces(piece, destination, repository);
+			return this.relocateNormalPieces(destination, repository);
 		} else if (type == AttackType.EN_PASSANT) {
-			return relocateEnPassant(piece, destination, repository);
+			return this.relocateEnPassant(destination, repository);
 		}
 		return NullPiece.from(destination);
 	}
 
-	private AbstractChessPiece relocateEnPassant(AbstractChessPiece piece, Location destination,
+	private AbstractChessPiece relocateEnPassant(Location destination,
 		PieceRepository repository) {
-		repository.poll(piece);
-		// 앙파상 위치 기물 제거
-		// 기물이 백색이고 UP_LEFT라면 앙파상 위치는 LEFT, UP_RIGHT라면 RIGHT 반환
-		Direction direction = piece.calDirection(destination);
-		if (isSameColor(Color.WHITE) && direction == Direction.UP_LEFT) {
-			Location leftLocation = piece.calLocation(Direction.LEFT, 1).orElseThrow();
+		repository.poll(this);
+		Direction direction = this.calDirection(destination);
+		int distance = 1;
+		if ((isSameColor(Color.WHITE) && direction == Direction.UP_LEFT) ||
+			(isSameColor(Color.DARK) && direction == Direction.DOWN_LEFT)) {
+			Location leftLocation = this.calLocation(Direction.LEFT, distance).orElseThrow();
 			repository.poll(leftLocation);
-		} else if (isSameColor(Color.WHITE) && direction == Direction.UP_RIGHT) {
-			Location rightLocation = piece.calLocation(Direction.RIGHT, 1).orElseThrow();
-			repository.poll(rightLocation);
-		} else if (isSameColor(Color.DARK) && direction == Direction.DOWN_LEFT) {
-			Location leftLocation = piece.calLocation(Direction.LEFT, 1).orElseThrow();
-			repository.poll(leftLocation);
-		} else if (isSameColor(Color.DARK) && direction == Direction.DOWN_RIGHT) {
-			Location rightLocation = piece.calLocation(Direction.RIGHT, 1).orElseThrow();
+		} else if ((isSameColor(Color.WHITE) && direction == Direction.UP_RIGHT) ||
+			(isSameColor(Color.DARK) && direction == Direction.DOWN_RIGHT)) {
+			Location rightLocation = this.calLocation(Direction.RIGHT, distance).orElseThrow();
 			repository.poll(rightLocation);
 		}
-		AbstractChessPiece result = piece.movedPiece(destination);
+		AbstractChessPiece result = this.movedPiece(destination);
 		repository.add(result);
 		return result;
 	}
 
-	abstract AbstractChessPiece relocateNormalPieces(AbstractChessPiece piece, Location destination,
-		PieceRepository repository);
+	private AbstractChessPiece relocateNormalPieces(Location destination, PieceRepository repository) {
+		repository.poll(this);
+		repository.poll(destination);
+		AbstractChessPiece newPiece = this.movedPiece(destination);
+		repository.add(newPiece);
+		return newPiece;
+	}
 
 	AbstractChessPiece movedPiece(Location location) {
 		return movedPiece(location, color);
