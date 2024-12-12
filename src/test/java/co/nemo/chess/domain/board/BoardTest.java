@@ -1,10 +1,11 @@
 package co.nemo.chess.domain.board;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ class BoardTest {
 		List<Location> expected = Arrays.stream(expectedPositions)
 			.map(Location::from)
 			.toList();
-		Assertions.assertThat(actual).containsExactlyElementsOf(expected);
+		assertThat(actual).containsExactlyElementsOf(expected);
 	}
 
 	@DisplayName("보드판 위에 이미 이동한 폰의 이동 기능 경로를 계산한다")
@@ -84,7 +85,7 @@ class BoardTest {
 		List<Location> expected = Arrays.stream(expectedPositions)
 			.map(Location::from)
 			.toList();
-		Assertions.assertThat(actual).containsExactlyElementsOf(expected);
+		assertThat(actual).containsExactlyElementsOf(expected);
 	}
 
 	@DisplayName("보드판 위에 적 기물이 있는 상태에서 폰의 이동 가능 경로를 계산한다")
@@ -102,7 +103,7 @@ class BoardTest {
 		List<Location> expected = Arrays.stream(new String[] {"a3", "a4", "b3"})
 			.map(Location::from)
 			.toList();
-		Assertions.assertThat(actual).containsExactlyElementsOf(expected);
+		assertThat(actual).containsExactlyElementsOf(expected);
 	}
 
 	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동한다")
@@ -119,6 +120,7 @@ class BoardTest {
 		Piece actual = board.movePiece(srcLocation, dstLocation).orElseThrow();
 		// then
 		Piece expected = PieceFactory.getInstance().pawn(dst, color).withMoved();
-		Assertions.assertThat(actual).isEqualTo(expected);
+		assertThat(actual).isEqualTo(expected);
+		assertThat(repository.contains(actual)).isTrue();
 	}
 }

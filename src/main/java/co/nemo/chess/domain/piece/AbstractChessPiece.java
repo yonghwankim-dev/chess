@@ -24,7 +24,10 @@ public abstract class AbstractChessPiece implements Piece {
 		if (!canMove(destination, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
-		return movedPiece(destination, color);
+		repository.poll(destination);
+		AbstractChessPiece newPiece = movedPiece(destination, color);
+		repository.add(newPiece);
+		return newPiece;
 	}
 
 	@Override
