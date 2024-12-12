@@ -1,22 +1,25 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Deque;
 import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"location", "color", "isMoved"})
 @Slf4j
 public abstract class AbstractChessPiece implements Piece {
 	private final Location location;
 	private final Color color;
 	private final boolean isMoved;
+	private final Deque<Location> locationHistory;
 
-	AbstractChessPiece(Location location, Color color, boolean isMoved) {
+	AbstractChessPiece(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
 		this.location = location;
 		this.color = color;
 		this.isMoved = isMoved;
+		this.locationHistory = locationHistory;
 	}
 
 	@Override
@@ -25,6 +28,8 @@ public abstract class AbstractChessPiece implements Piece {
 		if (!canAttack(target, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
+		// 현재 위치를 히스토리 스택에 저장
+		locationHistory.push(this.location);
 		return this.relocatePieces(destination, repository);
 	}
 
@@ -84,14 +89,21 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	AbstractChessPiece movedPiece(Location location) {
-		return movedPiece(location, color);
+		return movedPiece(location, color, locationHistory);
 	}
 
-	abstract AbstractChessPiece movedPiece(Location location, Color color);
+	abstract AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory);
 
 	public AbstractChessPiece withMoved() {
-		return movedPiece(location, color);
+		return movedPiece(location, color, locationHistory);
 	}
+
+	public AbstractChessPiece withLocationHistory(Deque<Location> locationHistory) {
+		return withLocationHistory(location, color, isMoved, locationHistory);
+	}
+
+	abstract AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+		Deque<Location> locationHistory);
 
 	boolean isSameColor(Color color) {
 		return this.color == color;
@@ -125,4 +137,7 @@ public abstract class AbstractChessPiece implements Piece {
 
 	protected abstract AttackType calAttackType(Location destination, PieceRepository repository);
 
+	Optional<Location> getLastMovedLocation() {
+		return Optional.ofNullable(locationHistory.peekFirst());
+	}
 }

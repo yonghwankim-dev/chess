@@ -2,22 +2,24 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import co.nemo.chess.domain.board.PieceRepository;
 
 public class Rook extends AbstractChessPiece {
-	Rook(Location location, Color color, boolean isMoved) {
-		super(location, color, isMoved);
+	Rook(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
+		super(location, color, isMoved, locationHistory);
 	}
 
 	public static AbstractChessPiece notMovedWhiteRook(Location location) {
-		return new Rook(location, Color.WHITE, false);
+		return new Rook(location, Color.WHITE, false, new ArrayDeque<>());
 	}
 
 	public static AbstractChessPiece notMovedDarkRook(Location location) {
-		return new Rook(location, Color.DARK, false);
+		return new Rook(location, Color.DARK, false, new ArrayDeque<>());
 	}
 
 	@Override
@@ -30,8 +32,8 @@ public class Rook extends AbstractChessPiece {
 	}
 
 	@Override
-	AbstractChessPiece movedPiece(Location location, Color color) {
-		return new Rook(location, color, true);
+	AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory) {
+		return new Rook(location, color, true, moveHistory);
 	}
 
 	@Override
@@ -44,5 +46,11 @@ public class Rook extends AbstractChessPiece {
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		// TODO: 12/12/24 implement
 		return AttackType.NORMAL;
+	}
+
+	@Override
+	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+		Deque<Location> locationHistory) {
+		return new Rook(location, color, isMoved, locationHistory);
 	}
 }

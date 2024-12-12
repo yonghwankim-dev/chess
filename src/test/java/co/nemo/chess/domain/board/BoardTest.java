@@ -2,8 +2,10 @@ package co.nemo.chess.domain.board;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -38,10 +40,7 @@ class BoardTest {
 
 	public static Stream<Arguments> validPawnMoveLocations() {
 		AbstractChessPiece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
-		AbstractChessPiece f5WhitePawn = PieceFactory.getInstance().pawn("f5", Color.WHITE);
-		AbstractChessPiece g6WhitePawn = PieceFactory.getInstance().pawn("g6", Color.WHITE);
 		AbstractChessPiece a7DarkPawn = PieceFactory.getInstance().pawn("a7", Color.DARK);
-		AbstractChessPiece g5DarkPawn = PieceFactory.getInstance().pawn("g5", Color.DARK);
 
 		AbstractChessPiece a3WhitePawn = PieceFactory.getInstance().pawn("a3", Color.WHITE).withMoved();
 		AbstractChessPiece a4WhitePawn = PieceFactory.getInstance().pawn("a4", Color.WHITE).withMoved();
@@ -53,15 +52,58 @@ class BoardTest {
 		Location a5Location = Location.from("a5");
 		Location a6Location = Location.from("a6");
 		Location a7Location = Location.from("a7");
-		Location f5Location = Location.from("f5");
-		Location g6Location = Location.from("g6");
 		return Stream.of(
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a3Location, a3WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a2WhitePawn}, a2Location, a4Location, a4WhitePawn),
 			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a5Location, a5DarkPawn),
-			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a6Location, a6DarkPawn),
-			Arguments.of(new AbstractChessPiece[] {f5WhitePawn.withMoved(), g5DarkPawn.withMoved()}, f5Location,
-				g6Location, g6WhitePawn.withMoved())
+			Arguments.of(new AbstractChessPiece[] {a7DarkPawn}, a7Location, a6Location, a6DarkPawn)
+		);
+	}
+
+	public static Stream<Arguments> validPawnEnPassantSource() {
+		AbstractChessPiece f5WhitePawn = PieceFactory.getInstance().pawn("f5", Color.WHITE);
+		AbstractChessPiece g6WhitePawn = PieceFactory.getInstance().pawn("g6", Color.WHITE);
+		AbstractChessPiece g5DarkPawn = PieceFactory.getInstance().pawn("g5", Color.DARK)
+			.withLocationHistory(new ArrayDeque<>(List.of(Location.from("g7"))));
+
+		Location f5Location = Location.from("f5");
+		Location g6Location = Location.from("g6");
+
+		return Stream.of(
+			Arguments.of(new AbstractChessPiece[] {f5WhitePawn.withMoved(), g5DarkPawn.withMoved()},
+				f5Location,
+				g6Location,
+				g6WhitePawn.withMoved()
+			)
+		);
+	}
+
+	public static Stream<Arguments> invalidPawnEnPassantSource() {
+		AbstractChessPiece a4WhitePawn = PieceFactory.getInstance().pawn("a4", Color.WHITE);
+		AbstractChessPiece a5WhitePawn = PieceFactory.getInstance().pawn("a5", Color.WHITE);
+		AbstractChessPiece b4DarkPawn = PieceFactory.getInstance().pawn("b4", Color.DARK);
+		AbstractChessPiece b5DarkPawn = PieceFactory.getInstance().pawn("b5", Color.DARK);
+		AbstractChessPiece b4DarkRook = PieceFactory.getInstance().darkRook("b4");
+
+		Location a4Location = Location.from("a4");
+		Location a5Location = Location.from("a5");
+		Location b5Location = Location.from("b5");
+		Location b6Location = Location.from("b6");
+		return Stream.of(
+			// A4 백폰이 B4 흑폰에 대하여 상우 대각선 이동해서 앙파상 시도
+			Arguments.of(new AbstractChessPiece[] {a4WhitePawn.withMoved(), b4DarkPawn.withMoved()},
+				a4Location,
+				b5Location
+			),
+			// A4 백폰이 B4 흑룩에 대하여 상우 대각선 이동해서 앙파상 시도
+			Arguments.of(new AbstractChessPiece[] {a4WhitePawn.withMoved(), b4DarkRook.withMoved()},
+				a4Location,
+				b5Location
+			),
+			// B5 흑폰이 총 2번 1칸씩 이동한 상태에서 A5 백폰이 B5 흑폰에 대하여 상우 대각선 이동해서 앙파상 시도
+			Arguments.of(new AbstractChessPiece[] {a5WhitePawn.withMoved(), b5DarkPawn.withMoved()},
+				a5Location,
+				b6Location)
 		);
 	}
 
@@ -129,7 +171,7 @@ class BoardTest {
 
 	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동한다")
 	@ParameterizedTest
-	@MethodSource(value = "validPawnMoveLocations")
+	@MethodSource(value = {"validPawnMoveLocations", "validPawnEnPassantSource"})
 	void givenPawn_whenMovePiece_thenReturnMovedPiece(Piece[] initPieces, Location src, Location dst, Piece expected) {
 		// given
 		PieceMovable board = Board.init(repository, initPieces);
@@ -139,5 +181,17 @@ class BoardTest {
 		assertThat(actual).isEqualTo(expected);
 		assertThat(repository.contains(actual)).isTrue();
 		assertThat(repository.size()).isEqualTo(1);
+	}
+
+	@DisplayName("보드판 위에 폰이 주어지고 폰이 유효하지 앙파상 이동할때 이동하지 못한다")
+	@ParameterizedTest
+	@MethodSource(value = {"invalidPawnEnPassantSource"})
+	void givenPawn_whenMovePiece_thenReturnEmptyOptional(Piece[] initPieces, Location src, Location dst) {
+		// given
+		PieceMovable board = Board.init(repository, initPieces);
+		// when
+		Optional<Piece> actual = board.movePiece(src, dst);
+		// then
+		assertThat(actual).isEmpty();
 	}
 }

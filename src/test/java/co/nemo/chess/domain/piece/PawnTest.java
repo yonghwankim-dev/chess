@@ -1,12 +1,12 @@
 package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.TestSupportUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 import co.nemo.chess.domain.board.PieceRepository;
 
 class PawnTest {
+
+	public static Stream<Arguments> validIsInitialTwoForwardSource() {
+		PieceFactory factory = PieceFactory.getInstance();
+		Piece a2WhitePawn = factory.whitePawn("a2");
+		Piece a7DarkPawn = factory.darkPawn("a7");
+
+		return Stream.of(
+			Arguments.of(a2WhitePawn, List.of(Location.from("a4"))),
+			Arguments.of(a7DarkPawn, List.of(Location.from("a5")))
+		);
+	}
 
 	@Nested
 	@DisplayName("Pawn move 테스트")
@@ -59,7 +70,7 @@ class PawnTest {
 			Piece actual = whitePawn.move(dstLocation, repository);
 			// then
 			Piece expected = PieceFactory.getInstance().whitePawn(dst).withMoved();
-			Assertions.assertThat(actual).isEqualTo(expected);
+			assertThat(actual).isEqualTo(expected);
 		}
 
 		@DisplayName("백폰은 1칸 전진, 2칸 전진, 상좌, 상우 대각선 이동을 제외한 다른 이동은 불가능하다")
@@ -70,9 +81,9 @@ class PawnTest {
 			Piece whitePawn = PieceFactory.getInstance().whitePawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Throwable throwable = Assertions.catchThrowable(() -> whitePawn.move(dstLocation, repository));
+			Throwable throwable = catchThrowable(() -> whitePawn.move(dstLocation, repository));
 			// then
-			Assertions.assertThat(throwable)
+			assertThat(throwable)
 				.isInstanceOf(IllegalArgumentException.class);
 		}
 
@@ -87,7 +98,7 @@ class PawnTest {
 			Piece actual = darkPawn.move(dstLocation, repository);
 			// then
 			Piece expected = PieceFactory.getInstance().darkPawn(dst).withMoved();
-			Assertions.assertThat(actual).isEqualTo(expected);
+			assertThat(actual).isEqualTo(expected);
 		}
 
 		@DisplayName("흑폰은 1칸 전진, 2칸 전진, 하좌, 화우 대각선 이동을 제외한 다른 이동은 불가능하다")
@@ -98,9 +109,9 @@ class PawnTest {
 			Piece darkPawn = PieceFactory.getInstance().darkPawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Throwable throwable = Assertions.catchThrowable(() -> darkPawn.move(dstLocation, repository));
+			Throwable throwable = catchThrowable(() -> darkPawn.move(dstLocation, repository));
 			// then
-			Assertions.assertThat(throwable)
+			assertThat(throwable)
 				.isInstanceOf(IllegalArgumentException.class);
 		}
 
@@ -111,9 +122,9 @@ class PawnTest {
 			Piece pawn = PieceFactory.getInstance().whitePawn("a3").withMoved();
 			Location dst = Location.from("a5");
 			// when
-			Throwable throwable = Assertions.catchThrowable(() -> pawn.move(dst, repository));
+			Throwable throwable = catchThrowable(() -> pawn.move(dst, repository));
 			// then
-			Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+			assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 		}
 
 	}
@@ -138,6 +149,43 @@ class PawnTest {
 		List<Location> expected = Arrays.stream(expectedLocations)
 			.map(Location::from)
 			.toList();
-		Assertions.assertThat(locations).containsExactlyElementsOf(expected);
+		assertThat(locations).containsExactlyElementsOf(expected);
+	}
+
+	@DisplayName("폰이 주어지고 이동했을때 초기 배치에서 2칸 전진한 직후이다")
+	@ParameterizedTest
+	@MethodSource(value = "validIsInitialTwoForwardSource")
+	void isInitialTwoForward(Piece piece, List<Location> destinations) {
+		// given
+		PieceRepository repository = PieceRepository.empty();
+		repository.add(piece);
+
+		Piece movePiece = piece;
+		for (Location destination : destinations) {
+			movePiece = movePiece.move(destination, repository);
+		}
+		// when
+		boolean actual = movePiece.isInitialTwoForward();
+		// then
+		assertThat(actual).isTrue();
+	}
+
+	@DisplayName("직전에 A2에서 1칸을 2번 이동한 A4 백폰은 직전에 2칸 이동한 상태가 아니다")
+	@Test
+	void givenPawn_whenIsInitialTwoForward_thenReturnFalse() {
+		// given
+		PieceRepository repository = PieceRepository.empty();
+		Piece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
+		repository.add(a2WhitePawn);
+
+		Location dst = Location.from("a3");
+		Piece a3WhitePawn = a2WhitePawn.move(dst, repository);
+
+		dst = Location.from("a4");
+		Piece a4WhitePawn = a3WhitePawn.move(dst, repository);
+		// when
+		boolean actual = a4WhitePawn.isInitialTwoForward();
+		// then
+		assertThat(actual).isFalse();
 	}
 }

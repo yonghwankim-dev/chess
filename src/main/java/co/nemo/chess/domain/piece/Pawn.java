@@ -2,9 +2,10 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
@@ -12,16 +13,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Pawn extends AbstractChessPiece {
 
-	private Pawn(Location location, Color color, boolean isMoved) {
-		super(location, color, isMoved);
+	private Pawn(Location location, Color color, boolean isMoved, Deque<Location> moveHistory) {
+		super(location, color, isMoved, moveHistory);
 	}
 
 	public static AbstractChessPiece notMovedWhitePawn(Location location) {
-		return new Pawn(location, Color.WHITE, false);
+		return new Pawn(location, Color.WHITE, false, new ArrayDeque<>());
 	}
 
 	public static AbstractChessPiece notMovedDarkPawn(Location location) {
-		return new Pawn(location, Color.DARK, false);
+		return new Pawn(location, Color.DARK, false, new ArrayDeque<>());
 	}
 
 	@Override
@@ -89,38 +90,75 @@ public class Pawn extends AbstractChessPiece {
 		}
 	}
 
+	/**
+	 * 앙파상 이동이 가능한지 검사한다
+	 * 조건
+	 * - 잡는 기물과 잡히는 기물 모두가 폰이어야 한다
+	 * - 적의 폰이 초기 배치에서 2칸 전진한 직후(다음 순서)에만 유효하다
+	 * - 앙파상으로 잡은 폰은 반드시 옆의 행으로 이동된다. 예를 들어 e5 백폰이 d5 흑폰을 제거하고 d6 백폰이 된다
+	 * @param location 목적지
+	 * @param repository 기물 저장소
+	 * @return 이동 가능 여부
+	 */
 	private boolean isEnPassant(Location location, PieceRepository repository) {
-		Direction direction = this.calDirection(location);
 		int fileDiff = 1;
 		int rankDiff = 1;
-		LocationDifference locationDifference = diffLocation(location);
-		if (isSameColor(Color.WHITE) && direction == UP_LEFT) {
-			// 폰의 현재 위치를 기준으로 좌측에 적 기물이 있는지 확인한다
-			Optional<Location> optional = calLocation(LEFT, 1);
-			if (optional.isEmpty()) {
-				return false;
-			}
-			Location leftLocation = optional.get();
-			// 좌측에 적 기물이 존재하고 상좌 대각선 이동이 가능하면 true 반환, 그 외는 false
-			Piece leftPiece = repository.find(leftLocation);
-			return leftPiece.isColorOf(Color.DARK) && locationDifference.isEqualDistance(fileDiff, rankDiff);
-		} else if (isSameColor(Color.WHITE) && direction == UP_RIGHT) {
-			// 폰의 현재 위치를 기준으로 좌측에 적 기물이 있는지 확인한다
-			Optional<Location> optional = calLocation(RIGHT, 1);
-			if (optional.isEmpty()) {
-				return false;
-			}
-			Location rightLocation = optional.get();
-			// 좌측에 적 기물이 존재하고 상우 대각선 이동이 가능하면 true 반환, 그 외는 false
-			Piece rightPiece = repository.find(rightLocation);
-			return rightPiece.isColorOf(Color.DARK) && locationDifference.isEqualDistance(fileDiff, rankDiff);
+		LocationDifference locationDifference = super.diffLocation(location);
+		if (!locationDifference.isEqualDistance(fileDiff, rankDiff)) {
+			return false;
 		}
-		return false;
+
+		// 잡는 기물과 잡히는 기물 모두 폰이어야 한다
+		Direction direction = this.calDirection(location);
+		if (isSameColor(Color.WHITE) && direction == UP_LEFT) {
+			return isEnemyPieceOnDirection(LEFT, Color.DARK, repository);
+		} else if (isSameColor(Color.WHITE) && direction == UP_RIGHT) {
+			return isEnemyPieceOnDirection(RIGHT, Color.DARK, repository);
+		} else if (isSameColor(Color.DARK) && direction == DOWN_LEFT) {
+			return isEnemyPieceOnDirection(LEFT, Color.WHITE, repository);
+		} else if (isSameColor(Color.DARK) && direction == DOWN_RIGHT) {
+			return isEnemyPieceOnDirection(RIGHT, Color.WHITE, repository);
+		} else {
+			return false;
+		}
+	}
+
+	private Boolean isEnemyPieceOnDirection(Direction direction, Color color, PieceRepository repository) {
+		int distance = 1;
+		// 잡는 기물과 잡히는 기물이 모두 폰이 아니면 false 반환
+		Boolean isEnemyPawn = this.calLocation(direction, distance)
+			.map(location -> {
+				Piece findPiece = repository.find(location);
+				return findPiece instanceof Pawn;
+			})
+			.orElse(false);
+		if (!isEnemyPawn) {
+			return false;
+		}
+
+		// 적의 폰이 초기 배치에서 2칸 전진한 직후(다음 순서)가 아니라면 앙파상 불가능
+		Boolean isInitialDoubleForward = this.calLocation(direction, distance)
+			.map(location -> {
+				Piece findPiece = repository.find(location);
+				return findPiece.isInitialTwoForward();
+			})
+			.orElse(false);
+
+		if (!isInitialDoubleForward) {
+			return false;
+		}
+
+		return this.calLocation(direction, distance)
+			.map(location -> {
+				Piece findPiece = repository.find(location);
+				return findPiece.isColorOf(color);
+			})
+			.orElse(false);
 	}
 
 	@Override
-	AbstractChessPiece movedPiece(Location location, Color color) {
-		return new Pawn(location, color, true);
+	AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory) {
+		return new Pawn(location, color, true, moveHistory);
 	}
 
 	@Override
@@ -148,5 +186,27 @@ public class Pawn extends AbstractChessPiece {
 			return AttackType.EN_PASSANT;
 		}
 		return AttackType.NONE;
+	}
+
+	/**
+	 * 기물이 초기 배치에서 2칸 전진한 직후인지 여부 확인
+	 * @return true: 바로 직전에 2칸 전진함, false: 바로 직전에 2칸 전진하지 않음
+	 */
+	@Override
+	public boolean isInitialTwoForward() {
+		return super.getLastMovedLocation()
+			.map(location -> {
+				LocationDifference locationDifference = super.diffLocation(location);
+				int fileDiff = 0;
+				int rankDiff = 2;
+				return locationDifference.isEqualDistance(fileDiff, rankDiff);
+			})
+			.orElse(false);
+	}
+
+	@Override
+	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+		Deque<Location> locationHistory) {
+		return new Pawn(location, color, isMoved, locationHistory);
 	}
 }

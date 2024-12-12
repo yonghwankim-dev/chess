@@ -25,6 +25,10 @@ public interface Piece {
 	boolean canAttack(Piece target, PieceRepository repository);
 
 	boolean canMove(Location location, PieceRepository repository);
-	
+
 	boolean isColorOf(Color color);
+
+	default boolean isInitialTwoForward() {
+		return false;
+	}
 }

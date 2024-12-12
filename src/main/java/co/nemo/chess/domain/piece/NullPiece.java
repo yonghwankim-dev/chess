@@ -1,6 +1,8 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import co.nemo.chess.domain.board.PieceRepository;
@@ -9,12 +11,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class NullPiece extends AbstractChessPiece {
 
-	public NullPiece(Location location, Color color, boolean isMoved) {
-		super(location, color, isMoved);
+	public NullPiece(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
+		super(location, color, isMoved, locationHistory);
 	}
 
 	public static NullPiece from(Location location) {
-		return new NullPiece(location, Color.NONE, false);
+		return new NullPiece(location, Color.NONE, false, new ArrayDeque<>());
 	}
 
 	@Override
@@ -38,12 +40,18 @@ public class NullPiece extends AbstractChessPiece {
 	}
 
 	@Override
-	AbstractChessPiece movedPiece(Location location, Color color) {
+	AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory) {
 		throw new UnsupportedOperationException("NullPiece cannot be moved");
 	}
 
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		return AttackType.NONE;
+	}
+
+	@Override
+	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+		Deque<Location> locationHistory) {
+		return new NullPiece(location, color, isMoved, locationHistory);
 	}
 }
