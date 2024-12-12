@@ -43,7 +43,7 @@ public class NullPiece extends AbstractChessPiece {
 	}
 
 	@Override
-	AbstractChessPiece relocatePieces(AbstractChessPiece abstractChessPiece, Location destination,
+	AbstractChessPiece relocatePieces(AbstractChessPiece piece, Location destination,
 		PieceRepository repository) {
 		throw new UnsupportedOperationException("NullPiece cannot be relocate");
 	}
@@ -51,5 +51,11 @@ public class NullPiece extends AbstractChessPiece {
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		return AttackType.NONE;
+	}
+
+	@Override
+	AbstractChessPiece relocateNormalPieces(AbstractChessPiece piece, Location destination,
+		PieceRepository repository) {
+		return NullPiece.from(destination);
 	}
 }

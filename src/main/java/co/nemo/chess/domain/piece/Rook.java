@@ -41,15 +41,24 @@ public class Rook extends AbstractChessPiece {
 	}
 
 	@Override
-	AbstractChessPiece relocatePieces(AbstractChessPiece abstractChessPiece, Location destination,
+	AbstractChessPiece relocatePieces(AbstractChessPiece piece, Location destination,
 		PieceRepository repository) {
-		// TODO: 12/12/24 implement
-		return NullPiece.from(destination);
+		repository.poll(piece);
+		repository.poll(destination);
+		AbstractChessPiece newPiece = piece.movedPiece(destination);
+		repository.add(newPiece);
+		return newPiece;
 	}
 
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		// TODO: 12/12/24 implement
-		return null;
+		return AttackType.NORMAL;
+	}
+
+	@Override
+	AbstractChessPiece relocateNormalPieces(AbstractChessPiece piece, Location destination,
+		PieceRepository repository) {
+		return NullPiece.from(destination);
 	}
 }

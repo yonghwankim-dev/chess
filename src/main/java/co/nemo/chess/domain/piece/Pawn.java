@@ -129,27 +129,7 @@ public class Pawn extends AbstractChessPiece {
 		}
 		return result;
 	}
-
-	@Override
-	AbstractChessPiece relocatePieces(AbstractChessPiece piece, Location destination, PieceRepository repository) {
-		AbstractChessPiece result = null;
-		// 앙파상인 경우 좌측 또는 우측의 기물을 제거한다
-		// 공격 종류를 계산한다
-		AttackType type = piece.calAttackType(destination, repository);
-		// 일반 공격인 경우 destination에 위치한 적 기물을 제거한다
-		if (type == AttackType.NORMAL) {
-			// 현재 기물 삭제
-			repository.poll(piece);
-			// 목적지의 기물 삭제
-			repository.poll(destination);
-			// 현재 기물을 기반으로 목적지 위치의 기물 생성
-			AbstractChessPiece newPiece = piece.movedPiece(destination);
-			repository.add(newPiece);
-			return newPiece;
-		}
-		return result;
-	}
-
+	
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
 		if (isOneForward(destination) || isTwoForward(destination) || isDiagonalMove(destination, repository)) {
@@ -158,5 +138,15 @@ public class Pawn extends AbstractChessPiece {
 			return AttackType.EN_PASSANT;
 		}
 		return AttackType.NONE;
+	}
+
+	@Override
+	AbstractChessPiece relocateNormalPieces(AbstractChessPiece piece, Location destination,
+		PieceRepository repository) {
+		repository.poll(piece);
+		repository.poll(destination);
+		AbstractChessPiece newPiece = piece.movedPiece(destination);
+		repository.add(newPiece);
+		return newPiece;
 	}
 }
