@@ -6,17 +6,15 @@ import java.util.List;
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
-public class NullPiece implements Piece {
+@EqualsAndHashCode(callSuper = true)
+public class NullPiece extends AbstractChessPiece {
 
-	private final Location location;
-
-	private NullPiece(Location location) {
-		this.location = location;
+	public NullPiece(Location location, Color color, boolean isMoved) {
+		super(location, color, isMoved);
 	}
 
 	public static NullPiece from(Location location) {
-		return new NullPiece(location);
+		return new NullPiece(location, Color.NONE, false);
 	}
 
 	@Override
@@ -25,12 +23,7 @@ public class NullPiece implements Piece {
 	}
 
 	@Override
-	public boolean match(Location location) {
-		return this.location.equals(location);
-	}
-
-	@Override
-	public List<Location> findPossibleLocations() {
+	public List<Location> findAllMoveLocations() {
 		return Collections.emptyList();
 	}
 
@@ -45,7 +38,7 @@ public class NullPiece implements Piece {
 	}
 
 	@Override
-	public boolean isColorOf(Color color) {
-		return false;
+	AbstractChessPiece movedPiece(Location location, Color color) {
+		throw new UnsupportedOperationException("NullPiece cannot be moved");
 	}
 }

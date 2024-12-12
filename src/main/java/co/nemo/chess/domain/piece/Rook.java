@@ -34,7 +34,7 @@ public class Rook extends AbstractChessPiece {
 	}
 
 	@Override
-	public List<Location> findPossibleLocations() {
+	public List<Location> findAllMoveLocations() {
 		// TODO: 12/11/24
 		return null;
 	}

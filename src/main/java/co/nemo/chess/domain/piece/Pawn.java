@@ -93,7 +93,7 @@ public class Pawn extends AbstractChessPiece {
 	}
 
 	@Override
-	public List<Location> findPossibleLocations() {
+	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
 		if (isSameColor(Color.WHITE)) {
 			super.calLocation(UP, 1).ifPresent(result::add);

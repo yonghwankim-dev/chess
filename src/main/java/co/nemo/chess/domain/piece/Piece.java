@@ -16,7 +16,11 @@ public interface Piece {
 
 	boolean match(Location location);
 
-	List<Location> findPossibleLocations();
+	/**
+	 * 체스 기물이 조건 없이 이동 가능한 모든 경로를 반환한다
+	 * @return 이동 가능한 모든 경로 리스트
+	 */
+	List<Location> findAllMoveLocations();
 
 	boolean canAttack(Piece target, PieceRepository repository);
 

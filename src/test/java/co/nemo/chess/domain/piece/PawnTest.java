@@ -133,7 +133,7 @@ class PawnTest {
 		// given
 		Piece whitePawn = PieceFactory.getInstance().pawn(src, color);
 		// when
-		List<Location> locations = whitePawn.findPossibleLocations();
+		List<Location> locations = whitePawn.findAllMoveLocations();
 		// then
 		List<Location> expected = Arrays.stream(expectedLocations)
 			.map(Location::from)

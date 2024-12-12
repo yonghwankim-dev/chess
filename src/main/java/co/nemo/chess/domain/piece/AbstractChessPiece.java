@@ -72,9 +72,7 @@ public abstract class AbstractChessPiece implements Piece {
 	public boolean isColorOf(Color color) {
 		return this.color == color;
 	}
-
-	public abstract boolean canMove(Location newLocation, PieceRepository repository);
-
+	
 	abstract AbstractChessPiece movedPiece(Location location, Color color);
 
 	@Override

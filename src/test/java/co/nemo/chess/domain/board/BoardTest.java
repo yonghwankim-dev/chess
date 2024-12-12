@@ -28,6 +28,7 @@ class BoardTest {
 	public static Stream<Arguments> validMovedPawnPossiblePaths() {
 		return Stream.of(
 			Arguments.of("a3", Color.WHITE, new String[] {"a4"}),
+			Arguments.of("a8", Color.WHITE, new String[] {}),
 			Arguments.of("a6", Color.DARK, new String[] {"a5"})
 		);
 	}
