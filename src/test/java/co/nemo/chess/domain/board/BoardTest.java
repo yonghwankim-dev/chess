@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,13 +34,29 @@ class BoardTest {
 		);
 	}
 
+	public static Stream<Arguments> validPawnMoveLocations() {
+		return Stream.of(
+			Arguments.of("a2", Color.WHITE, "a3"),
+			Arguments.of("a2", Color.WHITE, "a4"),
+			Arguments.of("a7", Color.DARK, "a6"),
+			Arguments.of("a7", Color.DARK, "a5")
+		);
+	}
+
+	private PieceRepository repository;
+
+	@BeforeEach
+	void setUp() {
+		repository = PieceRepository.empty();
+	}
+
 	@DisplayName("보드판 위에 이동하지 않은 폰의 이동 가능 경로를 계산한다")
 	@ParameterizedTest
 	@MethodSource(value = "validNotMovedPawnPossiblePaths")
 	void findPossiblePaths(String src, Color color, String[] expectedPositions) {
 		// given
 		Piece pawn = PieceFactory.getInstance().pawn(src, color);
-		PieceMovable board = Board.init(pawn);
+		PieceMovable board = Board.init(repository, pawn);
 
 		Location srcLocation = Location.from(src);
 		// when
@@ -58,7 +75,7 @@ class BoardTest {
 		String[] expectedPositions) {
 		// given
 		Piece pawn = PieceFactory.getInstance().pawn(src, color).withMoved();
-		PieceMovable board = Board.init(pawn);
+		PieceMovable board = Board.init(repository, pawn);
 
 		Location srcLocation = Location.from(src);
 		// when
@@ -76,7 +93,7 @@ class BoardTest {
 		// given
 		Piece whitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
 		Piece darkPawn = PieceFactory.getInstance().pawn("b3", Color.DARK);
-		PieceMovable board = Board.init(whitePawn, darkPawn);
+		PieceMovable board = Board.init(repository, whitePawn, darkPawn);
 
 		Location srcLocation = Location.from("a2");
 		// when
@@ -86,5 +103,22 @@ class BoardTest {
 			.map(Location::from)
 			.toList();
 		Assertions.assertThat(actual).containsExactlyElementsOf(expected);
+	}
+
+	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동한다")
+	@ParameterizedTest
+	@MethodSource(value = "validPawnMoveLocations")
+	void givenPawn_whenMovePiece_thenReturnMovedPiece(String src, Color color, String dst) {
+		// given
+		Piece whitePawn = PieceFactory.getInstance().pawn(src, color);
+		PieceMovable board = Board.init(repository, whitePawn);
+
+		Location srcLocation = Location.from(src);
+		Location dstLocation = Location.from(dst);
+		// when
+		Piece actual = board.movePiece(srcLocation, dstLocation).orElseThrow();
+		// then
+		Piece expected = PieceFactory.getInstance().pawn(dst, color).withMoved();
+		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 }

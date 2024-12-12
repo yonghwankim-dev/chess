@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.board;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +15,18 @@ public class Board implements PieceMovable {
 		this.repository = repository;
 	}
 
-	public static PieceMovable init(Piece... pieces) {
-		return new Board(PieceRepository.init(pieces));
+	public static PieceMovable init(PieceRepository repository, Piece... pieces) {
+		Arrays.stream(pieces).forEach(repository::add);
+		return new Board(repository);
 	}
 
 	@Override
 	public Optional<Piece> movePiece(Location src, Location dst) {
+		Piece source = repository.find(src);
+		Piece target = repository.find(dst);
+		if (source.canAttack(target, repository)) {
+			return Optional.of(source.move(dst, repository).withMoved());
+		}
 		return Optional.empty();
 	}
 

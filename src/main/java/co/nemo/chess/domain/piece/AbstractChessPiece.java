@@ -19,14 +19,6 @@ public abstract class AbstractChessPiece implements Piece {
 		this.isMoved = isMoved;
 	}
 
-	public AbstractChessPiece withMoved() {
-		return movedPiece(location, color);
-	}
-
-	boolean isSameColor(Color color) {
-		return this.color == color;
-	}
-
 	@Override
 	public AbstractChessPiece move(Location destination, PieceRepository repository) throws IllegalArgumentException {
 		if (!canMove(destination, repository)) {
@@ -46,6 +38,19 @@ public abstract class AbstractChessPiece implements Piece {
 			return this.canMove(piece.location, repository) && this.color != piece.color;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isColorOf(Color color) {
+		return this.color == color;
+	}
+
+	public AbstractChessPiece withMoved() {
+		return movedPiece(location, color);
+	}
+
+	boolean isSameColor(Color color) {
+		return this.color == color;
 	}
 
 	LocationDifference diffLocation(Location location) {
@@ -68,11 +73,6 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.calLocation(direction, distance);
 	}
 
-	@Override
-	public boolean isColorOf(Color color) {
-		return this.color == color;
-	}
-	
 	abstract AbstractChessPiece movedPiece(Location location, Color color);
 
 	@Override
