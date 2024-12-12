@@ -36,11 +36,18 @@ class BoardTest {
 	}
 
 	public static Stream<Arguments> validPawnMoveLocations() {
+		Piece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
+		Piece a7DarkPawn = PieceFactory.getInstance().pawn("a7", Color.DARK);
+
+		Piece a3WhitePawn = PieceFactory.getInstance().pawn("a3", Color.WHITE).withMoved();
+		Piece a4WhitePawn = PieceFactory.getInstance().pawn("a4", Color.WHITE).withMoved();
+		Piece a5DarkPawn = PieceFactory.getInstance().pawn("a5", Color.DARK).withMoved();
+		Piece a6DarkPawn = PieceFactory.getInstance().pawn("a6", Color.DARK).withMoved();
 		return Stream.of(
-			Arguments.of("a2", Color.WHITE, "a3"),
-			Arguments.of("a2", Color.WHITE, "a4"),
-			Arguments.of("a7", Color.DARK, "a6"),
-			Arguments.of("a7", Color.DARK, "a5")
+			Arguments.of(a2WhitePawn, "a2", "a3", a3WhitePawn),
+			Arguments.of(a2WhitePawn, "a2", "a4", a4WhitePawn),
+			Arguments.of(a7DarkPawn, "a7", "a5", a5DarkPawn),
+			Arguments.of(a7DarkPawn, "a7", "a6", a6DarkPawn)
 		);
 	}
 
@@ -109,17 +116,15 @@ class BoardTest {
 	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동한다")
 	@ParameterizedTest
 	@MethodSource(value = "validPawnMoveLocations")
-	void givenPawn_whenMovePiece_thenReturnMovedPiece(String src, Color color, String dst) {
+	void givenPawn_whenMovePiece_thenReturnMovedPiece(Piece piece, String src, String dst, Piece expected) {
 		// given
-		Piece whitePawn = PieceFactory.getInstance().pawn(src, color);
-		PieceMovable board = Board.init(repository, whitePawn);
+		PieceMovable board = Board.init(repository, piece);
 
 		Location srcLocation = Location.from(src);
 		Location dstLocation = Location.from(dst);
 		// when
 		Piece actual = board.movePiece(srcLocation, dstLocation).orElseThrow();
 		// then
-		Piece expected = PieceFactory.getInstance().pawn(dst, color).withMoved();
 		assertThat(actual).isEqualTo(expected);
 		assertThat(repository.contains(actual)).isTrue();
 	}
