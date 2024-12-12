@@ -3,9 +3,10 @@ package co.nemo.chess.domain.board;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.Location;
+import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 
 public class PieceRepository {
@@ -30,28 +31,32 @@ public class PieceRepository {
 	 * @return the boolean
 	 */
 	public boolean add(Piece piece) {
-		if (pieces.contains(piece)) {
+		if (pieces.contains(piece) || piece instanceof NullPiece) {
 			return false;
 		}
 		return pieces.add(piece);
 	}
 
-	public Optional<Piece> find(Location location) {
+	public Piece find(Location location) {
 		return pieces.stream()
 			.filter(p -> p.match(location))
-			.findAny();
+			.findAny()
+			.orElseGet(() -> NullPiece.from(location));
 	}
 
 	/**
 	 * Poll piece.
-	 * location에 따른 체스 기물이 없으면 null을 반환한다
+	 * location에 따른 체스 기물이 없으면 NullPiece 객체를 반환
 	 * @param location the location
 	 * @return the piece
 	 */
 	public Piece poll(Location location) {
-		Optional<Piece> optionalPiece = find(location);
-		optionalPiece.ifPresent(pieces::remove);
-		return optionalPiece.orElse(null);
+		Piece piece = find(location);
+		if (piece instanceof AbstractChessPiece abstractChessPiece) {
+			pieces.remove(abstractChessPiece);
+			return abstractChessPiece;
+		}
+		return NullPiece.from(location);
 	}
 
 	public boolean contains(Location location) {

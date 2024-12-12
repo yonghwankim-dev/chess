@@ -4,7 +4,6 @@ import static co.nemo.chess.domain.piece.Direction.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
@@ -71,15 +70,15 @@ public class Pawn extends AbstractChessPiece {
 		LocationDifference locationDifference = diffLocation(location);
 		if (isSameColor(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
 			// 거리가 일치해야 하고, 흑색 기물이 존재해야 한다
-			Optional<Piece> piece = repository.find(location).filter(p -> p.isColorOf(Color.DARK));
-			if (piece.isEmpty()) {
+			Piece piece = repository.find(location);
+			if (!piece.isColorOf(Color.DARK)) {
 				return false;
 			}
 			return locationDifference.isEqualDistance(fileDiff, rankDiff);
 		} else if (isSameColor(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
 			// 거리가 일치해야 하고, 백색 기물이 존재해야 한다
-			Optional<Piece> piece = repository.find(location).filter(p -> p.isColorOf(Color.WHITE));
-			if (piece.isEmpty()) {
+			Piece piece = repository.find(location);
+			if (!piece.isColorOf(Color.WHITE)) {
 				return false;
 			}
 			return locationDifference.isEqualDistance(fileDiff, rankDiff);
