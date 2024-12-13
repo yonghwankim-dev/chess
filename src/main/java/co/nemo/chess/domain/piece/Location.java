@@ -56,6 +56,14 @@ public class Location {
 		return Optional.of(Location.of(newFile, newRank));
 	}
 
+	public boolean isOnRank(Rank rank) {
+		return this.rank.equals(rank);
+	}
+
+	public String toPositionText() {
+		return rank.toPositionText(file);
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s%s", file, rank);

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import co.nemo.chess.domain.board.PieceRepository;
 
 class PawnTest {
-	
+
+	public static Stream<Arguments> validPromoToSource() {
+		return Stream.of(
+			Arguments.of("a8", Color.WHITE),
+			Arguments.of("a1", Color.DARK)
+		);
+	}
+
 	@Nested
 	@DisplayName("Pawn move 테스트")
 	class PawnMoveTest {
@@ -32,7 +40,7 @@ class PawnTest {
 
 		public static Stream<Arguments> invalidWhitePawnMoveLocations() {
 			String src = "b2";
-			String[] destinations = {"a2", "a1", "b1", "c1", "c2"};
+			String[] destinations = {"a2", "a1", "b1", "c1", "c2", "b2"};
 			return Stream.of(createArgumentsArray(src, destinations));
 		}
 
@@ -44,7 +52,7 @@ class PawnTest {
 
 		public static Stream<Arguments> invalidDarkPawnMoveLocations() {
 			String src = "b7";
-			String[] destinations = {"a8", "a7", "c7", "c8", "b8"};
+			String[] destinations = {"a8", "a7", "c7", "c8", "b8", "b7"};
 			return Stream.of(createArgumentsArray(src, destinations));
 		}
 
@@ -139,5 +147,18 @@ class PawnTest {
 			.map(Location::from)
 			.toList();
 		assertThat(locations).containsExactlyElementsOf(expected);
+	}
+
+	@DisplayName("폰을 룩으로 프로모션한다")
+	@ParameterizedTest
+	@MethodSource(value = "validPromoToSource")
+	void promoTo(String src, Color color) {
+		// given
+		Pawn whitePawn = (Pawn)PieceFactory.getInstance().pawn(src, color);
+		// when
+		Piece actual = whitePawn.promoTo(PieceType.ROOK);
+		// then
+		Piece expected = PieceFactory.getInstance().rook(src, color);
+		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 }

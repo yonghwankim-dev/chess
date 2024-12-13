@@ -11,7 +11,7 @@ import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class Pawn extends AbstractChessPiece {
+public class Pawn extends AbstractChessPiece implements Promotable {
 
 	private Pawn(Location location, Color color, boolean isMoved, Deque<Location> moveHistory) {
 		super(location, color, isMoved, moveHistory);
@@ -196,5 +196,22 @@ public class Pawn extends AbstractChessPiece {
 				return this.isValidLocationDifference(location, fileDiff, rankDiff);
 			})
 			.orElse(false);
+	}
+
+	@Override
+	public AbstractChessPiece promoTo(PieceType type) {
+		if (!canPromote()) {
+			throw new IllegalStateException("Promotion is not allowed for this pawn.");
+		}
+		return super.createPiece(type);
+	}
+	
+	private boolean canPromote() {
+		Rank currentRank = Rank.from(8);
+		if (this.isColorOf(Color.WHITE) && this.isOnRank(currentRank)) {
+			return true;
+		}
+		currentRank = Rank.from(1);
+		return this.isColorOf(Color.DARK) && this.isOnRank(currentRank);
 	}
 }

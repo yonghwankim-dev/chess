@@ -32,6 +32,10 @@ public class Rank {
 		}
 	}
 
+	public String toPositionText(File file) {
+		return file.name() + this.value;
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(value);

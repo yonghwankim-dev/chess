@@ -26,6 +26,10 @@ public class PieceFactory {
 		return Pawn.notMovedDarkPawn(Location.from(position));
 	}
 
+	public AbstractChessPiece rook(String position, Color color) {
+		return color == Color.WHITE ? whiteRook(position) : darkRook(position);
+	}
+
 	public AbstractChessPiece whiteRook(String position) {
 		return Rook.notMovedWhiteRook(Location.from(position));
 	}

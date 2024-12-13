@@ -129,9 +129,21 @@ public abstract class AbstractChessPiece implements Piece {
 		return Optional.ofNullable(locationHistory.peekFirst());
 	}
 
+	boolean isOnRank(Rank rank) {
+		return this.location.isOnRank(rank);
+	}
+
 	@Override
 	public String toString() {
 		String moved = isMoved ? "MOVED" : "NOT MOVED";
 		return String.format("%s %s %s", moved, color, location);
+	}
+
+	AbstractChessPiece createPiece(PieceType type) {
+		String position = location.toPositionText();
+		return switch (type) {
+			case ROOK -> PieceFactory.getInstance().rook(position, color);
+			default -> throw new IllegalArgumentException("Invalid piece type for promotion.");
+		};
 	}
 }
