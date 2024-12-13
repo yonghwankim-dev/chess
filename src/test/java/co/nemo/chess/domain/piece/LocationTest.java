@@ -2,6 +2,8 @@ package co.nemo.chess.domain.piece;
 
 import static co.nemo.chess.domain.piece.Direction.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -60,6 +62,27 @@ class LocationTest {
 		return Stream.of(argumentsArray);
 	}
 
+	public static Stream<Arguments> calBetweenLocationSource() {
+		Location a2 = Location.from("a2");
+		Location a3 = Location.from("a3");
+		Location a4 = Location.from("a4");
+		Location a5 = Location.from("a5");
+		Location a6 = Location.from("a6");
+		Location a7 = Location.from("a7");
+		Location a8 = Location.from("a8");
+		Location b3 = Location.from("b3");
+		Location c3 = Location.from("c3");
+		Location c4 = Location.from("c4");
+		return Stream.of(
+			Arguments.of(a2, a3, List.of(a3)),
+			Arguments.of(a2, a4, List.of(a3, a4)),
+			Arguments.of(a2, a8, List.of(a3, a4, a5, a6, a7, a8)),
+			Arguments.of(a2, c4, List.of(b3, c4)),
+			Arguments.of(a2, a2, Collections.emptyList()),
+			Arguments.of(a2, c3, List.of())
+		);
+	}
+
 	@DisplayName("위치의 File(열)은 a~h 사이어야 하고, Rank(행)은 1~8 사이어야 한다")
 	@ParameterizedTest
 	@MethodSource(value = "validLocationSources")
@@ -105,5 +128,18 @@ class LocationTest {
 		Direction actual = srcLocation.calDirection(Location.from(dst));
 		// then
 		Assertions.assertThat(actual).isEqualTo(NO_DIRECTION);
+	}
+
+	@DisplayName("두 위치간에 중간 경로를 반환한다")
+	@ParameterizedTest
+	@MethodSource(value = "calBetweenLocationSource")
+	void calBetweenLocations(Location src, Location dst, List<Location> expected) {
+		// given
+
+		// when
+		List<Location> actual = src.calBetweenLocations(dst);
+		// then
+		Assertions.assertThat(actual)
+			.containsExactlyElementsOf(expected);
 	}
 }

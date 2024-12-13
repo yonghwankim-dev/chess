@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.piece;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,10 @@ public class Location {
 
 	public List<Location> calBetweenLocations(Location destination) {
 		Direction direction = this.calDirection(destination);
+		if (direction == Direction.NO_DIRECTION) {
+			return Collections.emptyList();
+		}
+
 		File curFile = file;
 		Rank curRank = rank;
 		int distance = 1;
