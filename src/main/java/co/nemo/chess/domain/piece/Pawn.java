@@ -75,13 +75,10 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 	}
 
 	private boolean isOneForward(Location newLocation, PieceRepository repository) {
-		// 목적지에 다른 기물이 존재해서는 안된다
-		if (existPiece(repository.find(newLocation))) {
+		// 중간 경로(목적지 포함)에 다른 기물이 존재하면 안된다
+		if (existPieceBetween(newLocation, repository)) {
 			return false;
 		}
-		// 중간 경로에 다른 기물이 존재하면 안된다
-		// 현재 위치에서 목적지(newLocation)까지의 중간 경로를 계산한다
-		// List<Location> betweenLocations = super.calBetweenLocations(newLocation);
 
 		int fileDiff = 0;
 		int rankDiff = 1;
@@ -95,6 +92,11 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		}
 	}
 
+	private boolean existPieceBetween(Location dst, PieceRepository repository) {
+		return super.calBetweenLocations(dst).stream()
+			.anyMatch(location -> existPiece(repository.find(location)));
+	}
+
 	private boolean existPiece(Piece piece) {
 		return !(piece instanceof NullPiece);
 	}
@@ -105,7 +107,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 	}
 
 	private boolean isTwoForward(Location newLocation, PieceRepository repository) {
-		if (existPiece(repository.find(newLocation))) {
+		if (existPieceBetween(newLocation, repository)) {
 			return false;
 		}
 		int fileDifference = 0;
