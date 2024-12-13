@@ -50,7 +50,7 @@ public class Pawn extends AbstractChessPiece {
 	@Override
 	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
-		if (isSameColor(Color.WHITE)) {
+		if (isColorOf(Color.WHITE)) {
 			super.calLocation(UP, 1).ifPresent(result::add);
 			super.calLocation(UP, 2).ifPresent(result::add);
 			super.calLocation(UP_LEFT, 1).ifPresent(result::add);
@@ -66,17 +66,19 @@ public class Pawn extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location newLocation, PieceRepository repository) {
-		return isOneForward(newLocation) || isTwoForward(newLocation) || isDiagonalMove(newLocation, repository)
-			|| isEnPassant(newLocation, repository);
+		return isOneForward(newLocation) ||
+			isTwoForward(newLocation) ||
+			isDiagonalMove(newLocation, repository) ||
+			isEnPassant(newLocation, repository);
 	}
 
 	private boolean isOneForward(Location newLocation) {
 		int fileDiff = 0;
 		int rankDiff = 1;
 		Direction direction = calDirection(newLocation);
-		if (isSameColor(Color.WHITE) && direction == UP) {
+		if (isColorOf(Color.WHITE) && direction == UP) {
 			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
-		} else if (isSameColor(Color.DARK) && direction == DOWN) {
+		} else if (isColorOf(Color.DARK) && direction == DOWN) {
 			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
 		} else {
 			return false;
@@ -94,33 +96,34 @@ public class Pawn extends AbstractChessPiece {
 		Direction direction = calDirection(newLocation);
 		if (isMoved()) {
 			return false;
-		} else if (isSameColor(Color.WHITE) && isNotMoved() && direction == UP) {
+		} else if (isColorOf(Color.WHITE) && isNotMoved() && direction == UP) {
 			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
-		} else if (isSameColor(Color.DARK) && isNotMoved() && direction == DOWN) {
+		} else if (isColorOf(Color.DARK) && isNotMoved() && direction == DOWN) {
 			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * 폰 기물이 location 위치로 대각선 이동이 가능한지 여부
+	 * 조건
+	 * - 백색 기물인 경우 거리가 1칸으로 일치해야 하고, 대각선 위치에 흑색 기물이 존재해야 함
+	 * - 흑색 기물인 경우 거리가 1칸으로 일치해야 하고, 대각선 위치에 백색 기물이 존재해야 함
+	 * @param location 목적지
+	 * @param repository 기물 저장소
+	 * @return 이동 가능 여부
+	 */
 	private boolean isDiagonalMove(Location location, PieceRepository repository) {
 		int fileDiff = 1;
 		int rankDiff = 1;
 		Direction direction = this.calDirection(location);
-		if (isSameColor(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
-			// 거리가 일치해야 하고, 흑색 기물이 존재해야 한다
-			Piece piece = repository.find(location);
-			if (!piece.isColorOf(Color.DARK)) {
-				return false;
-			}
-			return this.isValidLocationDifference(location, fileDiff, rankDiff);
-		} else if (isSameColor(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
-			// 거리가 일치해야 하고, 백색 기물이 존재해야 한다
-			Piece piece = repository.find(location);
-			if (!piece.isColorOf(Color.WHITE)) {
-				return false;
-			}
-			return this.isValidLocationDifference(location, fileDiff, rankDiff);
+		if (isColorOf(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
+			boolean isValidColor = repository.find(location).isColorOf(Color.DARK);
+			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
+		} else if (isColorOf(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
+			boolean isValidColor = repository.find(location).isColorOf(Color.WHITE);
+			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
 		} else {
 			return false;
 		}
@@ -145,13 +148,13 @@ public class Pawn extends AbstractChessPiece {
 
 		// 잡는 기물과 잡히는 기물 모두 폰이어야 한다
 		Direction direction = this.calDirection(location);
-		if (isSameColor(Color.WHITE) && direction == UP_LEFT) {
+		if (isColorOf(Color.WHITE) && direction == UP_LEFT) {
 			return this.isEnemyPieceOnDirection(LEFT, Color.DARK, repository);
-		} else if (isSameColor(Color.WHITE) && direction == UP_RIGHT) {
+		} else if (isColorOf(Color.WHITE) && direction == UP_RIGHT) {
 			return this.isEnemyPieceOnDirection(RIGHT, Color.DARK, repository);
-		} else if (isSameColor(Color.DARK) && direction == DOWN_LEFT) {
+		} else if (isColorOf(Color.DARK) && direction == DOWN_LEFT) {
 			return this.isEnemyPieceOnDirection(LEFT, Color.WHITE, repository);
-		} else if (isSameColor(Color.DARK) && direction == DOWN_RIGHT) {
+		} else if (isColorOf(Color.DARK) && direction == DOWN_RIGHT) {
 			return this.isEnemyPieceOnDirection(RIGHT, Color.WHITE, repository);
 		} else {
 			return false;
@@ -159,24 +162,25 @@ public class Pawn extends AbstractChessPiece {
 	}
 
 	private Boolean isEnemyPieceOnDirection(Direction direction, Color color, PieceRepository repository) {
-		int distance = 1;
 		// 적의 폰이 초기 배치에서 2칸 전진한 직후(다음 순서)가 아니라면 앙파상 불가능
-		Boolean isInitialDoubleForward = this.calLocation(direction, distance)
+		int distance = 1;
+		return isValidEnPassantTargetOn(direction, repository, distance) &&
+			isSameColorOnDirection(direction, color, repository, distance);
+	}
+
+	private boolean isValidEnPassantTargetOn(Direction direction, PieceRepository repository, int distance) {
+		return this.calLocation(direction, distance)
 			.map(repository::find)
 			.filter(Pawn.class::isInstance)
 			.map(Pawn.class::cast)
 			.map(Pawn::isInitialTwoForward)
 			.orElse(false);
+	}
 
-		if (!isInitialDoubleForward) {
-			return false;
-		}
-
+	private Boolean isSameColorOnDirection(Direction direction, Color color, PieceRepository repository, int distance) {
 		return this.calLocation(direction, distance)
-			.map(location -> {
-				Piece findPiece = repository.find(location);
-				return findPiece.isColorOf(color);
-			})
+			.map(repository::find)
+			.map(piece -> piece.isColorOf(color))
 			.orElse(false);
 	}
 

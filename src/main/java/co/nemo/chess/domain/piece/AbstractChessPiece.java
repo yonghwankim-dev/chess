@@ -64,12 +64,12 @@ public abstract class AbstractChessPiece implements Piece {
 		repository.poll(this);
 		Direction direction = this.calDirection(destination);
 		int distance = 1;
-		if ((isSameColor(Color.WHITE) && direction == Direction.UP_LEFT) ||
-			(isSameColor(Color.DARK) && direction == Direction.DOWN_LEFT)) {
+		if ((this.isColorOf(Color.WHITE) && direction == Direction.UP_LEFT) ||
+			(this.isColorOf(Color.DARK) && direction == Direction.DOWN_LEFT)) {
 			Location leftLocation = this.calLocation(Direction.LEFT, distance).orElseThrow();
 			repository.poll(leftLocation);
-		} else if ((isSameColor(Color.WHITE) && direction == Direction.UP_RIGHT) ||
-			(isSameColor(Color.DARK) && direction == Direction.DOWN_RIGHT)) {
+		} else if ((this.isColorOf(Color.WHITE) && direction == Direction.UP_RIGHT) ||
+			(this.isColorOf(Color.DARK) && direction == Direction.DOWN_RIGHT)) {
 			Location rightLocation = this.calLocation(Direction.RIGHT, distance).orElseThrow();
 			repository.poll(rightLocation);
 		}
@@ -102,10 +102,6 @@ public abstract class AbstractChessPiece implements Piece {
 
 	abstract AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory);
-
-	boolean isSameColor(Color color) {
-		return this.color == color;
-	}
 
 	LocationDifference diffLocation(Location location) {
 		return this.location.diff(location);
