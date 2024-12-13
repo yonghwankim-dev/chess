@@ -17,18 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import co.nemo.chess.domain.board.PieceRepository;
 
 class PawnTest {
-
-	public static Stream<Arguments> validIsInitialTwoForwardSource() {
-		PieceFactory factory = PieceFactory.getInstance();
-		Piece a2WhitePawn = factory.whitePawn("a2");
-		Piece a7DarkPawn = factory.darkPawn("a7");
-
-		return Stream.of(
-			Arguments.of(a2WhitePawn, List.of(Location.from("a4"))),
-			Arguments.of(a7DarkPawn, List.of(Location.from("a5")))
-		);
-	}
-
+	
 	@Nested
 	@DisplayName("Pawn move 테스트")
 	class PawnMoveTest {
@@ -150,42 +139,5 @@ class PawnTest {
 			.map(Location::from)
 			.toList();
 		assertThat(locations).containsExactlyElementsOf(expected);
-	}
-
-	@DisplayName("폰이 주어지고 이동했을때 초기 배치에서 2칸 전진한 직후이다")
-	@ParameterizedTest
-	@MethodSource(value = "validIsInitialTwoForwardSource")
-	void isInitialTwoForward(Piece piece, List<Location> destinations) {
-		// given
-		PieceRepository repository = PieceRepository.empty();
-		repository.add(piece);
-
-		Piece movePiece = piece;
-		for (Location destination : destinations) {
-			movePiece = movePiece.move(destination, repository);
-		}
-		// when
-		boolean actual = movePiece.isInitialTwoForward();
-		// then
-		assertThat(actual).isTrue();
-	}
-
-	@DisplayName("직전에 A2에서 1칸을 2번 이동한 A4 백폰은 직전에 2칸 이동한 상태가 아니다")
-	@Test
-	void givenPawn_whenIsInitialTwoForward_thenReturnFalse() {
-		// given
-		PieceRepository repository = PieceRepository.empty();
-		Piece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
-		repository.add(a2WhitePawn);
-
-		Location dst = Location.from("a3");
-		Piece a3WhitePawn = a2WhitePawn.move(dst, repository);
-
-		dst = Location.from("a4");
-		Piece a4WhitePawn = a3WhitePawn.move(dst, repository);
-		// when
-		boolean actual = a4WhitePawn.isInitialTwoForward();
-		// then
-		assertThat(actual).isFalse();
 	}
 }

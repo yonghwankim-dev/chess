@@ -7,7 +7,7 @@ import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-@EqualsAndHashCode(of = {"location", "color", "isMoved"})
+@EqualsAndHashCode(exclude = "locationHistory")
 @Slf4j
 public abstract class AbstractChessPiece implements Piece {
 	private final Location location;
@@ -28,7 +28,6 @@ public abstract class AbstractChessPiece implements Piece {
 		if (!canAttack(target, repository)) {
 			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
 		}
-		// 현재 위치를 히스토리 스택에 저장
 		locationHistory.push(this.location);
 		return this.relocatePieces(destination, repository);
 	}
@@ -53,12 +52,11 @@ public abstract class AbstractChessPiece implements Piece {
 
 	private AbstractChessPiece relocatePieces(Location destination, PieceRepository repository) {
 		AttackType type = this.calAttackType(destination, repository);
-		if (type == AttackType.NORMAL) {
-			return this.relocateNormalPieces(destination, repository);
-		} else if (type == AttackType.EN_PASSANT) {
-			return this.relocateEnPassant(destination, repository);
-		}
-		return NullPiece.from(destination);
+		return switch (type) {
+			case NORMAL -> this.relocateNormalPieces(destination, repository);
+			case EN_PASSANT -> this.relocateEnPassant(destination, repository);
+			default -> NullPiece.from(destination);
+		};
 	}
 
 	private AbstractChessPiece relocateEnPassant(Location destination,
@@ -92,11 +90,11 @@ public abstract class AbstractChessPiece implements Piece {
 		return movedPiece(location, color, locationHistory);
 	}
 
-	abstract AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory);
-
 	public AbstractChessPiece withMoved() {
 		return movedPiece(location, color, locationHistory);
 	}
+
+	abstract AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory);
 
 	public AbstractChessPiece withLocationHistory(Deque<Location> locationHistory) {
 		return withLocationHistory(location, color, isMoved, locationHistory);
@@ -129,15 +127,15 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.calLocation(direction, distance);
 	}
 
+	abstract AttackType calAttackType(Location destination, PieceRepository repository);
+
+	Optional<Location> getLastMovedLocation() {
+		return Optional.ofNullable(locationHistory.peekFirst());
+	}
+
 	@Override
 	public String toString() {
 		String moved = isMoved ? "MOVED" : "NOT MOVED";
 		return String.format("%s %s %s", moved, color, location);
-	}
-
-	protected abstract AttackType calAttackType(Location destination, PieceRepository repository);
-
-	Optional<Location> getLastMovedLocation() {
-		return Optional.ofNullable(locationHistory.peekFirst());
 	}
 }

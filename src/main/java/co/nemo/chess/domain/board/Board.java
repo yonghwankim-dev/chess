@@ -22,12 +22,12 @@ public class Board implements PieceMovable {
 
 	@Override
 	public Optional<Piece> movePiece(Location src, Location dst) {
-		Piece source = repository.find(src);
-		Piece target = repository.find(dst);
-		if (source.canAttack(target, repository)) {
-			return Optional.of(source.move(dst, repository).withMoved());
+		Piece sourcePiece = repository.find(src);
+		try {
+			return Optional.of(sourcePiece.move(dst, repository).withMoved());
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	/**

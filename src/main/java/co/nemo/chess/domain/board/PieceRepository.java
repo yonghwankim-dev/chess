@@ -1,7 +1,6 @@
 package co.nemo.chess.domain.board;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import co.nemo.chess.domain.piece.AbstractChessPiece;
@@ -18,10 +17,6 @@ public class PieceRepository {
 
 	public static PieceRepository empty() {
 		return new PieceRepository(new ArrayList<>());
-	}
-
-	public static PieceRepository init(Piece... pieces) {
-		return new PieceRepository(new ArrayList<>(Arrays.asList(pieces)));
 	}
 
 	/**
@@ -48,34 +43,23 @@ public class PieceRepository {
 	 * Poll piece.
 	 * location에 따른 체스 기물이 없으면 NullPiece 객체를 반환
 	 * @param location the location
-	 * @return the piece
 	 */
-	public Piece poll(Location location) {
+	public void poll(Location location) {
 		Piece findPiece = find(location);
 		if (findPiece instanceof AbstractChessPiece piece) {
 			pieces.remove(piece);
-			return piece;
 		}
-		return NullPiece.from(location);
 	}
 
 	/**
 	 * 매개변수로 전달한 Piece 객체를 제거한다.
 	 * 만약 매개변수로 전달한 Piece가 구현체 타입이 맞지 않으면 그대로 반환한다
 	 * @param delPiece 삭제할 기물
-	 * @return 삭제된 기물
 	 */
-	public Piece poll(Piece delPiece) {
+	public void poll(Piece delPiece) {
 		if (delPiece instanceof AbstractChessPiece piece) {
 			pieces.remove(piece);
-			return piece;
 		}
-		return delPiece;
-	}
-
-	public boolean contains(Location location) {
-		return pieces.stream()
-			.anyMatch(piece -> piece.match(location));
 	}
 
 	public boolean contains(Piece piece) {
