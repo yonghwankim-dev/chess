@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.Location;
+import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 
 public class Board implements PieceMovable {
@@ -22,12 +24,9 @@ public class Board implements PieceMovable {
 
 	@Override
 	public Optional<Piece> movePiece(Location src, Location dst) {
-		Piece sourcePiece = repository.find(src);
-		try {
-			return Optional.of(sourcePiece.move(dst, repository).withMoved());
-		} catch (IllegalArgumentException e) {
-			return Optional.empty();
-		}
+		return repository.find(src)
+			.flatMap(srcPiece -> srcPiece.move(dst, repository))
+			.map(AbstractChessPiece::withMoved);
 	}
 
 	/**
@@ -41,14 +40,19 @@ public class Board implements PieceMovable {
 	@Override
 	public List<Location> findPossiblePaths(Location src) {
 		List<Location> result = new ArrayList<>();
-		Piece piece = repository.find(src);
-		List<Location> possibleLocations = piece.findAllMoveLocations();
-		for (Location location : possibleLocations) {
-			Piece target = repository.find(location);
-			if (piece.canAttack(target, repository)) {
-				result.add(location);
+		repository.find(src).ifPresent(piece -> {
+			List<Location> possibleLocations = piece.findAllMoveLocations();
+			for (Location location : possibleLocations) {
+				// todo: refactor
+				Optional.of(repository.find(location)
+						.orElse(NullPiece.from(location)))
+					.ifPresent(target -> {
+						if (piece.canAttack(target, repository)) {
+							result.add(location);
+						}
+					});
 			}
-		}
+		});
 		return result;
 	}
 }

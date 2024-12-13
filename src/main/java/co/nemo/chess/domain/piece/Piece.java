@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.piece;
 
 import java.util.List;
+import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 
@@ -12,7 +13,7 @@ public interface Piece {
 	 * @return 이동을 완료한 체스 기물
 	 * @throws IllegalArgumentException 체스 기물을 목적지로 이동시키지 못하면 예외 발생
 	 */
-	AbstractChessPiece move(Location destination, PieceRepository repository) throws IllegalArgumentException;
+	Optional<AbstractChessPiece> move(Location destination, PieceRepository repository);
 
 	boolean match(Location location);
 

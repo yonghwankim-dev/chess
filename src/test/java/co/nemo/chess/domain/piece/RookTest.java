@@ -1,5 +1,6 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -35,7 +36,7 @@ class RookTest {
 		Piece rook = PieceFactory.getInstance().whiteRook(src);
 		Location dstLocation = Location.from(dst);
 		// when
-		Piece actual = rook.move(dstLocation, repository);
+		Piece actual = rook.move(dstLocation, repository).orElseThrow();
 		// then
 		Piece expected = PieceFactory.getInstance().whiteRook(dst).withMoved();
 		Assertions.assertThat(actual).isEqualTo(expected);
@@ -49,8 +50,8 @@ class RookTest {
 		Piece rook = PieceFactory.getInstance().whiteRook(src);
 		Location dstLocation = Location.from(dst);
 		// when
-		Throwable throwable = Assertions.catchThrowable(() -> rook.move(dstLocation, repository));
+		Optional<AbstractChessPiece> actual = rook.move(dstLocation, repository);
 		// then
-		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+		Assertions.assertThat(actual).isEmpty();
 	}
 }

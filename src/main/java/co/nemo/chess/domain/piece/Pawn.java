@@ -94,7 +94,10 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 	private boolean existPieceBetween(Location dst, PieceRepository repository) {
 		return super.calBetweenLocations(dst).stream()
-			.anyMatch(location -> existPiece(repository.find(location)));
+			.anyMatch(location -> repository.find(location)
+				.filter(this::existPiece)
+				.isPresent()
+			);
 	}
 
 	private boolean existPiece(Piece piece) {
@@ -138,10 +141,10 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		int rankDiff = 1;
 		Direction direction = this.calDirection(location);
 		if (isColorOf(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
-			boolean isValidColor = repository.find(location).isColorOf(Color.DARK);
+			boolean isValidColor = repository.find(location).filter(piece -> piece.isColorOf(Color.DARK)).isPresent();
 			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
 		} else if (isColorOf(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
-			boolean isValidColor = repository.find(location).isColorOf(Color.WHITE);
+			boolean isValidColor = repository.find(location).filter(piece -> piece.isColorOf(Color.WHITE)).isPresent();
 			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
 		} else {
 			return false;
@@ -189,7 +192,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 	private boolean isValidEnPassantTargetOn(Direction direction, PieceRepository repository, int distance) {
 		return this.calLocation(direction, distance)
-			.map(repository::find)
+			.flatMap(repository::find)
 			.filter(Pawn.class::isInstance)
 			.map(Pawn.class::cast)
 			.map(Pawn::isInitialTwoForward)
@@ -198,7 +201,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 	private Boolean isSameColorOnDirection(Direction direction, Color color, PieceRepository repository, int distance) {
 		return this.calLocation(direction, distance)
-			.map(repository::find)
+			.flatMap(repository::find)
 			.map(piece -> piece.isColorOf(color))
 			.orElse(false);
 	}

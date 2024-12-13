@@ -2,8 +2,8 @@ package co.nemo.chess.domain.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
@@ -25,18 +25,17 @@ public class PieceRepository {
 	 * @param piece the piece
 	 * @return the boolean
 	 */
-	public boolean add(Piece piece) {
+	public void add(Piece piece) {
 		if (pieces.contains(piece) || piece instanceof NullPiece) {
-			return false;
+			return;
 		}
-		return pieces.add(piece);
+		pieces.add(piece);
 	}
 
-	public Piece find(Location location) {
+	public Optional<Piece> find(Location location) {
 		return pieces.stream()
 			.filter(p -> p.match(location))
-			.findAny()
-			.orElseGet(() -> NullPiece.from(location));
+			.findAny();
 	}
 
 	/**
@@ -45,10 +44,7 @@ public class PieceRepository {
 	 * @param location the location
 	 */
 	public void poll(Location location) {
-		Piece findPiece = find(location);
-		if (findPiece instanceof AbstractChessPiece piece) {
-			pieces.remove(piece);
-		}
+		find(location).ifPresent(pieces::remove);
 	}
 
 	/**
@@ -57,9 +53,7 @@ public class PieceRepository {
 	 * @param delPiece 삭제할 기물
 	 */
 	public void poll(Piece delPiece) {
-		if (delPiece instanceof AbstractChessPiece piece) {
-			pieces.remove(piece);
-		}
+		pieces.remove(delPiece);
 	}
 
 	public boolean contains(Piece piece) {

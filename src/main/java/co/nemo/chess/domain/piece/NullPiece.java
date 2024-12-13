@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
@@ -20,8 +21,8 @@ public class NullPiece extends AbstractChessPiece {
 	}
 
 	@Override
-	public AbstractChessPiece move(Location destination, PieceRepository repository) {
-		throw new UnsupportedOperationException("NullPiece cannot be moved");
+	public Optional<AbstractChessPiece> move(Location destination, PieceRepository repository) {
+		return Optional.empty();
 	}
 
 	@Override

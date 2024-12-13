@@ -3,6 +3,7 @@ package co.nemo.chess.domain.piece;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
@@ -24,13 +25,15 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
-	public AbstractChessPiece move(Location destination, PieceRepository repository) throws IllegalArgumentException {
-		Piece target = repository.find(destination);
-		if (!canAttack(target, repository)) {
-			throw new IllegalArgumentException("Invalid move for " + getClass().getSimpleName());
-		}
-		locationHistory.push(this.location);
-		return this.relocatePieces(destination, repository);
+	public Optional<AbstractChessPiece> move(Location destination, PieceRepository repository) {
+		// TODO: 12/13/24 refactor
+		Optional<AbstractChessPiece> result = Stream.of(repository.find(destination)
+				.orElse(NullPiece.from(destination)))
+			.filter(dstPiece -> this.canAttack(dstPiece, repository))
+			.map(dstPiece -> this.relocatePieces(destination, repository))
+			.findAny();
+		result.ifPresent(piece -> locationHistory.push(this.location));
+		return result;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -64,7 +65,7 @@ class PawnTest {
 			Piece whitePawn = PieceFactory.getInstance().whitePawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Piece actual = whitePawn.move(dstLocation, repository);
+			Piece actual = whitePawn.move(dstLocation, repository).orElseThrow();
 			// then
 			Piece expected = PieceFactory.getInstance().whitePawn(dst).withMoved();
 			assertThat(actual).isEqualTo(expected);
@@ -78,10 +79,9 @@ class PawnTest {
 			Piece whitePawn = PieceFactory.getInstance().whitePawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Throwable throwable = catchThrowable(() -> whitePawn.move(dstLocation, repository));
+			Optional<AbstractChessPiece> actual = whitePawn.move(dstLocation, repository);
 			// then
-			assertThat(throwable)
-				.isInstanceOf(IllegalArgumentException.class);
+			assertThat(actual).isEmpty();
 		}
 
 		@DisplayName("흑폰은 1칸 전진, 2칸 전진, 하좌, 하우 대각선 이동만 가능하다")
@@ -92,7 +92,7 @@ class PawnTest {
 			Piece darkPawn = PieceFactory.getInstance().darkPawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Piece actual = darkPawn.move(dstLocation, repository);
+			Piece actual = darkPawn.move(dstLocation, repository).orElseThrow();
 			// then
 			Piece expected = PieceFactory.getInstance().darkPawn(dst).withMoved();
 			assertThat(actual).isEqualTo(expected);
@@ -106,10 +106,9 @@ class PawnTest {
 			Piece darkPawn = PieceFactory.getInstance().darkPawn(src);
 			Location dstLocation = Location.from(dst);
 			// when
-			Throwable throwable = catchThrowable(() -> darkPawn.move(dstLocation, repository));
+			Optional<AbstractChessPiece> actual = darkPawn.move(dstLocation, repository);
 			// then
-			assertThat(throwable)
-				.isInstanceOf(IllegalArgumentException.class);
+			assertThat(actual).isEmpty();
 		}
 
 		@DisplayName("이미 이동한 백폰은 2칸 전진할 수 없다")
@@ -119,9 +118,9 @@ class PawnTest {
 			Piece pawn = PieceFactory.getInstance().whitePawn("a3").withMoved();
 			Location dst = Location.from("a5");
 			// when
-			Throwable throwable = catchThrowable(() -> pawn.move(dst, repository));
+			Optional<AbstractChessPiece> actual = pawn.move(dst, repository);
 			// then
-			assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+			assertThat(actual).isEmpty();
 		}
 
 	}
