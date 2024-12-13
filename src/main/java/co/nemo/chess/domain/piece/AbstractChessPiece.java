@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.piece;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
@@ -145,5 +146,21 @@ public abstract class AbstractChessPiece implements Piece {
 			case ROOK -> PieceFactory.getInstance().rook(position, color);
 			default -> throw new IllegalArgumentException("Invalid piece type for promotion.");
 		};
+	}
+
+	List<Location> calBetweenLocations(Location dst) {
+		Location src = this.location;
+
+		// 파일과 랭크 계산
+		int fileDiff = dst.diffFile(src);
+		int rankDiff = dst.diffRank(src);
+
+		// 두 위치가 직선, 대각선 상에 있는지 확인
+		if (Math.abs(fileDiff) != Math.abs(rankDiff) && fileDiff != 0 && rankDiff != 0) {
+			throw new IllegalArgumentException("src and dst are not on a valid straight or diagonal path.");
+		}
+
+		// 중간 경로 계산
+		return this.location.calBetweenLocations(dst);
 	}
 }

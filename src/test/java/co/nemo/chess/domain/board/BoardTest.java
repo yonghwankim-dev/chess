@@ -107,6 +107,27 @@ class BoardTest {
 		);
 	}
 
+	public static Stream<Arguments> invalidPawnMoveLocations() {
+		AbstractChessPiece a2WhitePawn = PieceFactory.getInstance().pawn("a2", Color.WHITE);
+		AbstractChessPiece b2WhitePawn = PieceFactory.getInstance().pawn("b2", Color.WHITE);
+		AbstractChessPiece a3DarkPawn = PieceFactory.getInstance().pawn("a3", Color.DARK).withMoved();
+		Location a1Location = Location.from("a1");
+		Location a2Location = Location.from("a2");
+		Location a4Location = Location.from("a4");
+		Location a3Location = Location.from("a3");
+		Location b2Location = Location.from("b2");
+		Location b3Location = Location.from("b3");
+		AbstractChessPiece[] pieces = new AbstractChessPiece[] {a2WhitePawn, b2WhitePawn, a3DarkPawn};
+		return Stream.of(
+			Arguments.of(pieces, a2Location, a3Location),
+			Arguments.of(pieces, a2Location, b3Location),
+			Arguments.of(pieces, a2Location, b2Location),
+			Arguments.of(pieces, a2Location, a1Location),
+			Arguments.of(pieces, a2Location, a2Location),
+			Arguments.of(pieces, a2Location, a4Location)
+		);
+	}
+
 	private PieceRepository repository;
 
 	@BeforeEach
@@ -183,10 +204,10 @@ class BoardTest {
 		assertThat(repository.size()).isEqualTo(1);
 	}
 
-	@DisplayName("보드판 위에 폰이 주어지고 폰이 유효하지 앙파상 이동할때 이동하지 못한다")
+	@DisplayName("보드판 위에 폰이 주어졌을때 특정한 위치로 이동하지 못한다")
 	@ParameterizedTest
-	@MethodSource(value = {"invalidPawnEnPassantSource"})
-	void givenPawn_whenMovePiece_thenReturnEmptyOptional(Piece[] initPieces, Location src, Location dst) {
+	@MethodSource(value = {"invalidPawnMoveLocations", "invalidPawnEnPassantSource"})
+	void givenPawn_whenInvalidMovePiece_thenReturnEmptyOptional(Piece[] initPieces, Location src, Location dst) {
 		// given
 		PieceMovable board = Board.init(repository, initPieces);
 		// when

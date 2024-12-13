@@ -38,7 +38,9 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
-		if (isOneForward(destination) || isTwoForward(destination) || isDiagonalMove(destination, repository)) {
+		if (isOneForward(destination, repository) ||
+			isTwoForward(destination, repository) ||
+			isDiagonalMove(destination, repository)) {
 			return AttackType.NORMAL;
 		} else if (isEnPassant(destination, repository)) {
 			return AttackType.EN_PASSANT;
@@ -66,13 +68,21 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 	@Override
 	public boolean canMove(Location newLocation, PieceRepository repository) {
-		return isOneForward(newLocation) ||
-			isTwoForward(newLocation) ||
+		return isOneForward(newLocation, repository) ||
+			isTwoForward(newLocation, repository) ||
 			isDiagonalMove(newLocation, repository) ||
 			isEnPassant(newLocation, repository);
 	}
 
-	private boolean isOneForward(Location newLocation) {
+	private boolean isOneForward(Location newLocation, PieceRepository repository) {
+		// 목적지에 다른 기물이 존재해서는 안된다
+		if (existPiece(repository.find(newLocation))) {
+			return false;
+		}
+		// 중간 경로에 다른 기물이 존재하면 안된다
+		// 현재 위치에서 목적지(newLocation)까지의 중간 경로를 계산한다
+		// List<Location> betweenLocations = super.calBetweenLocations(newLocation);
+
 		int fileDiff = 0;
 		int rankDiff = 1;
 		Direction direction = calDirection(newLocation);
@@ -85,12 +95,19 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		}
 	}
 
+	private boolean existPiece(Piece piece) {
+		return !(piece instanceof NullPiece);
+	}
+
 	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
 		LocationDifference locationDifference = super.diffLocation(location);
 		return locationDifference.isEqualDistance(fileDiff, rankDiff);
 	}
 
-	private boolean isTwoForward(Location newLocation) {
+	private boolean isTwoForward(Location newLocation, PieceRepository repository) {
+		if (existPiece(repository.find(newLocation))) {
+			return false;
+		}
 		int fileDifference = 0;
 		int rankDifference = 2;
 		Direction direction = calDirection(newLocation);
@@ -205,7 +222,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		}
 		return super.createPiece(type);
 	}
-	
+
 	private boolean canPromote() {
 		Rank currentRank = Rank.from(8);
 		if (this.isColorOf(Color.WHITE) && this.isOnRank(currentRank)) {

@@ -1,5 +1,7 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
@@ -62,6 +64,21 @@ public class Location {
 
 	public String toPositionText() {
 		return rank.toPositionText(file);
+	}
+
+	public List<Location> calBetweenLocations(Location destination) {
+		Direction direction = this.calDirection(destination);
+		File curFile = file;
+		Rank curRank = rank;
+		int distance = 1;
+		List<Location> result = new ArrayList<>();
+		while (!curFile.equals(destination.file) ||
+			!curRank.equals(destination.rank)) {
+			curFile = direction.calFile(curFile, distance).orElseThrow();
+			curRank = direction.calRank(curRank, distance).orElseThrow();
+			result.add(Location.of(curFile, curRank));
+		}
+		return result;
 	}
 
 	@Override
