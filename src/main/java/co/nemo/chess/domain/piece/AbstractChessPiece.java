@@ -3,7 +3,6 @@ package co.nemo.chess.domain.piece;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
@@ -26,14 +25,12 @@ public abstract class AbstractChessPiece implements Piece {
 
 	@Override
 	public Optional<AbstractChessPiece> move(Location destination, PieceRepository repository) {
-		// TODO: 12/13/24 refactor
-		Optional<AbstractChessPiece> result = Stream.of(repository.find(destination)
-				.orElse(NullPiece.from(destination)))
-			.filter(dstPiece -> this.canAttack(dstPiece, repository))
-			.map(dstPiece -> this.relocatePieces(destination, repository))
-			.findAny();
-		result.ifPresent(piece -> locationHistory.push(this.location));
-		return result;
+		Piece target = repository.find(destination).orElse(NullPiece.from(destination));
+		if (!this.canAttack(target, repository)) {
+			return Optional.empty();
+		}
+		locationHistory.push(this.location);
+		return Optional.ofNullable(this.relocatePieces(destination, repository));
 	}
 
 	@Override

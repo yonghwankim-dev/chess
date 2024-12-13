@@ -43,14 +43,10 @@ public class Board implements PieceMovable {
 		repository.find(src).ifPresent(piece -> {
 			List<Location> possibleLocations = piece.findAllMoveLocations();
 			for (Location location : possibleLocations) {
-				// todo: refactor
-				Optional.of(repository.find(location)
-						.orElse(NullPiece.from(location)))
-					.ifPresent(target -> {
-						if (piece.canAttack(target, repository)) {
-							result.add(location);
-						}
-					});
+				Piece target = repository.find(location).orElse(NullPiece.from(location));
+				if (piece.canAttack(target, repository)) {
+					result.add(location);
+				}
 			}
 		});
 		return result;
