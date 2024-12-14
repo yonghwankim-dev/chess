@@ -2,13 +2,17 @@ package co.nemo.chess.domain.board;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
+import co.nemo.chess.domain.piece.PieceFactory;
 
 public class Board implements PieceMovable {
 	private final PieceRepository repository;
@@ -17,9 +21,13 @@ public class Board implements PieceMovable {
 		this.repository = repository;
 	}
 
-	public static PieceMovable init(PieceRepository repository, Piece... pieces) {
+	public static Board init(PieceRepository repository, Piece... pieces) {
 		Arrays.stream(pieces).forEach(repository::add);
 		return new Board(repository);
+	}
+
+	public static Board empty() {
+		return new Board(PieceRepository.empty());
 	}
 
 	@Override
@@ -50,5 +58,33 @@ public class Board implements PieceMovable {
 			}
 		});
 		return result;
+	}
+
+	public List<Piece> setupPieces() {
+		repository.clear();
+		PieceFactory factory = PieceFactory.getInstance();
+		// 백폰 기물 배치
+		List<Piece> whitePawns = Stream.of("a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2")
+			.map(factory::whitePawn)
+			.map(Piece.class::cast)
+			.toList();
+		// 흑폰 기물 배치
+		List<Piece> darkPawns = Stream.of("a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7")
+			.map(factory::darkPawn)
+			.map(Piece.class::cast)
+			.toList();
+
+		// 기물 저장
+		Stream.of(whitePawns, darkPawns)
+			.flatMap(Collection::stream)
+			.forEach(repository::add);
+
+		return Stream.of(whitePawns, darkPawns)
+			.flatMap(Collection::stream)
+			.toList();
+	}
+
+	public List<Piece> getAllPieces() {
+		return Collections.unmodifiableList(repository.findAll());
 	}
 }

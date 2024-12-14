@@ -136,8 +136,7 @@ public abstract class AbstractChessPiece implements Piece {
 
 	@Override
 	public String toString() {
-		String moved = isMoved ? "MOVED" : "NOT MOVED";
-		return String.format("%s %s %s", moved, color, location);
+		return String.format("%s %s %s", color, this.getClass().getSimpleName(), location);
 	}
 
 	AbstractChessPiece createPiece(PieceType type) {

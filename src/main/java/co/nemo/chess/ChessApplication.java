@@ -1,13 +1,14 @@
 package co.nemo.chess;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.ChessGame;
+import co.nemo.chess.domain.game.ConsoleOutputStrategy;
 
-@SpringBootApplication
 public class ChessApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChessApplication.class, args);
+		ChessGame game = new ChessGame(Board.empty(), ConsoleOutputStrategy.getInstance());
+		game.startGame();
 	}
 
 }

@@ -63,4 +63,12 @@ public class PieceRepository {
 	public int size() {
 		return pieces.size();
 	}
+
+	public void clear() {
+		pieces.clear();
+	}
+
+	public List<Piece> findAll() {
+		return pieces;
+	}
 }

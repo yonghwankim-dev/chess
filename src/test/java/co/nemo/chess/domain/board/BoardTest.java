@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -214,5 +215,18 @@ class BoardTest {
 		Optional<Piece> actual = board.movePiece(src, dst);
 		// then
 		assertThat(actual).isEmpty();
+	}
+
+	@DisplayName("보드판의 기물들을 셋업한다")
+	@Test
+	void setupPieces() {
+		// given
+		Board board = Board.init(repository);
+		// when
+		List<Piece> actual = board.setupPieces();
+		// then
+		boolean allMatch = actual.stream()
+			.allMatch(piece -> repository.contains(piece));
+		Assertions.assertThat(allMatch).isTrue();
 	}
 }

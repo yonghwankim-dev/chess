@@ -21,7 +21,7 @@ public class Location {
 		this.rank = rank;
 	}
 
-	public static Location from(String location) {
+	public static Location from(String location) throws IllegalArgumentException {
 		String[] split = location.split(Strings.EMPTY);
 		final int FILE_INDEX = 0;
 		final int RANK_INDEX = 1;
