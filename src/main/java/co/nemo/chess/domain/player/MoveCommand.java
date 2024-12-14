@@ -3,6 +3,7 @@ package co.nemo.chess.domain.player;
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.OutputStrategy;
 import co.nemo.chess.domain.piece.Location;
+import co.nemo.chess.domain.piece.Piece;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,13 +25,20 @@ public class MoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board) {
+	public void process(Board board, OutputStrategy outputStrategy, Player player) throws IllegalArgumentException {
+		Piece findPiece = board.findPiece(src).orElse(null);
+		validatePieceOwnership(findPiece, player);
 		board.movePiece(src, dst).ifPresent(piece -> log.info("{}, move {}->{}", piece, src, dst));
 	}
 
-	@Override
-	public void process(OutputStrategy outputStrategy) {
-
+	private void validatePieceOwnership(Piece piece, Player player) throws IllegalArgumentException {
+		if (piece == null) {
+			throw new IllegalArgumentException("No piece at the specified location. src=" + src + ", dst=" + dst);
+		}
+		if (!player.isOwnPiece(piece)) {
+			throw new IllegalArgumentException(
+				"It's not your piece. Please move your own piece." + " src=" + src + ", dst=" + dst);
+		}
 	}
 
 	@Override

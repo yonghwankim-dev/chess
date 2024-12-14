@@ -10,4 +10,6 @@ public interface PieceMovable {
 	Optional<Piece> movePiece(Location src, Location dst);
 
 	List<Location> findPossiblePaths(Location src);
+
+	Optional<Piece> findPiece(Location src);
 }

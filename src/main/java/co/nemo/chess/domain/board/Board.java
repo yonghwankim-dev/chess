@@ -87,4 +87,9 @@ public class Board implements PieceMovable {
 	public List<Piece> getAllPieces() {
 		return Collections.unmodifiableList(repository.findAll());
 	}
+
+	@Override
+	public Optional<Piece> findPiece(Location location) {
+		return repository.find(location);
+	}
 }

@@ -1,8 +1,6 @@
 package co.nemo.chess.domain.game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.Strings;
@@ -23,55 +21,68 @@ public class ChessGame {
 	private final Player whitePlayer;
 	private final Player blackPlayer;
 	private Player currentPlayer;
-	private final BufferedReader reader;
+	private final InputStrategy inputStrategy;
 	private final OutputStrategy outputStrategy;
 
-	public ChessGame(Board board, OutputStrategy outputStrategy) {
+	public ChessGame(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
 		this.board = board;
 		this.whitePlayer = new Player(Color.WHITE);
 		this.blackPlayer = new Player(Color.DARK);
 		this.currentPlayer = whitePlayer;
-		this.reader = new BufferedReader(new InputStreamReader(System.in));
+		this.inputStrategy = inputStrategy;
 		this.outputStrategy = outputStrategy;
+	}
+
+	public static ChessGame consoleBased() {
+		return new ChessGame(
+			Board.empty(),
+			ConsoleInputStrategy.getInstance(),
+			ConsoleOutputStrategy.getInstance()
+		);
 	}
 
 	public void startGame() {
 		// 보드 초기 및 기물 배치
 		board.setupPieces();
-		outputStrategy.print("Game Start");
+		outputStrategy.println("Game Start");
 
 		while (true) {
 			printGameStatus();
 			outputStrategy.print("> ");
-			AbstractCommand command = currentPlayer.inputCommand(reader);
+			Optional<String> inputLine = inputStrategy.readLine();
+			if (inputLine.isEmpty()) {
+				outputStrategy.print("No input received. Exiting game.");
+				break;
+			}
+
+			AbstractCommand command = currentPlayer.inputCommand(inputLine.get());
 			if (command.isTypeOf(CommandType.EXIT)) {
 				break;
-			} else if (command.isTypeOf(CommandType.HELP)) {
-				command.process(outputStrategy);
+			} else if (command.isTypeOf(CommandType.LOCATIONS) ||
+				command.isTypeOf(CommandType.HELP)) {
+				command.process(board, outputStrategy, currentPlayer);
 				continue;
 			} else if (command.isTypeOf(CommandType.NONE)) {
 				continue;
 			}
-			command.process(board);
-			switchPlayer();
-		}
-		closeReader();
-	}
 
-	private void closeReader() {
-		try {
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace(System.err);
+			try {
+				command.process(board, outputStrategy, currentPlayer);
+			} catch (IllegalArgumentException e) {
+				outputStrategy.println(e.getMessage());
+				continue;
+			}
+			this.switchPlayer();
 		}
+		inputStrategy.close();
 	}
 
 	private void printGameStatus() {
-		outputStrategy.print("CurrentPlayer: " + currentPlayer);
+		outputStrategy.println("CurrentPlayer: " + currentPlayer);
 		String piecesMessage = board.getAllPieces().stream()
 			.map(Piece::toString)
 			.collect(Collectors.joining(Strings.LINE_SEPARATOR));
-		outputStrategy.print(piecesMessage);
+		outputStrategy.println(piecesMessage);
 	}
 
 	public void switchPlayer() {

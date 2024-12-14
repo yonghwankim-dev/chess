@@ -1,9 +1,7 @@
 package co.nemo.chess.domain.player;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 import co.nemo.chess.domain.piece.Color;
+import co.nemo.chess.domain.piece.Piece;
 
 public class Player {
 	private final Color color;
@@ -12,12 +10,16 @@ public class Player {
 		this.color = color;
 	}
 
-	public AbstractCommand inputCommand(BufferedReader reader) {
-		try {
-			return CommandParser.getInstance().parse(reader.readLine());
-		} catch (IOException e) {
-			return AbstractCommand.invalidCommand();
-		}
+	public static Player white() {
+		return new Player(Color.WHITE);
+	}
+
+	public AbstractCommand inputCommand(String text) {
+		return CommandParser.getInstance().parse(text);
+	}
+
+	public boolean isOwnPiece(Piece piece) {
+		return piece.isColorOf(color);
 	}
 
 	@Override

@@ -37,9 +37,8 @@ public abstract class AbstractCommand {
 		return this.type == type;
 	}
 
-	public abstract void process(Board board);
-
-	public abstract void process(OutputStrategy outputStrategy);
+	public abstract void process(Board board, OutputStrategy outputStrategy, Player player) throws
+		IllegalArgumentException;
 
 	@Override
 	public String toString() {

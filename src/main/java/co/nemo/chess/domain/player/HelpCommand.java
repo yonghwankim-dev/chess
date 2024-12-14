@@ -14,12 +14,7 @@ public class HelpCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board) {
-
-	}
-
-	@Override
-	public void process(OutputStrategy outputStrategy) {
+	public void process(Board board, OutputStrategy outputStrategy, Player player) {
 		StringBuilder guide = new StringBuilder();
 		guide.append("=== Chess Command Guide ===\n\n");
 		guide.append("1. 이동 명령어:\n");

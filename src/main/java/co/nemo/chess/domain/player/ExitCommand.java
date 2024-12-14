@@ -14,12 +14,7 @@ public class ExitCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board) {
-
-	}
-
-	@Override
-	public void process(OutputStrategy outputStrategy) {
+	public void process(Board board, OutputStrategy outputStrategy, Player player) {
 		outputStrategy.print("shutdown the game");
 	}
 }
