@@ -1,13 +1,9 @@
 package co.nemo.chess.domain.game;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.util.Strings;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.Color;
-import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.player.AbstractCommand;
 import co.nemo.chess.domain.player.CommandType;
 import co.nemo.chess.domain.player.Player;
@@ -79,10 +75,7 @@ public class ChessGame {
 
 	private void printGameStatus() {
 		outputStrategy.println("CurrentPlayer: " + currentPlayer);
-		String piecesMessage = board.getAllPieces().stream()
-			.map(Piece::toSymbol)
-			.collect(Collectors.joining(Strings.LINE_SEPARATOR));
-		outputStrategy.println(piecesMessage);
+		outputStrategy.printBoard(board);
 	}
 
 	public void switchPlayer() {
