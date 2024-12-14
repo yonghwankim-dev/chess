@@ -4,6 +4,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -149,5 +151,16 @@ public abstract class AbstractChessPiece implements Piece {
 
 	List<Location> calBetweenLocations(Location dst) throws IllegalStateException {
 		return this.location.calBetweenLocations(dst);
+	}
+
+	@Override
+	public String toSymbol() {
+		if (this instanceof Pawn) {
+			return color == Color.WHITE ? "♙" : "♟";
+		} else if (this instanceof Rook) {
+			return color == Color.WHITE ? "♖" : "♜";
+		} else {
+			return Strings.EMPTY;
+		}
 	}
 }

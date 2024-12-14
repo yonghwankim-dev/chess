@@ -28,7 +28,7 @@ class LocationsCommandTest {
 	@Test
 	void givenWhitePlayer_whenAttemptingToLocationsBlackPiece_thenLocationsIsInvalid() {
 		// given
-		LocationsCommand command = LocationsCommand.from(Location.from("a7"));
+		AbstractCommand command = LocationsCommand.from(Location.from("a7"));
 		// when
 		Throwable throwable = Assertions.catchThrowable(() -> command.process(board, outputStrategy, whitePlayer));
 		// then

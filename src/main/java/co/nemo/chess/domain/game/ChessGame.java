@@ -80,7 +80,7 @@ public class ChessGame {
 	private void printGameStatus() {
 		outputStrategy.println("CurrentPlayer: " + currentPlayer);
 		String piecesMessage = board.getAllPieces().stream()
-			.map(Piece::toString)
+			.map(Piece::toSymbol)
 			.collect(Collectors.joining(Strings.LINE_SEPARATOR));
 		outputStrategy.println(piecesMessage);
 	}

@@ -36,7 +36,7 @@ public class LocationsCommand extends AbstractCommand {
 			throw new IllegalArgumentException("No piece at the specified location. src=" + src);
 		}
 		if (!player.isOwnPiece(piece)) {
-			throw new IllegalArgumentException("It's not your piece. Please move your own piece." + " src=" + src);
+			throw new IllegalArgumentException("It's not your piece. Please choice your own piece." + " src=" + src);
 		}
 	}
 }
