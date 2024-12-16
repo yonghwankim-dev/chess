@@ -42,4 +42,8 @@ public enum File {
 			return Optional.empty();
 		}
 	}
+
+	public boolean isLastFile() {
+		return this == H;
+	}
 }

@@ -7,7 +7,12 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
+
+import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
+import co.nemo.chess.domain.game.InputStrategy;
+import co.nemo.chess.domain.game.OutputStrategy;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -52,7 +57,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 	@Override
 	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
-		if (isColorOf(Color.WHITE)) {
+		if (isWhite()) {
 			super.calLocation(UP, 1).ifPresent(result::add);
 			super.calLocation(UP, 2).ifPresent(result::add);
 			super.calLocation(UP_LEFT, 1).ifPresent(result::add);
@@ -74,6 +79,51 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 			isEnPassant(newLocation, repository);
 	}
 
+	@Override
+	public void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+		if (!this.canPromote()) {
+			return;
+		}
+		outputStrategy.println(
+			"Your phone has reached the end of your opponent's camp! Promote with any craft you want.");
+		outputStrategy.println("Possible options: Queen, Rook, Bishop, Knight (Case free)");
+		outputStrategy.println(
+			"Type: Please enter the first letter of the object in capital letters (e.g., Queen, Rook, Bishop, Knight).");
+		PieceType type;
+		while (true) {
+			try {
+				String promotionText = inputStrategy.readLine().orElse(Strings.EMPTY);
+				type = PieceType.valueOfText(promotionText);
+				break;
+			} catch (IllegalArgumentException e) {
+				outputStrategy.println("Invalid input, possible options: Queen, Rook, Bishop, Knight");
+			}
+		}
+		Piece promoPiece = this.promoTo(type);
+		board.removePiece(this);
+		board.addPiece(promoPiece);
+	}
+
+	@Override
+	public AbstractChessPiece promoTo(PieceType type) {
+		if (!canPromote()) {
+			throw new IllegalStateException("Promotion is not allowed for this pawn.");
+		}
+		return super.createPiece(type);
+	}
+
+	@Override
+	public boolean canPromote() {
+		final int WHITE_END_RANK = 8;
+		Rank currentRank = Rank.from(WHITE_END_RANK);
+		if (this.isWhite() && this.isOnRank(currentRank)) {
+			return true;
+		}
+		final int DARK_END_RANK = 1;
+		currentRank = Rank.from(DARK_END_RANK);
+		return this.isDark() && this.isOnRank(currentRank);
+	}
+
 	private boolean isOneForward(Location newLocation, PieceRepository repository) {
 		// 중간 경로(목적지 포함)에 다른 기물이 존재하면 안된다
 		if (existPieceBetween(newLocation, repository)) {
@@ -83,9 +133,9 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		int fileDiff = 0;
 		int rankDiff = 1;
 		Direction direction = calDirection(newLocation);
-		if (isColorOf(Color.WHITE) && direction == UP) {
+		if (isWhite() && direction == UP) {
 			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
-		} else if (isColorOf(Color.DARK) && direction == DOWN) {
+		} else if (isDark() && direction == DOWN) {
 			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
 		} else {
 			return false;
@@ -118,9 +168,9 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		Direction direction = calDirection(newLocation);
 		if (isMoved()) {
 			return false;
-		} else if (isColorOf(Color.WHITE) && isNotMoved() && direction == UP) {
+		} else if (isWhite() && isNotMoved() && direction == UP) {
 			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
-		} else if (isColorOf(Color.DARK) && isNotMoved() && direction == DOWN) {
+		} else if (isDark() && isNotMoved() && direction == DOWN) {
 			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
 		} else {
 			return false;
@@ -140,10 +190,10 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		int fileDiff = 1;
 		int rankDiff = 1;
 		Direction direction = this.calDirection(location);
-		if (isColorOf(Color.WHITE) && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
+		if (isWhite() && List.of(UP_LEFT, UP_RIGHT).contains(direction)) {
 			boolean isValidColor = repository.find(location).filter(piece -> piece.isColorOf(Color.DARK)).isPresent();
 			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
-		} else if (isColorOf(Color.DARK) && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
+		} else if (isDark() && List.of(DOWN_LEFT, DOWN_RIGHT).contains(direction)) {
 			boolean isValidColor = repository.find(location).filter(piece -> piece.isColorOf(Color.WHITE)).isPresent();
 			return isValidColor && this.isValidLocationDifference(location, fileDiff, rankDiff);
 		} else {
@@ -170,13 +220,13 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 
 		// 잡는 기물과 잡히는 기물 모두 폰이어야 한다
 		Direction direction = this.calDirection(location);
-		if (isColorOf(Color.WHITE) && direction == UP_LEFT) {
+		if (isWhite() && direction == UP_LEFT) {
 			return this.isEnemyPieceOnDirection(LEFT, Color.DARK, repository);
-		} else if (isColorOf(Color.WHITE) && direction == UP_RIGHT) {
+		} else if (isWhite() && direction == UP_RIGHT) {
 			return this.isEnemyPieceOnDirection(RIGHT, Color.DARK, repository);
-		} else if (isColorOf(Color.DARK) && direction == DOWN_LEFT) {
+		} else if (isDark() && direction == DOWN_LEFT) {
 			return this.isEnemyPieceOnDirection(LEFT, Color.WHITE, repository);
-		} else if (isColorOf(Color.DARK) && direction == DOWN_RIGHT) {
+		} else if (isDark() && direction == DOWN_RIGHT) {
 			return this.isEnemyPieceOnDirection(RIGHT, Color.WHITE, repository);
 		} else {
 			return false;
@@ -218,23 +268,5 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 				return this.isValidLocationDifference(location, fileDiff, rankDiff);
 			})
 			.orElse(false);
-	}
-
-	@Override
-	public AbstractChessPiece promoTo(PieceType type) {
-		if (!canPromote()) {
-			throw new IllegalStateException("Promotion is not allowed for this pawn.");
-		}
-		return super.createPiece(type);
-	}
-
-	@Override
-	public boolean canPromote() {
-		Rank currentRank = Rank.from(8);
-		if (this.isColorOf(Color.WHITE) && this.isOnRank(currentRank)) {
-			return true;
-		}
-		currentRank = Rank.from(1);
-		return this.isColorOf(Color.DARK) && this.isOnRank(currentRank);
 	}
 }

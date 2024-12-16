@@ -3,7 +3,10 @@ package co.nemo.chess.domain.piece;
 import java.util.List;
 import java.util.Optional;
 
+import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
+import co.nemo.chess.domain.game.InputStrategy;
+import co.nemo.chess.domain.game.OutputStrategy;
 
 public interface Piece {
 	/**
@@ -30,4 +33,8 @@ public interface Piece {
 	boolean isColorOf(Color color);
 
 	String toSymbol();
+
+	default void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+
+	}
 }

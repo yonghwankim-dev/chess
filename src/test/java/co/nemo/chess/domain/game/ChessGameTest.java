@@ -1,7 +1,6 @@
 package co.nemo.chess.domain.game;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +46,7 @@ class ChessGameTest {
 				"move b6 b7",
 				"move a5 a4",
 				"move b7 b8",
+				"R", // a typing error
 				"Rook"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -59,7 +59,7 @@ class ChessGameTest {
 		AbstractChessPiece expected = PieceFactory.getInstance().whiteRook("b8");
 		Assertions.assertThat(board.getAllPieces()).contains(expected);
 
-		List<Location> moveHistory = Arrays.stream((new String[] {"b7", "b6", "b5", "a4", "a2"}))
+		List<Location> moveHistory = Stream.of("b7", "b6", "b5", "a4", "a2")
 			.map(Location::from)
 			.toList();
 		AbstractChessPiece expectedB8WhitePawn = PieceFactory.getInstance().whitePawn("b8").withMoved()

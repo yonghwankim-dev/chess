@@ -53,6 +53,14 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.color == color;
 	}
 
+	public boolean isWhite() {
+		return this.color == Color.WHITE;
+	}
+
+	public boolean isDark() {
+		return this.color == Color.DARK;
+	}
+
 	private AbstractChessPiece relocatePieces(Location destination, PieceRepository repository) {
 		AttackType type = this.calAttackType(destination, repository);
 		return switch (type) {
@@ -67,12 +75,12 @@ public abstract class AbstractChessPiece implements Piece {
 		repository.poll(this);
 		Direction direction = this.calDirection(destination);
 		int distance = 1;
-		if ((this.isColorOf(Color.WHITE) && direction == Direction.UP_LEFT) ||
-			(this.isColorOf(Color.DARK) && direction == Direction.DOWN_LEFT)) {
+		if ((isWhite() && direction == Direction.UP_LEFT) ||
+			(isDark() && direction == Direction.DOWN_LEFT)) {
 			Location leftLocation = this.calLocation(Direction.LEFT, distance).orElseThrow();
 			repository.poll(leftLocation);
-		} else if ((this.isColorOf(Color.WHITE) && direction == Direction.UP_RIGHT) ||
-			(this.isColorOf(Color.DARK) && direction == Direction.DOWN_RIGHT)) {
+		} else if ((isWhite() && direction == Direction.UP_RIGHT) ||
+			(isDark() && direction == Direction.DOWN_RIGHT)) {
 			Location rightLocation = this.calLocation(Direction.RIGHT, distance).orElseThrow();
 			repository.poll(rightLocation);
 		}
