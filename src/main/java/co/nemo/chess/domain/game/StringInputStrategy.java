@@ -12,7 +12,7 @@ public class StringInputStrategy implements InputStrategy {
 	public StringInputStrategy(String input) {
 		this.reader = new BufferedReader(new StringReader(input));
 	}
-
+	
 	@Override
 	public Optional<String> readLine() {
 		try {

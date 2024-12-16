@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
 import co.nemo.chess.domain.piece.Location;
 import lombok.EqualsAndHashCode;
@@ -37,7 +38,8 @@ public abstract class AbstractCommand {
 		return this.type == type;
 	}
 
-	public abstract void process(Board board, OutputStrategy outputStrategy, Player player) throws
+	public abstract void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy,
+		Player player) throws
 		IllegalArgumentException;
 
 	@Override

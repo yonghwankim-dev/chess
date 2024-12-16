@@ -1,5 +1,6 @@
 package co.nemo.chess.domain.player;
 
+import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,12 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ConsoleOutputStrategy;
+import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.StringInputStrategy;
 import co.nemo.chess.domain.piece.Location;
 
 class LocationsCommandTest {
 
 	private Board board;
+	private InputStrategy inputStrategy;
 	private OutputStrategy outputStrategy;
 	private Player whitePlayer;
 
@@ -20,6 +24,7 @@ class LocationsCommandTest {
 	void setUp() {
 		this.board = Board.empty();
 		board.setupPieces();
+		this.inputStrategy = new StringInputStrategy(Strings.EMPTY);
 		this.outputStrategy = ConsoleOutputStrategy.getInstance();
 		this.whitePlayer = Player.white();
 	}
@@ -30,7 +35,8 @@ class LocationsCommandTest {
 		// given
 		AbstractCommand command = LocationsCommand.from(Location.from("a7"));
 		// when
-		Throwable throwable = Assertions.catchThrowable(() -> command.process(board, outputStrategy, whitePlayer));
+		Throwable throwable = Assertions.catchThrowable(
+			() -> command.process(board, inputStrategy, outputStrategy, whitePlayer));
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}

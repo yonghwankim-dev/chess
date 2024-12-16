@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
@@ -21,7 +22,7 @@ public class LocationsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, OutputStrategy outputStrategy, Player player) {
+	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
 		List<Location> possibleLocations = board.findPossiblePaths(src);

@@ -1,6 +1,9 @@
 package co.nemo.chess.domain.player;
 
+import org.apache.logging.log4j.util.Strings;
+
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Pawn;
@@ -27,14 +30,31 @@ public class MoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, OutputStrategy outputStrategy, Player player) throws IllegalArgumentException {
+	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) throws
+		IllegalArgumentException {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
 		board.movePiece(src, dst).ifPresent(piece -> {
 			log.info("{}, move {}->{}", piece, src, dst);
 			// 각 기물별 이벤트 체크
 			if (piece instanceof Pawn pawn && pawn.canPromote()) {
-				Piece promoPiece = pawn.promoTo(PieceType.ROOK);
+				outputStrategy.println(
+					"Your phone has reached the end of your opponent's camp! Promote with any craft you want.");
+				outputStrategy.println("Possible options: Queen, Rook, Bishop, Knight (Case free)");
+				outputStrategy.println(
+					"Type: Please enter the first letter of the object in capital letters (e.g., Queen, Rook, Bishop, Knight).");
+				PieceType type;
+				while (true) {
+					try {
+						String promotionText = inputStrategy.readLine().orElse(Strings.EMPTY);
+						type = PieceType.valueOfText(promotionText);
+						break;
+					} catch (IllegalArgumentException e) {
+						outputStrategy.println("Invalid input, possible options: Queen, Rook, Bishop, Knight");
+					}
+				}
+				board.removePiece(pawn);
+				Piece promoPiece = pawn.promoTo(type);
 				board.addPiece(promoPiece);
 			}
 		});

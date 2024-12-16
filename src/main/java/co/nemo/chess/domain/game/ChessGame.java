@@ -56,14 +56,14 @@ public class ChessGame {
 				break;
 			} else if (command.isTypeOf(CommandType.LOCATIONS) ||
 				command.isTypeOf(CommandType.HELP)) {
-				command.process(board, outputStrategy, currentPlayer);
+				command.process(board, inputStrategy, outputStrategy, currentPlayer);
 				continue;
 			} else if (command.isTypeOf(CommandType.NONE)) {
 				continue;
 			}
 
 			try {
-				command.process(board, outputStrategy, currentPlayer);
+				command.process(board, inputStrategy, outputStrategy, currentPlayer);
 			} catch (IllegalArgumentException e) {
 				outputStrategy.println(e.getMessage());
 				continue;

@@ -46,7 +46,8 @@ class ChessGameTest {
 				"move a6 a5",
 				"move b6 b7",
 				"move a5 a4",
-				"move b7 b8"
+				"move b7 b8",
+				"Rook"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
 		InputStrategy inputStrategy = new StringInputStrategy(input);

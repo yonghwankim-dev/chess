@@ -1,6 +1,7 @@
 package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
 import lombok.EqualsAndHashCode;
 
@@ -15,7 +16,7 @@ public class InvalidCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, OutputStrategy outputStrategy, Player player) {
+	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
 		outputStrategy.print("invalid command.");
 	}
 }

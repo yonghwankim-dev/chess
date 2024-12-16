@@ -96,4 +96,8 @@ public class Board implements PieceMovable {
 	public void addPiece(Piece piece) {
 		repository.add(piece);
 	}
+
+	public void removePiece(Piece piece) {
+		repository.poll(piece);
+	}
 }
