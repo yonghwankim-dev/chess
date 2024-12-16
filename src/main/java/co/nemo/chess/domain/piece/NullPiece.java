@@ -51,7 +51,7 @@ public class NullPiece extends AbstractChessPiece {
 	}
 
 	@Override
-	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+	protected AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory) {
 		return new NullPiece(location, color, isMoved, locationHistory);
 	}

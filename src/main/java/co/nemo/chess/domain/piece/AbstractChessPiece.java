@@ -53,6 +53,17 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.color == color;
 	}
 
+	@Override
+	public String toSymbol() {
+		if (this instanceof Pawn) {
+			return color == Color.WHITE ? "♙" : "♟";
+		} else if (this instanceof Rook) {
+			return color == Color.WHITE ? "♖" : "♜";
+		} else {
+			return Strings.EMPTY;
+		}
+	}
+
 	public boolean isWhite() {
 		return this.color == Color.WHITE;
 	}
@@ -111,7 +122,7 @@ public abstract class AbstractChessPiece implements Piece {
 		return withLocationHistory(location, color, isMoved, locationHistory);
 	}
 
-	abstract AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+	protected abstract AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory);
 
 	LocationDifference diffLocation(Location location) {
@@ -161,14 +172,7 @@ public abstract class AbstractChessPiece implements Piece {
 		return this.location.calBetweenLocations(dst);
 	}
 
-	@Override
-	public String toSymbol() {
-		if (this instanceof Pawn) {
-			return color == Color.WHITE ? "♙" : "♟";
-		} else if (this instanceof Rook) {
-			return color == Color.WHITE ? "♖" : "♜";
-		} else {
-			return Strings.EMPTY;
-		}
+	boolean existPiece(Piece piece) {
+		return !(piece instanceof NullPiece);
 	}
 }

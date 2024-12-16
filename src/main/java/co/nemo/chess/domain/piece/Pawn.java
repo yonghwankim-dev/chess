@@ -36,7 +36,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 	}
 
 	@Override
-	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+	protected AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory) {
 		return new Pawn(location, color, isMoved, locationHistory);
 	}
@@ -149,11 +149,7 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 				.isPresent()
 			);
 	}
-
-	private boolean existPiece(Piece piece) {
-		return !(piece instanceof NullPiece);
-	}
-
+	
 	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
 		LocationDifference locationDifference = super.diffLocation(location);
 		return locationDifference.isEqualDistance(fileDiff, rankDiff);

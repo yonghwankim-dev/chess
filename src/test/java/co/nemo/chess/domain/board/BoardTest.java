@@ -229,4 +229,21 @@ class BoardTest {
 			.allMatch(piece -> repository.contains(piece));
 		Assertions.assertThat(allMatch).isTrue();
 	}
+
+	@DisplayName("백룩의 이동 가능한 경로를 탐색한다")
+	@Test
+	void givenWhiteRook_whenFindPossiblePaths_thenReturnLocations() {
+		// given
+		Board board = Board.init(repository);
+		repository.add(PieceFactory.getInstance().whiteRook("a1"));
+		Location src = Location.from("a1");
+		// when
+		List<Location> locations = board.findPossiblePaths(src);
+		// then
+		List<Location> expected = Stream.of("a2", "a3", "a4", "a5", "a6", "a7", "a8", "b1", "c1", "d1", "e1", "f1",
+				"g1", "h1")
+			.map(Location::from)
+			.toList();
+		assertThat(locations).containsExactlyElementsOf(expected);
+	}
 }

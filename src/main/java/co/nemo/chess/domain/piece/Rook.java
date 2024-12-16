@@ -3,9 +3,10 @@ package co.nemo.chess.domain.piece;
 import static co.nemo.chess.domain.piece.Direction.*;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 
@@ -24,11 +25,24 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location destination, PieceRepository repository) {
+		// 중간에 기물이 없어야 한다
+		if (existPieceBetween(destination, repository)) {
+			return false;
+		}
 		return canMoveStraight(destination);
 	}
 
 	private boolean canMoveStraight(Location destination) {
 		return List.of(UP, DOWN, LEFT, RIGHT).contains(calDirection(destination));
+	}
+
+	private boolean existPieceBetween(Location dst, PieceRepository repository) {
+		return super.calBetweenLocations(dst).stream()
+			.filter(location -> !location.equals(dst))
+			.anyMatch(location -> repository.find(location)
+				.filter(this::existPiece)
+				.isPresent()
+			);
 	}
 
 	@Override
@@ -38,18 +52,31 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public List<Location> findAllMoveLocations() {
-		// TODO: 12/12/24 implement
-		return Collections.emptyList();
+		List<Location> result = new ArrayList<>();
+		List<Direction> directions = List.of(UP, DOWN, LEFT, RIGHT);
+		for (Direction direction : directions) {
+			Optional<Location> optional;
+			int distance = 1;
+			// 해당 방향으로 더이상 움직일 수 없을때까지 반복한다
+			do {
+				optional = this.calLocation(direction, distance);
+				optional.ifPresent(result::add);
+				distance++;
+			} while (optional.isPresent());
+		}
+		return result;
 	}
 
 	@Override
 	protected AttackType calAttackType(Location destination, PieceRepository repository) {
-		// TODO: 12/12/24 implement
-		return AttackType.NORMAL;
+		if (canMoveStraight(destination)) {
+			return AttackType.NORMAL;
+		}
+		return AttackType.NONE;
 	}
 
 	@Override
-	AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
+	protected AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory) {
 		return new Rook(location, color, isMoved, locationHistory);
 	}

@@ -1,10 +1,13 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,6 +29,15 @@ class RookTest {
 		String source = "a1";
 		String[] destinations = {"a1", "b2", "b3", "c2", "c3"};
 		return Stream.of(TestSupportUtils.createArgumentsArray(source, destinations));
+	}
+
+	public static Stream<Arguments> validWhiteRookMoveLocationSource() {
+		return Stream.of(
+			Arguments.of("d5", "d8"),
+			Arguments.of("d5", "a5"),
+			Arguments.of("d5", "d1"),
+			Arguments.of("d5", "h5")
+		);
 	}
 
 	@DisplayName("룩은 직선상의 상,하,좌,우 방향으로만 이동이 가능하다")
@@ -51,6 +63,43 @@ class RookTest {
 		Location dstLocation = Location.from(dst);
 		// when
 		Optional<AbstractChessPiece> actual = rook.move(dstLocation, repository);
+		// then
+		Assertions.assertThat(actual).isEmpty();
+	}
+
+	@DisplayName("백룩과 흑백폰이 주어진 상태에서 직선 이동하여 흑백폰을 잡는다")
+	@ParameterizedTest
+	@MethodSource(value = "validWhiteRookMoveLocationSource")
+	void givenWhiteRook_whenMoveRook_thenDeleteBackPawn(String rookSrc, String pawnSrc) {
+		// given
+		Piece whiteRook = PieceFactory.getInstance().whiteRook(rookSrc);
+		Piece darkPawn = PieceFactory.getInstance().darkPawn(pawnSrc);
+		repository.add(whiteRook);
+		repository.add(darkPawn);
+		Location destination = Location.from(pawnSrc);
+		// when
+		Piece actual = whiteRook.move(destination, repository).orElseThrow();
+		// then
+		Piece expected = PieceFactory.getInstance().whiteRook(pawnSrc)
+			.withMoved()
+			.withLocationHistory(new ArrayDeque<>(List.of(Location.from(rookSrc))));
+		Assertions.assertThat(actual).isEqualTo(expected);
+		Assertions.assertThat(repository.findAll()).doesNotContain(darkPawn);
+	}
+
+	@DisplayName("백룩과 흑백 기물들이 주어진 상태에서 중간에 다른 기물로 막혀있으면 흑백 기물을 잡을 수 없다")
+	@Test
+	void givenWhiteRook_whenExistPieceBetweenMoveLocations_thenNotMoveWhiteRook() {
+		// given
+		Piece d5WhitePawn = PieceFactory.getInstance().whiteRook("d5");
+		Piece d8DarkPawn = PieceFactory.getInstance().darkPawn("d8");
+		Piece d7DarkPawn = PieceFactory.getInstance().darkPawn("d7");
+		repository.add(d5WhitePawn);
+		repository.add(d8DarkPawn);
+		repository.add(d7DarkPawn);
+		Location destination = Location.from("d8");
+		// when
+		Optional<AbstractChessPiece> actual = d5WhitePawn.move(destination, repository);
 		// then
 		Assertions.assertThat(actual).isEmpty();
 	}
