@@ -92,4 +92,8 @@ public class Board implements PieceMovable {
 	public Optional<Piece> findPiece(Location location) {
 		return repository.find(location);
 	}
+
+	public void addPiece(Piece piece) {
+		repository.add(piece);
+	}
 }

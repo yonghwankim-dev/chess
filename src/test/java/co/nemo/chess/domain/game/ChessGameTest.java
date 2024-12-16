@@ -1,5 +1,8 @@
 package co.nemo.chess.domain.game;
 
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.AbstractChessPiece;
+import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.PieceFactory;
 
 class ChessGameTest {
@@ -52,7 +56,13 @@ class ChessGameTest {
 		game.startGame();
 		// then
 		AbstractChessPiece expected = PieceFactory.getInstance().whiteRook("b8");
-		Assertions.assertThat(board.getAllPieces())
-			.contains(expected);
+		Assertions.assertThat(board.getAllPieces()).contains(expected);
+
+		List<Location> moveHistory = Arrays.stream((new String[] {"b7", "b6", "b5", "a4", "a2"}))
+			.map(Location::from)
+			.toList();
+		AbstractChessPiece expectedB8WhitePawn = PieceFactory.getInstance().whitePawn("b8").withMoved()
+			.withLocationHistory(new ArrayDeque<>(moveHistory));
+		Assertions.assertThat(board.getAllPieces()).doesNotContain(expectedB8WhitePawn);
 	}
 }

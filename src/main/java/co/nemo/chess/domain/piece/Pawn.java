@@ -228,7 +228,8 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		return super.createPiece(type);
 	}
 
-	private boolean canPromote() {
+	@Override
+	public boolean canPromote() {
 		Rank currentRank = Rank.from(8);
 		if (this.isColorOf(Color.WHITE) && this.isOnRank(currentRank)) {
 			return true;
