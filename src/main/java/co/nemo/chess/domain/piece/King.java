@@ -76,8 +76,20 @@ public class King extends AbstractChessPiece {
 		};
 	}
 
+	private boolean isInCheckAfterMove(Location destination, PieceRepository repository) {
+		// TODO: 12/16/24 destination으로 이동하는 경우에 체크 상태이면 true 반환, 아니면 false 반환 
+		AbstractChessPiece king = movedPiece(destination);
+		return repository.findAll().stream()
+			.filter(piece -> !piece.equals(this))
+			.anyMatch(piece -> piece.canAttack(king, repository));
+	}
+
 	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
 		LocationDifference locationDifference = super.diffLocation(location);
 		return locationDifference.isEqualDistance(fileDiff, rankDiff);
+	}
+
+	public boolean isCheckedStatus(PieceRepository repository) {
+		return true;
 	}
 }
