@@ -37,4 +37,16 @@ public class PieceFactory {
 	public AbstractChessPiece darkRook(String position) {
 		return Rook.notMovedDarkRook(Location.from(position));
 	}
+
+	public AbstractChessPiece king(String position, Color color) {
+		return color == Color.WHITE ? whiteKing(position) : darkKing(position);
+	}
+
+	public AbstractChessPiece whiteKing(String position) {
+		return King.notMovedWhiteKing(Location.from(position));
+	}
+
+	public AbstractChessPiece darkKing(String position) {
+		return King.notMOvedDarkKing(Location.from(position));
+	}
 }
