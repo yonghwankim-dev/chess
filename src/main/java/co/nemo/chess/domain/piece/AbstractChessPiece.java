@@ -41,6 +41,13 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
+	public boolean canAttack(Piece target, List<Piece> pieces) {
+		PieceRepository temporaryRepository = PieceRepository.empty();
+		pieces.forEach(temporaryRepository::add);
+		return canAttack(target, temporaryRepository);
+	}
+
+	@Override
 	public boolean canAttack(Piece target, PieceRepository repository) {
 		if (target instanceof AbstractChessPiece piece) {
 			return this.canMove(piece.location, repository) && this.color != piece.color;
@@ -59,6 +66,8 @@ public abstract class AbstractChessPiece implements Piece {
 			return color == Color.WHITE ? "♙" : "♟";
 		} else if (this instanceof Rook) {
 			return color == Color.WHITE ? "♖" : "♜";
+		} else if (this instanceof King) {
+			return color == Color.WHITE ? "♔" : "♚";
 		} else {
 			return Strings.EMPTY;
 		}

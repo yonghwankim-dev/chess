@@ -69,6 +69,6 @@ public class PieceRepository {
 	}
 
 	public List<Piece> findAll() {
-		return pieces;
+		return new ArrayList<>(pieces);
 	}
 }

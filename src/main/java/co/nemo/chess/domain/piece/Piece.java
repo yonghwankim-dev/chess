@@ -26,6 +26,8 @@ public interface Piece {
 	 */
 	List<Location> findAllMoveLocations();
 
+	boolean canAttack(Piece target, List<Piece> pieces);
+
 	boolean canAttack(Piece target, PieceRepository repository);
 
 	boolean canMove(Location location, PieceRepository repository);

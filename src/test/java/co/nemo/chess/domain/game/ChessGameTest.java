@@ -72,6 +72,8 @@ class ChessGameTest {
 	void castling() {
 		// given
 		String input = Stream.of(
+				"move g2 g3",
+				"move g7 g6",
 				"castling e1 h1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));

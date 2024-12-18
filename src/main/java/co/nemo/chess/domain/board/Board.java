@@ -68,9 +68,19 @@ public class Board implements PieceMovable {
 			.map(factory::whitePawn)
 			.map(Piece.class::cast)
 			.toList();
+		Piece whiteKing = factory.whiteKing("e1");
+		List<Piece> whiteRooks = Stream.of("a1", "h1")
+			.map(factory::whiteRook)
+			.map(Piece.class::cast)
+			.toList();
 		// 흑폰 기물 배치
 		List<Piece> darkPawns = Stream.of("a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7")
 			.map(factory::darkPawn)
+			.map(Piece.class::cast)
+			.toList();
+		Piece darkKing = factory.darkKing("e8");
+		List<Piece> darkRooks = Stream.of("a8", "h8")
+			.map(factory::darkRook)
 			.map(Piece.class::cast)
 			.toList();
 
@@ -78,10 +88,20 @@ public class Board implements PieceMovable {
 		Stream.of(whitePawns, darkPawns)
 			.flatMap(Collection::stream)
 			.forEach(repository::add);
-
-		return Stream.of(whitePawns, darkPawns)
+		repository.add(whiteKing);
+		repository.add(darkKing);
+		Stream.of(whiteRooks, darkRooks)
 			.flatMap(Collection::stream)
-			.toList();
+			.forEach(repository::add);
+
+		List<Piece> result = new ArrayList<>();
+		result.addAll(whitePawns);
+		result.addAll(whiteRooks);
+		result.add(whiteKing);
+		result.addAll(darkPawns);
+		result.addAll(darkRooks);
+		result.add(darkKing);
+		return result;
 	}
 
 	public List<Piece> getAllPieces() {
@@ -99,5 +119,9 @@ public class Board implements PieceMovable {
 
 	public void removePiece(Piece piece) {
 		repository.poll(piece);
+	}
+
+	public boolean canMove(Piece piece, Location destination) {
+		return piece.canMove(destination, repository);
 	}
 }

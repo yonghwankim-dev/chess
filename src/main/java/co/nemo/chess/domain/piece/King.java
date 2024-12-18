@@ -63,7 +63,7 @@ public class King extends AbstractChessPiece {
 
 		// 이동이 캐슬링 이동인 경우를 검사한다
 		if (isCastling(location)) {
-			return false;
+			return true;
 		}
 
 		// 일반적인 이동인 경우 검사
@@ -91,7 +91,14 @@ public class King extends AbstractChessPiece {
 		if (isMoved()) {
 			return false;
 		}
-		return location.equals(Location.from("g1")) || location.equals(Location.from("c1"));
+		if (isWhite()) {
+			return location.equals(Location.from("g1")) || location.equals(Location.from("c1"));
+		} else if (isDark()) {
+			return location.equals(Location.from("g8")) || location.equals(Location.from("c8"));
+		} else {
+			return false;
+		}
+
 	}
 
 	private boolean isInCheckAfterMove(Location destination, PieceRepository repository) {
@@ -100,9 +107,11 @@ public class King extends AbstractChessPiece {
 		pieces.remove(this);
 		pieces.add(king);
 		try {
+			Color kingColor = isWhite() ? Color.WHITE : Color.DARK;
 			return pieces.stream()
 				.filter(piece -> !piece.equals(king))
-				.anyMatch(piece -> piece.canAttack(king, repository));
+				.filter(piece -> !piece.isColorOf(kingColor))
+				.anyMatch(piece -> piece.canAttack(king, pieces));
 		} catch (Exception e) {
 			throw new IllegalArgumentException("invalid destination, destination=" + destination);
 		}

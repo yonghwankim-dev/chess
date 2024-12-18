@@ -143,4 +143,32 @@ class CastlingCommandTest {
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
+
+	@DisplayName("백플레이어가 백킹과 백룩을 이용하여 킹 사이드 캐슬링할때 백킹이 캐슬링 이후 체크라면 캐슬링할 수 없다")
+	@Test
+	void givenWhitePlayerAndWhiteKingInCheck_afterKingSideCastling_thenCastlingNotAllowed() {
+		// given
+		Location kingSrc = Location.from("e1");
+		Location rookSrc = Location.from("h1");
+		AbstractCommand command = AbstractCommand.castlingCommand(kingSrc, rookSrc);
+		Board board = Board.empty();
+		Piece e1WhiteKing = PieceFactory.getInstance().whiteKing("e1");
+		Piece h1WhiteRook = PieceFactory.getInstance().whiteRook("h1");
+		Piece g3DarkRook = PieceFactory.getInstance().darkRook("g3");
+		board.addPiece(e1WhiteKing);
+		board.addPiece(h1WhiteRook);
+		board.addPiece(g3DarkRook);
+
+		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
+		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
+		Player whitePlayer = Player.white();
+		// when
+		command.process(board, inputStrategy, outputStrategy, whitePlayer);
+		// then
+		Piece expectedWhiteKing = PieceFactory.getInstance().whiteKing("e1");
+		assertThat(board.findPiece(Location.from("e1"))).contains(expectedWhiteKing);
+
+		Piece expectedWhiteRook = PieceFactory.getInstance().whiteRook("h1");
+		assertThat(board.findPiece(Location.from("h1"))).contains(expectedWhiteRook);
+	}
 }

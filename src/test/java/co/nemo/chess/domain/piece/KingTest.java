@@ -23,6 +23,8 @@ class KingTest {
 		return Stream.of(
 			Arguments.of("e1", "e2", pieces),
 			Arguments.of("e1", "d1", pieces),
+			Arguments.of("e1", "c1", pieces),
+			Arguments.of("e1", "g1", pieces),
 			Arguments.of("e1", "f1", pieces),
 			Arguments.of("e1", "d2", pieces),
 			Arguments.of("e1", "f2", pieces),
@@ -35,8 +37,6 @@ class KingTest {
 		return Stream.of(
 			Arguments.of("e1", "e2", new AbstractChessPiece[] {e2WhitePawn}),
 			Arguments.of("e1", "e3", new AbstractChessPiece[] {}),
-			Arguments.of("e1", "c1", new AbstractChessPiece[] {}),
-			Arguments.of("e1", "g1", new AbstractChessPiece[] {}),
 			Arguments.of("e1", "c3", new AbstractChessPiece[] {}),
 			Arguments.of("e1", "g3", new AbstractChessPiece[] {})
 		);
