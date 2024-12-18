@@ -62,7 +62,7 @@ public class King extends AbstractChessPiece {
 		}
 
 		// 이동이 캐슬링 이동인 경우를 검사한다
-		if (isCastling(location, repository)) {
+		if (isCastling(location)) {
 			return true;
 		}
 
@@ -87,17 +87,12 @@ public class King extends AbstractChessPiece {
 		};
 	}
 
-	private boolean isCastling(Location location, PieceRepository repository) {
+	private boolean isCastling(Location location) {
 		if (isMoved()) {
 			return false;
 		}
-		// 목적지까지의 중간 경로에 기물이 없어야 한다
 		if (isWhite()) {
-			if (location.equals(Location.from("g1"))) {
-				return !this.existPieceBetween(Location.from("g1"), repository);
-			} else if (location.equals(Location.from("c1"))) {
-				return !this.existPieceBetween(Location.from("c1"), repository);
-			}
+			return location.equals(Location.from("g1")) || location.equals(Location.from("c1"));
 		} else if (isDark()) {
 			return location.equals(Location.from("g8")) || location.equals(Location.from("c8"));
 		}

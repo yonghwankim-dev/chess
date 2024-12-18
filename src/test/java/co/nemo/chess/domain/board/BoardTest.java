@@ -246,4 +246,22 @@ class BoardTest {
 			.toList();
 		assertThat(locations).containsExactlyElementsOf(expected);
 	}
+
+	@DisplayName("백킹과 백룩 사이에 다른 기물이 없다")
+	@Test
+	void givenWhiteKingAndRook_whenExistPieceBetween_thenReturnTrue() {
+		// given
+		Board board = Board.init(repository);
+		Piece king = PieceFactory.getInstance().whiteKing("e1");
+		Piece rook = PieceFactory.getInstance().whiteRook("h1");
+		repository.add(king);
+		repository.add(rook);
+
+		Location e1 = Location.from("e1");
+		Location h1 = Location.from("h1");
+		// when
+		boolean actual = board.existPieceBetween(e1, h1);
+		// then
+		Assertions.assertThat(actual).isFalse();
+	}
 }

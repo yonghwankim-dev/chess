@@ -124,4 +124,18 @@ public class Board implements PieceMovable {
 	public boolean canMove(Piece piece, Location destination) {
 		return piece.canMove(destination, repository);
 	}
+
+	/**
+	 * src와 dst 사이에 다른 기물이 있는지 여부 확인
+	 * src와 dst는 포함 여부에서 제외입니다.
+	 * @param src 출발지
+	 * @param dst 목적지
+	 * @return 기물 존재 여부
+	 */
+	public boolean existPieceBetween(Location src, Location dst) {
+		return src.calBetweenLocations(dst).stream()
+			.filter(location -> !location.equals(dst))
+			.map(repository::find)
+			.anyMatch(Optional::isPresent);
+	}
 }

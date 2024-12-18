@@ -67,9 +67,9 @@ class ChessGameTest {
 		Assertions.assertThat(board.getAllPieces()).doesNotContain(expectedB8WhitePawn);
 	}
 
-	@DisplayName("백 플레이어는 백룩과 백킹을 이용하여 캐슬링한다")
+	@DisplayName("백 플레이어는 백룩과 백킹을 이용하여 킹사이드 캐슬링한다")
 	@Test
-	void castling() {
+	void givenWhiteKingAndRook_whenCastling_thenMovedKingAndRook() {
 		// given
 		String input = Stream.of(
 				"move g2 g3",
@@ -86,5 +86,66 @@ class ChessGameTest {
 		AbstractChessPiece expectedWhiteRook = PieceFactory.getInstance().whiteRook("f1").withMoved();
 		AbstractChessPiece expectedWhiteKing = PieceFactory.getInstance().whiteKing("g1").withMoved();
 		Assertions.assertThat(board.getAllPieces()).contains(expectedWhiteRook, expectedWhiteKing);
+	}
+
+	@DisplayName("백 플레이어는 백룩과 백킹을 이용하여 퀸사이드 캐슬링한다")
+	@Test
+	void givenWhiteKingAndRook_whenQueenSideCastling_thenMovedKingAndRook() {
+		// given
+		String input = Stream.of(
+				"move g2 g3",
+				"move g7 g6",
+				"castling e1 a1"
+			)
+			.collect(Collectors.joining(System.lineSeparator()));
+		InputStrategy inputStrategy = new StringInputStrategy(input);
+		Board board = Board.empty();
+		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
+		// when
+		game.startGame();
+		// then
+		AbstractChessPiece expectedWhiteRook = PieceFactory.getInstance().whiteRook("d1").withMoved();
+		AbstractChessPiece expectedWhiteKing = PieceFactory.getInstance().whiteKing("c1").withMoved();
+		Assertions.assertThat(board.getAllPieces()).contains(expectedWhiteRook, expectedWhiteKing);
+	}
+
+	@DisplayName("흑 플레이어는 흑킹과 흑룩을 이용하여 킹 사이드 캐슬링한다")
+	@Test
+	void givenBlackKingAndRook_whenKingSideCastling_thenMovedKingAndRook() {
+		// given
+		String input = Stream.of(
+				"move g2 g3",
+				"castling e8 h8"
+			)
+			.collect(Collectors.joining(System.lineSeparator()));
+		InputStrategy inputStrategy = new StringInputStrategy(input);
+		Board board = Board.empty();
+		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
+		// when
+		game.startGame();
+		// then
+		AbstractChessPiece expectedDarkRook = PieceFactory.getInstance().darkRook("f8").withMoved();
+		AbstractChessPiece expectedDarkKing = PieceFactory.getInstance().darkKing("g8").withMoved();
+		Assertions.assertThat(board.getAllPieces()).contains(expectedDarkRook, expectedDarkKing);
+	}
+
+	@DisplayName("흑 플레이어는 흑킹과 흑룩을 이용하여 퀸 사이드 캐슬링한다")
+	@Test
+	void givenBlackKingAndRook_whenQueenSideCastling_thenMovedKingAndRook() {
+		// given
+		String input = Stream.of(
+				"move g2 g3",
+				"castling e8 a8"
+			)
+			.collect(Collectors.joining(System.lineSeparator()));
+		InputStrategy inputStrategy = new StringInputStrategy(input);
+		Board board = Board.empty();
+		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
+		// when
+		game.startGame();
+		// then
+		AbstractChessPiece expectedDarkRook = PieceFactory.getInstance().darkRook("d8").withMoved();
+		AbstractChessPiece expectedDarkKing = PieceFactory.getInstance().darkKing("c8").withMoved();
+		Assertions.assertThat(board.getAllPieces()).contains(expectedDarkRook, expectedDarkKing);
 	}
 }

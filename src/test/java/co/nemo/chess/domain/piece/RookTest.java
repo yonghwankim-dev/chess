@@ -118,4 +118,19 @@ class RookTest {
 		// then
 		Assertions.assertThat(actual).isEmpty();
 	}
+
+	@DisplayName("백룩이 주어진 상태에서 퀸 사이드 캐슬링 이동할때 중간에 기물이 존재해서는 안된다")
+	@Test
+	void givenPiecesBlockQueenSideCastling_whenCastlingAttempted_thenCastlingFails() {
+		// given
+		Piece a1WhiteRook = PieceFactory.getInstance().whiteRook("a1");
+		Piece b1WhitePawn = PieceFactory.getInstance().whitePawn("b1");
+		repository.add(a1WhiteRook);
+		repository.add(b1WhitePawn);
+		Location destination = Location.from("d1");
+		// when
+		Optional<AbstractChessPiece> actual = a1WhiteRook.move(destination, repository);
+		// then
+		Assertions.assertThat(actual).isEmpty();
+	}
 }

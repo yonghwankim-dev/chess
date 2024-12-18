@@ -40,7 +40,7 @@ public class CastlingCommand extends AbstractCommand {
 		validatePieceOwnership(findKingPiece, player);
 		validatePieceOwnership(findRookPiece, player);
 
-		if (isWhiteKingSideCastling()) {
+		if (isWhiteKingSideCastling(board)) {
 			boolean canMoveKing = board.canMove(findKingPiece, Location.from("g1"));
 			boolean canMoveRook = board.canMove(findRookPiece, Location.from("f1"));
 			if (canMoveKing && canMoveRook) {
@@ -49,17 +49,17 @@ public class CastlingCommand extends AbstractCommand {
 				board.movePiece(Location.from("h1"), Location.from("f1"))
 					.ifPresent(logMovePiece("h1", "f1"));
 			}
-		} else if (isWhiteQueenSideCastling()) {
+		} else if (isWhiteQueenSideCastling(board)) {
 			board.movePiece(Location.from("e1"), Location.from("c1"))
 				.ifPresent(logMovePiece("e1", "c1"));
 			board.movePiece(Location.from("a1"), Location.from("d1"))
 				.ifPresent(logMovePiece("a1", "d1"));
-		} else if (isDarkKingSideCastling()) {
+		} else if (isDarkKingSideCastling(board)) {
 			board.movePiece(Location.from("e8"), Location.from("g8"))
 				.ifPresent(logMovePiece("e8", "g8"));
 			board.movePiece(Location.from("h8"), Location.from("f8"))
 				.ifPresent(logMovePiece("h8", "f8"));
-		} else if (isDarkQueenSideCastling()) {
+		} else if (isDarkQueenSideCastling(board)) {
 			board.movePiece(Location.from("e8"), Location.from("c8"))
 				.ifPresent(logMovePiece("e8", "c8"));
 			board.movePiece(Location.from("a8"), Location.from("d8"))
@@ -69,27 +69,40 @@ public class CastlingCommand extends AbstractCommand {
 		}
 	}
 
-	private boolean isWhiteKingSideCastling() {
+	private boolean isWhiteKingSideCastling(Board board) {
 		Location e1 = Location.from("e1");
 		Location h1 = Location.from("h1");
+		// e1과 h1 기물 사이에 다른 기물들이 없어야 합니다.
+		if (board.existPieceBetween(e1, h1)) {
+			return false;
+		}
 		return kingSrc.equals(e1) && rookSrc.equals(h1);
 	}
 
-	private boolean isWhiteQueenSideCastling() {
+	private boolean isWhiteQueenSideCastling(Board board) {
 		Location e1 = Location.from("e1");
 		Location a1 = Location.from("a1");
+		if (board.existPieceBetween(e1, a1)) {
+			return false;
+		}
 		return kingSrc.equals(e1) && rookSrc.equals(a1);
 	}
 
-	private boolean isDarkKingSideCastling() {
+	private boolean isDarkKingSideCastling(Board board) {
 		Location e8 = Location.from("e8");
 		Location h8 = Location.from("h8");
+		if (board.existPieceBetween(e8, h8)) {
+			return false;
+		}
 		return kingSrc.equals(e8) && rookSrc.equals(h8);
 	}
 
-	private boolean isDarkQueenSideCastling() {
+	private boolean isDarkQueenSideCastling(Board board) {
 		Location e8 = Location.from("e8");
 		Location a8 = Location.from("a8");
+		if (board.existPieceBetween(e8, a8)) {
+			return false;
+		}
 		return kingSrc.equals(e8) && rookSrc.equals(a8);
 	}
 

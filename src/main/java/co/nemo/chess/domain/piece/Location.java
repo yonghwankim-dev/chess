@@ -67,6 +67,11 @@ public class Location {
 		return rank.toPositionText(file);
 	}
 
+	/**
+	 * 목적지를 포함한 중간 경로 리스트를 반환한다
+	 * @param destination 목적지
+	 * @return 경로 리스트
+	 */
 	public List<Location> calBetweenLocations(Location destination) {
 		Direction direction = this.calDirection(destination);
 		if (direction == Direction.NO_DIRECTION) {

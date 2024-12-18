@@ -81,9 +81,8 @@ public class Rook extends AbstractChessPiece {
 			return destination.equals(Location.from("f1")) || destination.equals(Location.from("d1"));
 		} else if (isDark()) {
 			return destination.equals(Location.from("f8")) || destination.equals(Location.from("d8"));
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	private boolean canMoveStraight(Location destination) {
