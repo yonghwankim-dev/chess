@@ -66,4 +66,23 @@ class ChessGameTest {
 			.withLocationHistory(new ArrayDeque<>(moveHistory));
 		Assertions.assertThat(board.getAllPieces()).doesNotContain(expectedB8WhitePawn);
 	}
+
+	@DisplayName("백 플레이어는 백룩과 백킹을 이용하여 캐슬링한다")
+	@Test
+	void castling() {
+		// given
+		String input = Stream.of(
+				"castling e1 h1"
+			)
+			.collect(Collectors.joining(System.lineSeparator()));
+		InputStrategy inputStrategy = new StringInputStrategy(input);
+		Board board = Board.empty();
+		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
+		// when
+		game.startGame();
+		// then
+		AbstractChessPiece expectedWhiteRook = PieceFactory.getInstance().whiteRook("f1").withMoved();
+		AbstractChessPiece expectedWhiteKing = PieceFactory.getInstance().whiteKing("g1").withMoved();
+		Assertions.assertThat(board.getAllPieces()).contains(expectedWhiteRook, expectedWhiteKing);
+	}
 }

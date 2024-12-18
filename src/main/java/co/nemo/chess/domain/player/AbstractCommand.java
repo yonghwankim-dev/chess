@@ -34,6 +34,10 @@ public abstract class AbstractCommand {
 		return HelpCommand.create();
 	}
 
+	public static AbstractCommand castlingCommand(Location kingSrc, Location rookSrc) {
+		return CastlingCommand.create(kingSrc, rookSrc);
+	}
+
 	public boolean isTypeOf(CommandType type) {
 		return this.type == type;
 	}

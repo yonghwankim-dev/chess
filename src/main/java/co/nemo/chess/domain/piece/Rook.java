@@ -63,11 +63,27 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location destination, PieceRepository repository) {
+		if (isCastling(destination)) {
+			return true;
+		}
 		// 중간에 기물이 없어야 한다
 		if (existPieceBetween(destination, repository)) {
 			return false;
 		}
 		return canMoveStraight(destination);
+	}
+
+	private boolean isCastling(Location destination) {
+		if (isMoved()) {
+			return false;
+		}
+		if (isWhite()) {
+			return destination.equals(Location.from("f1")) || destination.equals(Location.from("d1"));
+		} else if (isDark()) {
+			return destination.equals(Location.from("f8")) || destination.equals(Location.from("d8"));
+		} else {
+			return false;
+		}
 	}
 
 	private boolean canMoveStraight(Location destination) {

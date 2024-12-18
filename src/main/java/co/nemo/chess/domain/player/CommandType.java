@@ -35,6 +35,23 @@ public enum CommandType {
 			}
 		}
 	},
+	CASTLING {
+		@Override
+		public AbstractCommand createCommand(String[] commands) {
+			if (commands.length != 3) {
+				return AbstractCommand.invalidCommand();
+			}
+			int srcIdx = 1;
+			int dstIdx = 2;
+			try {
+				Location src = Location.from(commands[srcIdx]);
+				Location dst = Location.from(commands[dstIdx]);
+				return AbstractCommand.castlingCommand(src, dst);
+			} catch (IllegalArgumentException e) {
+				return AbstractCommand.invalidCommand();
+			}
+		}
+	},
 	EXIT {
 		@Override
 		public AbstractCommand createCommand(String[] commands) {

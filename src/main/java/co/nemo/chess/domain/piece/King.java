@@ -56,6 +56,17 @@ public class King extends AbstractChessPiece {
 		int fileDiff;
 		int rankDiff;
 		Direction direction = this.calDirection(location);
+
+		if (isInCheckAfterMove(location, repository)) {
+			return false;
+		}
+
+		// 이동이 캐슬링 이동인 경우를 검사한다
+		if (isCastling(location)) {
+			return false;
+		}
+
+		// 일반적인 이동인 경우 검사
 		return switch (direction) {
 			case UP, DOWN -> {
 				fileDiff = 0;
@@ -76,12 +87,25 @@ public class King extends AbstractChessPiece {
 		};
 	}
 
+	private boolean isCastling(Location location) {
+		if (isMoved()) {
+			return false;
+		}
+		return location.equals(Location.from("g1")) || location.equals(Location.from("c1"));
+	}
+
 	private boolean isInCheckAfterMove(Location destination, PieceRepository repository) {
-		// TODO: 12/16/24 destination으로 이동하는 경우에 체크 상태이면 true 반환, 아니면 false 반환 
 		AbstractChessPiece king = movedPiece(destination);
-		return repository.findAll().stream()
-			.filter(piece -> !piece.equals(this))
-			.anyMatch(piece -> piece.canAttack(king, repository));
+		List<Piece> pieces = repository.findAll();
+		pieces.remove(this);
+		pieces.add(king);
+		try {
+			return pieces.stream()
+				.filter(piece -> !piece.equals(king))
+				.anyMatch(piece -> piece.canAttack(king, repository));
+		} catch (Exception e) {
+			throw new IllegalArgumentException("invalid destination, destination=" + destination);
+		}
 	}
 
 	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
@@ -90,6 +114,11 @@ public class King extends AbstractChessPiece {
 	}
 
 	public boolean isCheckedStatus(PieceRepository repository) {
-		return true;
+		// 킹을 제외한 다른 기물들이 공격이 가능하면 체크 상태
+		Color color = this.isWhite() ? Color.WHITE : Color.DARK;
+		return repository.findAll().stream()
+			.filter(piece -> !piece.equals(this)) // 자신 제외
+			.filter(piece -> !piece.isColorOf(color)) // 반대 색상
+			.anyMatch(piece -> piece.canAttack(this, repository));
 	}
 }

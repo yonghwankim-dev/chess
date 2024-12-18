@@ -14,6 +14,10 @@ public class Player {
 		return new Player(Color.WHITE);
 	}
 
+	public static Player dark() {
+		return new Player(Color.DARK);
+	}
+
 	public AbstractCommand inputCommand(String text) {
 		return CommandParser.getInstance().parse(text);
 	}
