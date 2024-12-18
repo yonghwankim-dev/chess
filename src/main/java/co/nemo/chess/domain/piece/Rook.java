@@ -89,13 +89,4 @@ public class Rook extends AbstractChessPiece {
 	private boolean canMoveStraight(Location destination) {
 		return List.of(UP, DOWN, LEFT, RIGHT).contains(calDirection(destination));
 	}
-
-	private boolean existPieceBetween(Location dst, PieceRepository repository) {
-		return super.calBetweenLocations(dst).stream()
-			.filter(location -> !location.equals(dst))
-			.anyMatch(location -> repository.find(location)
-				.filter(this::existPiece)
-				.isPresent()
-			);
-	}
 }

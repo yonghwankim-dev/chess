@@ -34,11 +34,15 @@ class KingTest {
 
 	public static Stream<Arguments> invalidKingMoveSource() {
 		AbstractChessPiece e2WhitePawn = PieceFactory.getInstance().whitePawn("e2");
+		AbstractChessPiece f1WhitePawn = PieceFactory.getInstance().whitePawn("f1");
+		AbstractChessPiece d1WhitePawn = PieceFactory.getInstance().whitePawn("d1");
 		return Stream.of(
 			Arguments.of("e1", "e2", new AbstractChessPiece[] {e2WhitePawn}),
 			Arguments.of("e1", "e3", new AbstractChessPiece[] {}),
 			Arguments.of("e1", "c3", new AbstractChessPiece[] {}),
-			Arguments.of("e1", "g3", new AbstractChessPiece[] {})
+			Arguments.of("e1", "g3", new AbstractChessPiece[] {}),
+			Arguments.of("e1", "g1", new AbstractChessPiece[] {f1WhitePawn}),
+			Arguments.of("e1", "c1", new AbstractChessPiece[] {d1WhitePawn})
 		);
 	}
 

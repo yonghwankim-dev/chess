@@ -184,4 +184,13 @@ public abstract class AbstractChessPiece implements Piece {
 	boolean existPiece(Piece piece) {
 		return !(piece instanceof NullPiece);
 	}
+
+	boolean existPieceBetween(Location dst, PieceRepository repository) {
+		return this.calBetweenLocations(dst).stream()
+			.filter(loc -> !loc.equals(dst))
+			.anyMatch(loc -> repository.find(loc)
+				.filter(this::existPiece)
+				.isPresent()
+			);
+	}
 }

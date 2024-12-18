@@ -142,14 +142,15 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		}
 	}
 
-	private boolean existPieceBetween(Location dst, PieceRepository repository) {
+	@Override
+	boolean existPieceBetween(Location dst, PieceRepository repository) {
 		return super.calBetweenLocations(dst).stream()
 			.anyMatch(location -> repository.find(location)
 				.filter(this::existPiece)
 				.isPresent()
 			);
 	}
-	
+
 	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
 		LocationDifference locationDifference = super.diffLocation(location);
 		return locationDifference.isEqualDistance(fileDiff, rankDiff);
