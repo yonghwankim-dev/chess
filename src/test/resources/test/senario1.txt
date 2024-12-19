@@ -19,5 +19,20 @@ move f7 g6
 move g5 f7
 move c6 d4
 move f7 h8
-move d4 c2
-checkmate
+locations g6
+move g6 g7
+move d1 g4
+locations g7
+move g7 h7
+move g4 e6
+move h7 h8
+move e6 f7
+move a7 a6
+move h2 h4
+move a6 a5
+move h4 h5
+move f6 h5
+move h1 h5
+move a5 a4
+move h5 h6
+# win white player

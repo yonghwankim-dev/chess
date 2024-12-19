@@ -78,8 +78,10 @@ class KingTest {
 		AbstractChessPiece e1DarkQueen = PieceFactory.getInstance().darkQueen("g2");
 		AbstractChessPiece d1DarkRook = PieceFactory.getInstance().darkRook("a1");
 		AbstractChessPiece d3WhiteRook = PieceFactory.getInstance().whiteRook("d3");
+		AbstractChessPiece a3WhiteRook = PieceFactory.getInstance().whiteRook("a3");
 		return Stream.of(
-			Arguments.of(e1WhiteKing, new AbstractChessPiece[] {e1DarkQueen, d1DarkRook, d3WhiteRook})
+			Arguments.of(e1WhiteKing, new AbstractChessPiece[] {e1DarkQueen, d1DarkRook, d3WhiteRook}),
+			Arguments.of(e1WhiteKing, new AbstractChessPiece[] {e1DarkQueen, d1DarkRook, a3WhiteRook})
 		);
 	}
 

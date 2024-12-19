@@ -36,14 +36,18 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
+	public Optional<AbstractChessPiece> move(AbstractChessPiece piece, PieceRepository repository) {
+		return move(piece.location, repository);
+	}
+
+	@Override
 	public boolean match(Location location) {
 		return this.location.equals(location);
 	}
 
 	@Override
 	public boolean canAttack(Piece target, List<Piece> pieces) {
-		PieceRepository temporaryRepository = PieceRepository.empty();
-		pieces.forEach(temporaryRepository::add);
+		PieceRepository temporaryRepository = PieceRepository.init(pieces);
 		return canAttack(target, temporaryRepository);
 	}
 

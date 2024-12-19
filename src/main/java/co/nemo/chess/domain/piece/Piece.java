@@ -18,6 +18,8 @@ public interface Piece {
 	 */
 	Optional<AbstractChessPiece> move(Location destination, PieceRepository repository);
 
+	Optional<AbstractChessPiece> move(AbstractChessPiece piece, PieceRepository repository);
+
 	boolean match(Location location);
 
 	/**

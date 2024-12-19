@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.Color;
+import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.player.AbstractCommand;
 import co.nemo.chess.domain.player.CommandType;
 import co.nemo.chess.domain.player.Player;
@@ -42,7 +43,7 @@ public class ChessGame {
 		board.setupPieces();
 		outputStrategy.println("Game Start");
 
-		while (true) {
+		while (!isCheckmate()) {
 			printGameStatus();
 			outputStrategy.print("> ");
 			Optional<String> inputLine = inputStrategy.readLine();
@@ -71,6 +72,24 @@ public class ChessGame {
 			this.switchPlayer();
 		}
 		inputStrategy.close();
+	}
+
+	private boolean isCheckmate() {
+		Optional<Piece> piece = board.getCheckmatePiece();
+		if (piece.isEmpty()) {
+			return false;
+		}
+		Piece checkmatedPiece = piece.orElseThrow();
+		if (checkmatedPiece.isColorOf(Color.WHITE)) {
+			outputStrategy.println("win Black Player");
+			outputStrategy.printBoard(board);
+			return true;
+		} else if (checkmatedPiece.isColorOf(Color.DARK)) {
+			outputStrategy.println("win White Player");
+			outputStrategy.printBoard(board);
+			return true;
+		}
+		return false;
 	}
 
 	private void printGameStatus() {

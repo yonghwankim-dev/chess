@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import co.nemo.chess.domain.piece.AbstractChessPiece;
+import co.nemo.chess.domain.piece.King;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
@@ -169,5 +170,16 @@ public class Board implements PieceMovable {
 			.filter(location -> !location.equals(dst))
 			.map(repository::find)
 			.anyMatch(Optional::isPresent);
+	}
+
+	/**
+	 * 체크메이트된 기물을 반환한다
+	 * @return 체크메이트된 기물
+	 */
+	public Optional<Piece> getCheckmatePiece() {
+		return repository.findAll().stream()
+			.filter(King.class::isInstance)
+			.filter(king -> ((King)king).isCheckmate(repository))
+			.findAny();
 	}
 }

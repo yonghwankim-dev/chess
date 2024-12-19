@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 
+// TODO: 12/19/24 체크메이트 관련 메서드 리팩토링 
 @EqualsAndHashCode(callSuper = true)
 public class King extends AbstractChessPiece {
 
@@ -154,7 +155,7 @@ public class King extends AbstractChessPiece {
 			}
 		}
 		// 다른 기물로 체크를 막을 수 있는지 확인
-		if (canBlockCheck(repository)) {
+		if (canBlockCheck(repository) || canCaptureAttackingPiece(repository)) {
 			return false;
 		}
 		return true;
@@ -184,6 +185,41 @@ public class King extends AbstractChessPiece {
 			blockingPiece.move(location, tempRepository);
 			if (!isCheckedStatus(tempRepository)) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean canCaptureAttackingPiece(PieceRepository repository) {
+		Color curColor = isWhite() ? Color.WHITE : Color.DARK;
+		List<Piece> pieces = repository.findAll().stream()
+			.filter(piece -> !piece.equals(this))
+			.filter(piece -> piece.isColorOf(curColor))
+			.toList();
+		// 킹을 제외한 아군 기물들 중에서 적 기물을 잡아서 체크 상태가 아니게 하면 true 반환
+		for (Piece piece : pieces) {
+			if (canAttackWith(piece, repository)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean canAttackWith(Piece piece, PieceRepository repository) {
+		List<Piece> pieces = repository.findAll();
+		Color pieceColor = piece.isColorOf(Color.WHITE) ? Color.WHITE : Color.DARK;
+		// 공격 가능한 적 기물들을 대상으로 이동했을때 체크 상태가 아니면 true 반환
+		List<AbstractChessPiece> enemyPieces = repository.findAll().stream()
+			.filter(p -> !p.isColorOf(pieceColor))
+			.map(AbstractChessPiece.class::cast)
+			.toList();
+		for (AbstractChessPiece enemyPiece : enemyPieces) {
+			PieceRepository tempRepository = PieceRepository.init(pieces);
+			if (piece.canAttack(enemyPiece, tempRepository)) {
+				piece.move(enemyPiece, tempRepository);
+				if (!isCheckedStatus(tempRepository)) {
+					return true;
+				}
 			}
 		}
 		return false;
