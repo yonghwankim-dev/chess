@@ -79,6 +79,8 @@ class ChessGameTest {
 		String input = Stream.of(
 				"move g2 g3",
 				"move g7 g6",
+				"move f1 g2",
+				"move g6 g5",
 				"castling e1 h1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -100,6 +102,10 @@ class ChessGameTest {
 		String input = Stream.of(
 				"move g2 g3",
 				"move g7 g6",
+				"move b2 b3",
+				"move g6 g5",
+				"move c1 b2",
+				"move g5 g4",
 				"castling e1 a1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -119,7 +125,11 @@ class ChessGameTest {
 	void givenBlackKingAndRook_whenKingSideCastling_thenMovedKingAndRook() {
 		// given
 		String input = Stream.of(
-				"move g2 g3",
+				"move g2 g3", // white
+				"move g7 g6", // dark
+				"move g3 g4", // white
+				"move f8 g7", // dark
+				"move g4 g5", // white
 				"castling e8 h8"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -140,6 +150,10 @@ class ChessGameTest {
 		// given
 		String input = Stream.of(
 				"move g2 g3",
+				"move b7 b6",
+				"move g3 g4",
+				"move c8 b7",
+				"move g4 g5",
 				"castling e8 a8"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));

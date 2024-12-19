@@ -69,6 +69,10 @@ public class Board implements PieceMovable {
 			.map(Piece.class::cast)
 			.toList();
 		Piece whiteKing = factory.whiteKing("e1");
+		List<Piece> whiteBishops = Stream.of("c1", "f1")
+			.map(factory::whiteBishop)
+			.map(Piece.class::cast)
+			.toList();
 		List<Piece> whiteRooks = Stream.of("a1", "h1")
 			.map(factory::whiteRook)
 			.map(Piece.class::cast)
@@ -79,6 +83,10 @@ public class Board implements PieceMovable {
 			.map(Piece.class::cast)
 			.toList();
 		Piece darkKing = factory.darkKing("e8");
+		List<Piece> darkBishops = Stream.of("c8", "f8")
+			.map(factory::darkBishop)
+			.map(Piece.class::cast)
+			.toList();
 		List<Piece> darkRooks = Stream.of("a8", "h8")
 			.map(factory::darkRook)
 			.map(Piece.class::cast)
@@ -90,15 +98,20 @@ public class Board implements PieceMovable {
 			.forEach(repository::add);
 		repository.add(whiteKing);
 		repository.add(darkKing);
+		Stream.of(whiteBishops, darkBishops)
+			.flatMap(Collection::stream)
+			.forEach(repository::add);
 		Stream.of(whiteRooks, darkRooks)
 			.flatMap(Collection::stream)
 			.forEach(repository::add);
 
 		List<Piece> result = new ArrayList<>();
 		result.addAll(whitePawns);
+		result.addAll(whiteBishops);
 		result.addAll(whiteRooks);
 		result.add(whiteKing);
 		result.addAll(darkPawns);
+		result.addAll(darkBishops);
 		result.addAll(darkRooks);
 		result.add(darkKing);
 		return result;
