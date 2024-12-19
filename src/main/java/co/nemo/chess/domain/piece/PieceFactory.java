@@ -7,6 +7,7 @@ public class PieceFactory {
 	}
 
 	private static class PieceFactoryHelper {
+
 		private static final PieceFactory INSTANCE = new PieceFactory();
 	}
 
@@ -56,5 +57,13 @@ public class PieceFactory {
 
 	public AbstractChessPiece darkBishop(String position) {
 		return Bishop.notMovedDarkBishop(Location.from(position));
+	}
+
+	public AbstractChessPiece whiteQueen(String position) {
+		return Queen.notMovedWhiteQueen(Location.from(position));
+	}
+
+	public AbstractChessPiece darkQueen(String position) {
+		return Queen.notMovedDarkQueen(Location.from(position));
 	}
 }

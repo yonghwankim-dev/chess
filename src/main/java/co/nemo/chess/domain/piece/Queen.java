@@ -10,29 +10,29 @@ import java.util.Optional;
 
 import co.nemo.chess.domain.board.PieceRepository;
 
-public class Bishop extends AbstractChessPiece {
+public class Queen extends AbstractChessPiece {
 
-	private Bishop(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
+	private Queen(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
 		super(location, color, isMoved, locationHistory);
 	}
 
-	public static AbstractChessPiece notMovedWhiteBishop(Location location) {
-		return new Bishop(location, Color.WHITE, false, new ArrayDeque<>());
+	public static AbstractChessPiece notMovedWhiteQueen(Location location) {
+		return new Queen(location, Color.WHITE, false, new ArrayDeque<>());
 	}
 
-	public static AbstractChessPiece notMovedDarkBishop(Location location) {
-		return new Bishop(location, Color.DARK, false, new ArrayDeque<>());
+	public static AbstractChessPiece notMovedDarkQueen(Location location) {
+		return new Queen(location, Color.DARK, false, new ArrayDeque<>());
 	}
 
 	@Override
 	AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory) {
-		return new Bishop(location, color, true, moveHistory);
+		return new Queen(location, color, true, moveHistory);
 	}
 
 	@Override
 	protected AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory) {
-		return new Bishop(location, color, isMoved, locationHistory);
+		return new Queen(location, color, isMoved, locationHistory);
 	}
 
 	@Override
@@ -43,8 +43,7 @@ public class Bishop extends AbstractChessPiece {
 	@Override
 	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
-
-		for (Direction direction : List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)) {
+		for (Direction direction : List.of(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)) {
 			int distance = 1;
 			Optional<Location> location;
 
@@ -58,11 +57,11 @@ public class Bishop extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		// 중간 경로에 기물이 있으면 이동 불가능
-		if (existPieceBetween(location, repository)) {
+		if (this.existPieceBetween(location, repository)) {
 			return false;
 		}
 		// 일반적인 이동인 경우 검사
-		return List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT).contains(calDirection(location));
+		return List.of(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)
+			.contains(calDirection(location));
 	}
 }

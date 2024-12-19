@@ -106,6 +106,10 @@ class ChessGameTest {
 				"move g6 g5",
 				"move c1 b2",
 				"move g5 g4",
+				"move c2 c3",
+				"move c7 c6",
+				"move d1 c2",
+				"move c6 c5",
 				"castling e1 a1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -154,6 +158,10 @@ class ChessGameTest {
 				"move g3 g4",
 				"move c8 b7",
 				"move g4 g5",
+				"move c7 c6",
+				"move g5 g6",
+				"move d8 c7",
+				"move c2 c3",
 				"castling e8 a8"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
