@@ -72,6 +72,8 @@ public abstract class AbstractChessPiece implements Piece {
 			return color == Color.WHITE ? "♗" : "♝";
 		} else if (this instanceof Queen) {
 			return color == Color.WHITE ? "♕" : "♛";
+		} else if (this instanceof Knight) {
+			return color == Color.WHITE ? "♘" : "♞";
 		} else {
 			return Strings.EMPTY;
 		}

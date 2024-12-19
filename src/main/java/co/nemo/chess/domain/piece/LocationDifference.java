@@ -32,6 +32,9 @@ public class LocationDifference {
 		if (isDiagonal()) {
 			return calculateDiagonalDirection();
 		}
+		if (isKnightDirectional()) {
+			return calKnightDirection();
+		}
 		return Direction.NO_DIRECTION;
 	}
 
@@ -49,6 +52,24 @@ public class LocationDifference {
 
 	private boolean isDiagonal() {
 		return Math.abs(fileDiff) == Math.abs(rankDiff);
+	}
+
+	private boolean isKnightDirectional() {
+		for (Direction direction : Direction.knightDirections()) {
+			if (direction.isEqualDistance(fileDiff, rankDiff)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Direction calKnightDirection() {
+		for (Direction direction : Direction.knightDirections()) {
+			if (direction.isEqualDistance(fileDiff, rankDiff)) {
+				return direction;
+			}
+		}
+		return Direction.NO_DIRECTION;
 	}
 
 	private Direction calculateDiagonalDirection() {

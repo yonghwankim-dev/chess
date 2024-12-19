@@ -51,15 +51,17 @@ class LocationTest {
 		return Stream.of(argumentsArray);
 	}
 
-	public static Stream<Arguments> notCalLocations() {
-		String source = "d5";
-		String[] destinations = {"c7", "e7", "f6", "f4", "e3", "c3", "b4", "b6"};
-		int n = destinations.length;
-		Arguments[] argumentsArray = new Arguments[n];
-		for (int i = 0; i < n; i++) {
-			argumentsArray[i] = Arguments.of(source, destinations[i]);
-		}
-		return Stream.of(argumentsArray);
+	public static Stream<Arguments> validKnightLocations() {
+		return Stream.of(
+			Arguments.of("d5", "c7", UP_UP_LEFT),
+			Arguments.of("d5", "e7", UP_UP_RIGHT),
+			Arguments.of("d5", "c3", DOWN_DOWN_LEFT),
+			Arguments.of("d5", "e3", DOWN_DOWN_RIGHT),
+			Arguments.of("d5", "b6", LEFT_LEFT_UP),
+			Arguments.of("d5", "b4", LEFT_LEFT_DOWN),
+			Arguments.of("d5", "f6", RIGHT_RIGHT_UP),
+			Arguments.of("d5", "f4", RIGHT_RIGHT_DOWN)
+		);
 	}
 
 	public static Stream<Arguments> calBetweenLocationSource() {
@@ -79,7 +81,7 @@ class LocationTest {
 			Arguments.of(a2, a8, List.of(a3, a4, a5, a6, a7, a8)),
 			Arguments.of(a2, c4, List.of(b3, c4)),
 			Arguments.of(a2, a2, Collections.emptyList()),
-			Arguments.of(a2, c3, List.of())
+			Arguments.of(a2, c3, List.of(c3))
 		);
 	}
 
@@ -118,16 +120,17 @@ class LocationTest {
 		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
-	@DisplayName("두 위치간에 방향성을 계산할 수 없으면 NO_DIRECTION을 반환한다")
+	@DisplayName("출발지와 목적지를 주어진 상태에서 나이트의 방향성을 계산한다")
 	@ParameterizedTest
-	@MethodSource(value = "notCalLocations")
-	void givenLocations_whenCalDirection_thenReturnOfNoDirection(String src, String dst) {
+	@MethodSource(value = "validKnightLocations")
+	void givenLocations_whenCalDirection_thenReturnDirectionOfKnightDirection(String src, String dst,
+		Direction expected) {
 		// given
 		Location srcLocation = Location.from(src);
 		// when
 		Direction actual = srcLocation.calDirection(Location.from(dst));
 		// then
-		Assertions.assertThat(actual).isEqualTo(NO_DIRECTION);
+		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
 	@DisplayName("두 위치간에 중간 경로를 반환한다")

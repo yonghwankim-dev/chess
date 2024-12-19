@@ -45,9 +45,9 @@ class ChessGameTest {
 				"move a2 a4",
 				"move b7 b5",
 				"move a4 b5",
-				"move a7 a6",
+				"move b8 c6",
 				"move b5 b6",
-				"move a6 a5",
+				"move a7 a5",
 				"move b6 b7",
 				"move a5 a4",
 				"move b7 b8",
@@ -81,6 +81,8 @@ class ChessGameTest {
 				"move g7 g6",
 				"move f1 g2",
 				"move g6 g5",
+				"move g1 f3",
+				"move g5 g4",
 				"castling e1 h1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -110,6 +112,8 @@ class ChessGameTest {
 				"move c7 c6",
 				"move d1 c2",
 				"move c6 c5",
+				"move b1 a3",
+				"move c5 c4",
 				"castling e1 a1"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
@@ -134,7 +138,9 @@ class ChessGameTest {
 				"move g3 g4", // white
 				"move f8 g7", // dark
 				"move g4 g5", // white
-				"castling e8 h8"
+				"move g8 f6", // dark
+				"move h2 h3", // white
+				"castling e8 h8" // dark
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
 		InputStrategy inputStrategy = new StringInputStrategy(input);
@@ -162,6 +168,8 @@ class ChessGameTest {
 				"move g5 g6",
 				"move d8 c7",
 				"move c2 c3",
+				"move b8 a6",
+				"move a2 a3",
 				"castling e8 a8"
 			)
 			.collect(Collectors.joining(System.lineSeparator()));
