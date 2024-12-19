@@ -16,11 +16,11 @@ public class Bishop extends AbstractChessPiece {
 		super(location, color, isMoved, locationHistory);
 	}
 
-	public static Piece notMovedWhiteBishop(Location location) {
+	public static AbstractChessPiece notMovedWhiteBishop(Location location) {
 		return new Bishop(location, Color.WHITE, false, new ArrayDeque<>());
 	}
 
-	public static Piece notMovedDarkBishop(Location location) {
+	public static AbstractChessPiece notMovedDarkBishop(Location location) {
 		return new Bishop(location, Color.DARK, false, new ArrayDeque<>());
 	}
 
@@ -58,6 +58,11 @@ public class Bishop extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		return false;
+		// 중간 경로에 기물이 있으면 이동 불가능
+		if (existPieceBetween(location, repository)) {
+			return false;
+		}
+		// 일반적인 이동인 경우 검사
+		return List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT).contains(calDirection(location));
 	}
 }

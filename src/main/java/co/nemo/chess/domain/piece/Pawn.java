@@ -151,11 +151,6 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 			);
 	}
 
-	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
-		LocationDifference locationDifference = super.diffLocation(location);
-		return locationDifference.isEqualDistance(fileDiff, rankDiff);
-	}
-
 	private boolean isTwoForward(Location newLocation, PieceRepository repository) {
 		if (existPieceBetween(newLocation, repository)) {
 			return false;

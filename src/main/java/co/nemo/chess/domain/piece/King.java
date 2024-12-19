@@ -133,11 +133,6 @@ public class King extends AbstractChessPiece {
 		}
 	}
 
-	private boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
-		LocationDifference locationDifference = super.diffLocation(location);
-		return locationDifference.isEqualDistance(fileDiff, rankDiff);
-	}
-
 	public boolean isCheckedStatus(PieceRepository repository) {
 		// 킹을 제외한 다른 기물들이 공격이 가능하면 체크 상태
 		Color color = this.isWhite() ? Color.WHITE : Color.DARK;

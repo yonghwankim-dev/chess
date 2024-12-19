@@ -193,4 +193,9 @@ public abstract class AbstractChessPiece implements Piece {
 				.isPresent()
 			);
 	}
+
+	boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
+		LocationDifference locationDifference = diffLocation(location);
+		return locationDifference.isEqualDistance(fileDiff, rankDiff);
+	}
 }
