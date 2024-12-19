@@ -19,6 +19,10 @@ public class PieceRepository {
 		return new PieceRepository(new ArrayList<>());
 	}
 
+	public static PieceRepository init(List<Piece> pieces) {
+		return new PieceRepository(new ArrayList<>(pieces));
+	}
+
 	/**
 	 * Add boolean.
 	 * 이미 같은 기물이 존재하는 경우 추가하지 않는다

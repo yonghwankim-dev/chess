@@ -141,4 +141,51 @@ public class King extends AbstractChessPiece {
 			.filter(piece -> !piece.isColorOf(color)) // 반대 색상
 			.anyMatch(piece -> piece.canAttack(this, repository));
 	}
+
+	public boolean isCheckmate(PieceRepository repository) {
+		// 킹이 체크 상태인지 확인
+		if (!isCheckedStatus(repository)) {
+			return false;
+		}
+		// 킹의 이동 가능 여부 확인
+		for (Location location : findAllMoveLocations()) {
+			if (!isInCheckAfterMove(location, repository)) {
+				return false;
+			}
+		}
+		// 다른 기물로 체크를 막을 수 있는지 확인
+		if (canBlockCheck(repository)) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean canBlockCheck(PieceRepository repository) {
+		Color curColor = isWhite() ? Color.WHITE : Color.DARK;
+		List<Piece> pieces = repository.findAll().stream()
+			.filter(piece -> !piece.equals(this))
+			.filter(piece -> piece.isColorOf(curColor))
+			.toList();
+		// 체크를 막을 수 있는 기물이 있는지 확인
+		for (Piece piece : pieces) {
+			// 체크를 막을 수 있는지 확인하는 로직
+			if (canBlockWith(piece, repository)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean canBlockWith(Piece blockingPiece, PieceRepository repository) {
+		// blockingPiece가 킹의 모든 이동 가능한 위치로 이동했을 때 체크 상태가 하나라도 아니게 되면 true를 반환한다. 그 외는 false
+		List<Piece> pieces = repository.findAll();
+		for (Location location : findAllMoveLocations()) {
+			PieceRepository tempRepository = PieceRepository.init(pieces);
+			blockingPiece.move(location, tempRepository);
+			if (!isCheckedStatus(tempRepository)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

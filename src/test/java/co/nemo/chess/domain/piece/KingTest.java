@@ -63,6 +63,26 @@ class KingTest {
 		);
 	}
 
+	public static Stream<Arguments> validCheckmateSource() {
+		King e1WhiteKing = (King)PieceFactory.getInstance().whiteKing("e1");
+		AbstractChessPiece e1DarkQueen = PieceFactory.getInstance().darkQueen("e3");
+		AbstractChessPiece d1DarkRook = PieceFactory.getInstance().darkRook("d1");
+		AbstractChessPiece f1DarkRook = PieceFactory.getInstance().darkRook("f1");
+		return Stream.of(
+			Arguments.of(e1WhiteKing, new AbstractChessPiece[] {e1DarkQueen, d1DarkRook, f1DarkRook})
+		);
+	}
+
+	public static Stream<Arguments> noCheckmateSource() {
+		King e1WhiteKing = (King)PieceFactory.getInstance().whiteKing("e1");
+		AbstractChessPiece e1DarkQueen = PieceFactory.getInstance().darkQueen("g2");
+		AbstractChessPiece d1DarkRook = PieceFactory.getInstance().darkRook("a1");
+		AbstractChessPiece d3WhiteRook = PieceFactory.getInstance().whiteRook("d3");
+		return Stream.of(
+			Arguments.of(e1WhiteKing, new AbstractChessPiece[] {e1DarkQueen, d1DarkRook, d3WhiteRook})
+		);
+	}
+
 	@DisplayName("백킹이 주어지고 특정 목적지로 이동을 수행한다")
 	@ParameterizedTest
 	@MethodSource(value = "validKingMoveSource")
@@ -138,5 +158,31 @@ class KingTest {
 		boolean actual = whiteKing.isCheckedStatus(repository);
 		// then
 		Assertions.assertThat(actual).isTrue();
+	}
+
+	@DisplayName("백킹과 다른 기물이 주어지고 백킹은 체크메이트 상태가 된다")
+	@ParameterizedTest
+	@MethodSource(value = "validCheckmateSource")
+	void checkmate(Piece king, Piece[] other) {
+		// given
+		repository.add(king);
+		Arrays.stream(other).forEach(repository::add);
+		// when
+		boolean actual = ((King)king).isCheckmate(repository);
+		// then
+		Assertions.assertThat(actual).isTrue();
+	}
+
+	@DisplayName("백킹과 다른 기물이 주어지고 백색 다른 기물로 막을 수 있어서 체크메이트 상태가 아니다")
+	@ParameterizedTest
+	@MethodSource(value = "noCheckmateSource")
+	void givenPieces_whenBlockingPiece_thenNotCheckmate(Piece king, Piece[] other) {
+		// given
+		repository.add(king);
+		Arrays.stream(other).forEach(repository::add);
+		// when
+		boolean actual = ((King)king).isCheckmate(repository);
+		// then
+		Assertions.assertThat(actual).isFalse();
 	}
 }
