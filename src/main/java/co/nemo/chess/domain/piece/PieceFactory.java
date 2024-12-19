@@ -49,4 +49,12 @@ public class PieceFactory {
 	public AbstractChessPiece darkKing(String position) {
 		return King.notMOvedDarkKing(Location.from(position));
 	}
+
+	public Piece whiteBishop(String position) {
+		return Bishop.notMovedWhiteBishop(Location.from(position));
+	}
+
+	public Piece darkBishop(String position) {
+		return Bishop.notMovedDarkBishop(Location.from(position));
+	}
 }

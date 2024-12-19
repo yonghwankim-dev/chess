@@ -1,5 +1,9 @@
 package co.nemo.chess.domain.game;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +12,7 @@ import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.AbstractChessPiece;
@@ -147,5 +152,21 @@ class ChessGameTest {
 		AbstractChessPiece expectedDarkRook = PieceFactory.getInstance().darkRook("d8").withMoved();
 		AbstractChessPiece expectedDarkKing = PieceFactory.getInstance().darkKing("c8").withMoved();
 		Assertions.assertThat(board.getAllPieces()).contains(expectedDarkRook, expectedDarkKing);
+	}
+
+	@DisplayName("파일을 읽은 다음에 시나리오를 실행시킨다")
+	@Test
+	void senario1() throws IOException {
+		// given
+		InputStream inputStream = new ClassPathResource("./test/senario1.txt").getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		String input = reader.lines()
+			.collect(Collectors.joining(System.lineSeparator()));
+		InputStrategy inputStrategy = new StringInputStrategy(input);
+		Board board = Board.empty();
+		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
+		// when
+		game.startGame();
+		// then
 	}
 }
