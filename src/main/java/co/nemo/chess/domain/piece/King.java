@@ -57,12 +57,13 @@ public class King extends AbstractChessPiece {
 		int rankDiff;
 		Direction direction = this.calDirection(location);
 
+		// 이동 후 체크 상태에 빠지는지 여부 검사
 		if (isInCheckAfterMove(location, repository)) {
 			return false;
 		}
 
 		// 이동이 캐슬링 이동인 경우를 검사한다
-		if (isCastling(location)) {
+		if (isCastling(location, repository)) {
 			return true;
 		}
 
@@ -87,16 +88,33 @@ public class King extends AbstractChessPiece {
 		};
 	}
 
-	private boolean isCastling(Location location) {
-		if (isMoved()) {
+	private boolean isCastling(Location location, PieceRepository repository) {
+		if (isMoved() || isExistPieceOnCastling(location, repository)) {
 			return false;
 		}
+
+		// 현재 킹이 체크 상태라면 캐슬링 불가능
+		if (isCheckedStatus(repository)) {
+			return false;
+		}
+
 		if (isWhite()) {
 			return location.equals(Location.from("g1")) || location.equals(Location.from("c1"));
 		} else if (isDark()) {
 			return location.equals(Location.from("g8")) || location.equals(Location.from("c8"));
 		}
 		return false;
+	}
+
+	// 룩 기물을 제외한 다른 목적지까지의 다른 기물이 있는지 검사
+	private boolean isExistPieceOnCastling(Location destination, PieceRepository repository) {
+		return this.calBetweenLocations(destination).stream()
+			.filter(loc -> !loc.equals(destination))
+			.anyMatch(loc -> repository.find(loc)
+				.filter(piece -> !(piece instanceof Rook))
+				.filter(this::existPiece)
+				.isPresent()
+			);
 	}
 
 	private boolean isInCheckAfterMove(Location destination, PieceRepository repository) {
@@ -107,7 +125,7 @@ public class King extends AbstractChessPiece {
 		try {
 			Color kingColor = isWhite() ? Color.WHITE : Color.DARK;
 			return pieces.stream()
-				.filter(piece -> !piece.equals(king))
+				.filter(piece -> !(piece instanceof King))
 				.filter(piece -> !piece.isColorOf(kingColor))
 				.anyMatch(piece -> piece.canAttack(king, pieces));
 		} catch (Exception e) {

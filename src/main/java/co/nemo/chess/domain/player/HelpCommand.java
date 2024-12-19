@@ -26,7 +26,11 @@ public class HelpCommand extends AbstractCommand {
 		guide.append("   - 사용법: locations <좌표>\n");
 		guide.append("   - 설명: 특정 좌표에 있는 기물이 이동할 수 있는 모든 경로를 표시합니다.\n");
 		guide.append("     예시: locations a2\n\n");
-		guide.append("3. 종료 명령어:\n");
+		guide.append("3. 캐슬링 명령어:\n");
+		guide.append("   - 사용법: castling <킹 좌표> <룩 좌표>\n");
+		guide.append("   - 설명: 킹 기물과 룩 기물을 캐슬링 합니다.\n");
+		guide.append("     예시: castling e1 h1\n\n");
+		guide.append("4. 종료 명령어:\n");
 		guide.append("   - 사용법: exit\n");
 		guide.append("   - 설명: 체스 게임을 종료합니다.\n\n");
 		guide.append("=== 명령어를 입력하여 게임을 시작하세요! ===\n");

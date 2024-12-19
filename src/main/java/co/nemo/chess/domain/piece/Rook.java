@@ -63,7 +63,7 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location destination, PieceRepository repository) {
-		if (isCastling(destination)) {
+		if (isCastling(destination, repository)) {
 			return true;
 		}
 		// 중간에 기물이 없어야 한다
@@ -73,8 +73,8 @@ public class Rook extends AbstractChessPiece {
 		return canMoveStraight(destination);
 	}
 
-	private boolean isCastling(Location destination) {
-		if (isMoved()) {
+	private boolean isCastling(Location destination, PieceRepository repository) {
+		if (isMoved() || isExistPieceOnCastling(destination, repository)) {
 			return false;
 		}
 		if (isWhite()) {
@@ -83,6 +83,17 @@ public class Rook extends AbstractChessPiece {
 			return destination.equals(Location.from("f8")) || destination.equals(Location.from("d8"));
 		}
 		return false;
+	}
+
+	// 킹 기물을 제외한 다른 목적지까지의 다른 기물이 있는지 검사
+	private boolean isExistPieceOnCastling(Location destination, PieceRepository repository) {
+		return this.calBetweenLocations(destination).stream()
+			.filter(loc -> !loc.equals(destination))
+			.anyMatch(loc -> repository.find(loc)
+				.filter(piece -> !(piece instanceof King))
+				.filter(this::existPiece)
+				.isPresent()
+			);
 	}
 
 	private boolean canMoveStraight(Location destination) {
