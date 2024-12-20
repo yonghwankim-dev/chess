@@ -2,11 +2,9 @@ package co.nemo.chess.domain.board;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.King;
@@ -47,12 +45,12 @@ public class Board implements PieceMovable {
 	 * @return src 위치에 존재한 기물이 이동가능한 Location 리스트
 	 */
 	@Override
-	public List<Location> findPossiblePaths(Location src) {
+	public List<Location> findPossibleLocations(Location src) {
 		List<Location> result = new ArrayList<>();
 		repository.find(src).ifPresent(piece -> {
-			List<Location> possibleLocations = piece.findAllMoveLocations();
-			for (Location location : possibleLocations) {
-				Piece target = repository.find(location).orElse(NullPiece.from(location));
+			List<Location> allMoveLocations = piece.findAllMoveLocations();
+			for (Location location : allMoveLocations) {
+				Piece target = repository.find(location).orElseGet(() -> NullPiece.from(location));
 				if (piece.canAttack(target, repository)) {
 					result.add(location);
 				}
@@ -63,78 +61,9 @@ public class Board implements PieceMovable {
 
 	public List<Piece> setupPieces() {
 		repository.clear();
-		PieceFactory factory = PieceFactory.getInstance();
-		// 백폰 기물 배치
-		List<Piece> whitePawns = Stream.of("a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2")
-			.map(factory::whitePawn)
-			.map(Piece.class::cast)
-			.toList();
-		Piece whiteKing = factory.whiteKing("e1");
-		Piece whiteQueen = factory.whiteQueen("d1");
-		List<Piece> whiteBishops = Stream.of("c1", "f1")
-			.map(factory::whiteBishop)
-			.map(Piece.class::cast)
-			.toList();
-		List<Piece> whiteKnights = Stream.of("b1", "g1")
-			.map(factory::whiteKnight)
-			.map(Piece.class::cast)
-			.toList();
-		List<Piece> whiteRooks = Stream.of("a1", "h1")
-			.map(factory::whiteRook)
-			.map(Piece.class::cast)
-			.toList();
-		// 흑폰 기물 배치
-		List<Piece> darkPawns = Stream.of("a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7")
-			.map(factory::darkPawn)
-			.map(Piece.class::cast)
-			.toList();
-		Piece darkKing = factory.darkKing("e8");
-		Piece darkQueen = factory.darkQueen("d8");
-		List<Piece> darkBishops = Stream.of("c8", "f8")
-			.map(factory::darkBishop)
-			.map(Piece.class::cast)
-			.toList();
-		List<Piece> darkKnights = Stream.of("b8", "g8")
-			.map(factory::darkKnight)
-			.map(Piece.class::cast)
-			.toList();
-		List<Piece> darkRooks = Stream.of("a8", "h8")
-			.map(factory::darkRook)
-			.map(Piece.class::cast)
-			.toList();
-
-		// 기물 저장
-		Stream.of(whitePawns, darkPawns)
-			.flatMap(Collection::stream)
-			.forEach(repository::add);
-		repository.add(whiteKing);
-		repository.add(darkKing);
-		repository.add(whiteQueen);
-		repository.add(darkQueen);
-		Stream.of(whiteBishops, darkBishops)
-			.flatMap(Collection::stream)
-			.forEach(repository::add);
-		Stream.of(whiteKnights, darkKnights)
-			.flatMap(Collection::stream)
-			.forEach(repository::add);
-		Stream.of(whiteRooks, darkRooks)
-			.flatMap(Collection::stream)
-			.forEach(repository::add);
-
-		List<Piece> result = new ArrayList<>();
-		result.addAll(whitePawns);
-		result.addAll(whiteBishops);
-		result.addAll(whiteKnights);
-		result.addAll(whiteRooks);
-		result.add(whiteKing);
-		result.add(whiteQueen);
-		result.addAll(darkPawns);
-		result.addAll(darkBishops);
-		result.addAll(darkKnights);
-		result.addAll(darkRooks);
-		result.add(darkKing);
-		result.add(darkQueen);
-		return result;
+		List<Piece> pieces = PieceFactory.getInstance().initializedPieces();
+		pieces.forEach(repository::add);
+		return pieces;
 	}
 
 	public List<Piece> getAllPieces() {

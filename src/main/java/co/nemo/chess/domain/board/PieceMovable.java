@@ -9,7 +9,7 @@ import co.nemo.chess.domain.piece.Piece;
 public interface PieceMovable {
 	Optional<Piece> movePiece(Location src, Location dst);
 
-	List<Location> findPossiblePaths(Location src);
+	List<Location> findPossibleLocations(Location src);
 
 	Optional<Piece> findPiece(Location src);
 }

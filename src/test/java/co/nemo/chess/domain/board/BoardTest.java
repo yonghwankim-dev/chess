@@ -146,7 +146,7 @@ class BoardTest {
 
 		Location srcLocation = Location.from(src);
 		// when
-		List<Location> actual = board.findPossiblePaths(srcLocation);
+		List<Location> actual = board.findPossibleLocations(srcLocation);
 		// then
 		List<Location> expected = Arrays.stream(expectedPositions)
 			.map(Location::from)
@@ -165,7 +165,7 @@ class BoardTest {
 
 		Location srcLocation = Location.from(src);
 		// when
-		List<Location> actual = board.findPossiblePaths(srcLocation);
+		List<Location> actual = board.findPossibleLocations(srcLocation);
 		// then
 		List<Location> expected = Arrays.stream(expectedPositions)
 			.map(Location::from)
@@ -183,7 +183,7 @@ class BoardTest {
 
 		Location srcLocation = Location.from("a2");
 		// when
-		List<Location> actual = board.findPossiblePaths(srcLocation);
+		List<Location> actual = board.findPossibleLocations(srcLocation);
 		// then
 		List<Location> expected = Arrays.stream(new String[] {"a3", "a4", "b3"})
 			.map(Location::from)
@@ -238,7 +238,7 @@ class BoardTest {
 		repository.add(PieceFactory.getInstance().whiteRook("a1"));
 		Location src = Location.from("a1");
 		// when
-		List<Location> locations = board.findPossiblePaths(src);
+		List<Location> locations = board.findPossibleLocations(src);
 		// then
 		List<Location> expected = Stream.of("a2", "a3", "a4", "a5", "a6", "a7", "a8", "b1", "c1", "d1", "e1", "f1",
 				"g1", "h1")

@@ -25,7 +25,7 @@ public class LocationsCommand extends AbstractCommand {
 	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
-		List<Location> possibleLocations = board.findPossiblePaths(src);
+		List<Location> possibleLocations = board.findPossibleLocations(src);
 		String message = possibleLocations.stream()
 			.map(Location::toString)
 			.collect(Collectors.joining(",", "[", "]"));

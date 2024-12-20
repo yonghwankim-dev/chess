@@ -1,5 +1,9 @@
 package co.nemo.chess.domain.piece;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class PieceFactory {
 
 	private PieceFactory() {
@@ -86,5 +90,74 @@ public class PieceFactory {
 
 	public AbstractChessPiece darkKnight(String position) {
 		return Knight.notMovedDarkKnight(Location.from(position));
+	}
+
+	/**
+	 * 체스판의 처음 배치된 기물들을 생성하고 반환
+	 * @return 기물 리스트
+	 */
+	public List<Piece> initializedPieces() {
+		// 폰 생성
+		List<Piece> whitePawns = Stream.of("a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2")
+			.map(this::whitePawn)
+			.map(Piece.class::cast)
+			.toList();
+		List<Piece> darkPawns = Stream.of("a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7")
+			.map(this::darkPawn)
+			.map(Piece.class::cast)
+			.toList();
+
+		// 룩 생성
+		List<Piece> whiteRooks = Stream.of("a1", "h1")
+			.map(this::whiteRook)
+			.map(Piece.class::cast)
+			.toList();
+		List<Piece> darkRooks = Stream.of("a8", "h8")
+			.map(this::darkRook)
+			.map(Piece.class::cast)
+			.toList();
+
+		// 나이트 생성
+		List<Piece> whiteKnights = Stream.of("b1", "g1")
+			.map(this::whiteKnight)
+			.map(Piece.class::cast)
+			.toList();
+		List<Piece> darkKnights = Stream.of("b8", "g8")
+			.map(this::darkKnight)
+			.map(Piece.class::cast)
+			.toList();
+
+		// 비숍
+		List<Piece> whiteBishops = Stream.of("c1", "f1")
+			.map(this::whiteBishop)
+			.map(Piece.class::cast)
+			.toList();
+		List<Piece> darkBishops = Stream.of("c8", "f8")
+			.map(this::darkBishop)
+			.map(Piece.class::cast)
+			.toList();
+
+		// 퀸 생성
+		Piece whiteQueen = this.whiteQueen("d1");
+		Piece darkQueen = this.darkQueen("d8");
+
+		// 킹 생성
+		Piece whiteKing = this.whiteKing("e1");
+		Piece darkKing = this.darkKing("e8");
+
+		List<Piece> result = new ArrayList<>();
+		result.addAll(whitePawns);
+		result.addAll(darkPawns);
+		result.addAll(whiteRooks);
+		result.addAll(darkRooks);
+		result.addAll(whiteKnights);
+		result.addAll(darkKnights);
+		result.addAll(whiteBishops);
+		result.addAll(darkBishops);
+		result.add(whiteQueen);
+		result.add(darkQueen);
+		result.add(whiteKing);
+		result.add(darkKing);
+		return result;
 	}
 }
