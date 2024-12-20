@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import co.nemo.chess.domain.piece.Color;
 import co.nemo.chess.domain.piece.Location;
 
 class PlayerTest {
@@ -13,7 +12,7 @@ class PlayerTest {
 	@Test
 	void inputCommand() {
 		// given
-		Player player = new Player(Color.WHITE);
+		Player player = Player.white();
 		// when
 		AbstractCommand actual = player.inputCommand("move a2 a3");
 		// then
@@ -25,7 +24,7 @@ class PlayerTest {
 	@Test
 	void givenPlayer_whenInputLocationCommand_thenReturnCommand() {
 		// given
-		Player player = new Player(Color.WHITE);
+		Player player = Player.white();
 		// when
 		AbstractCommand actual = player.inputCommand("locations a2");
 		// then

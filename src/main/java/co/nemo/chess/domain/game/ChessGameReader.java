@@ -23,4 +23,8 @@ public class ChessGameReader {
 			return AbstractCommand.exitCommand();
 		}
 	}
+
+	public void close() {
+		inputStrategy.close();
+	}
 }

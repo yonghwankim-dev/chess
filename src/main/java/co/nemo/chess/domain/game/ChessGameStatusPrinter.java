@@ -22,16 +22,11 @@ public class ChessGameStatusPrinter {
 		outputStrategy.println("Game Start");
 	}
 
-	public void printGameStatus(Player currentPlayer, Board board) {
-		printCurrentPlayer(currentPlayer);
-		printBoard(board);
-	}
-
-	private void printCurrentPlayer(Player currentPlayer) {
+	public void printCurrentPlayer(Player currentPlayer) {
 		outputStrategy.println("현재 차례: " + currentPlayer);
 	}
 
-	private void printBoard(Board board) {
+	public void printBoard(Board board) {
 		outputStrategy.printBoard(board);
 	}
 }

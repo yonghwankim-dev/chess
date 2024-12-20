@@ -6,7 +6,7 @@ import co.nemo.chess.domain.piece.Piece;
 public class Player {
 	private final Color color;
 
-	public Player(Color color) {
+	private Player(Color color) {
 		this.color = color;
 	}
 
