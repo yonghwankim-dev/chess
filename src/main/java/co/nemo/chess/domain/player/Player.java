@@ -2,7 +2,9 @@ package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.piece.Color;
 import co.nemo.chess.domain.piece.Piece;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class Player {
 	private final Color color;
 

@@ -6,25 +6,25 @@ import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.player.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 
-public class ConsoleChessGame implements ChessGame {
+public class FileChessGame implements ChessGame {
 
 	private final CommandProcessor processor;
 	private final ChessGameStatusPrinter statusPrinter;
 	private final CheckmateChecker checkmateChecker;
 	private final ChessGameReader reader;
 
-	public ConsoleChessGame(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+	public FileChessGame(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
 		this.processor = new CommandProcessor(board, inputStrategy, outputStrategy);
 		this.statusPrinter = new ChessGameStatusPrinter(outputStrategy);
 		this.checkmateChecker = new CheckmateChecker(statusPrinter);
 		this.reader = new ChessGameReader(inputStrategy, statusPrinter);
 	}
 
-	public static ConsoleChessGame init() {
-		return new ConsoleChessGame(
+	public static ChessGame init(InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+		return new FileChessGame(
 			Board.empty(),
-			ConsoleInputStrategy.getInstance(),
-			ConsoleOutputStrategy.getInstance()
+			inputStrategy,
+			outputStrategy
 		);
 	}
 

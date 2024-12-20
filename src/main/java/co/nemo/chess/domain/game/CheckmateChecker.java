@@ -5,16 +5,14 @@ import co.nemo.chess.domain.piece.Color;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 
-public class ChessGameStatusManager {
-	private final Board board;
+public class CheckmateChecker {
 	private final ChessGameStatusPrinter printer;
 
-	public ChessGameStatusManager(Board board, ChessGameStatusPrinter printer) {
-		this.board = board;
+	public CheckmateChecker(ChessGameStatusPrinter printer) {
 		this.printer = printer;
 	}
 
-	public boolean isCheckmate() {
+	public boolean isCheckmate(Board board) {
 		Piece checkmatedPiece = board.getCheckmatePiece().orElseGet(NullPiece::empty);
 		if (checkmatedPiece.isColorOf(Color.WHITE)) {
 			printer.printDarkPlayerWin();

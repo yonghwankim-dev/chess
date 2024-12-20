@@ -188,7 +188,7 @@ class ConsoleChessGameTest {
 	@Test
 	void senario1() throws IOException {
 		// given
-		InputStream inputStream = new ClassPathResource("./test/senario1.txt").getInputStream();
+		InputStream inputStream = new ClassPathResource("test/test1.txt").getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String input = reader.lines()
 			.collect(Collectors.joining(System.lineSeparator()));

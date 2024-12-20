@@ -1,6 +1,10 @@
 package co.nemo.chess.domain.game;
 
+import java.util.Optional;
+
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.piece.NullPiece;
+import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.player.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 
@@ -49,5 +53,20 @@ public class CommandProcessor {
 	public void printGameStatus(ChessGameStatusPrinter statusPrinter) {
 		statusPrinter.printCurrentPlayer(currentPlayer);
 		statusPrinter.printBoard(board);
+	}
+
+	public boolean isCheckmate(CheckmateChecker statusManager) {
+		return statusManager.isCheckmate(board);
+	}
+
+	public Optional<Player> getWinner() {
+		Piece checkmatedPiece = board.getCheckmatePiece().orElseGet(NullPiece::empty);
+		if (whitePlayer.isOwnPiece(checkmatedPiece)) {
+			return Optional.of(darkPlayer);
+		} else if (darkPlayer.isOwnPiece(checkmatedPiece)) {
+			return Optional.of(whitePlayer);
+		} else {
+			return Optional.empty();
+		}
 	}
 }
