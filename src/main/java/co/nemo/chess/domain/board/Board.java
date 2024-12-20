@@ -63,7 +63,7 @@ public class Board implements PieceMovable {
 		repository.clear();
 		List<Piece> pieces = PieceFactory.getInstance().initializedPieces();
 		pieces.forEach(repository::add);
-		return pieces;
+		return repository.findAll();
 	}
 
 	public List<Piece> getAllPieces() {

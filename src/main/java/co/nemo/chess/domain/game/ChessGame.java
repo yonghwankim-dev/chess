@@ -6,7 +6,7 @@ import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.Color;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.player.AbstractCommand;
-import co.nemo.chess.domain.player.CommandType;
+import co.nemo.chess.domain.player.CommandParser;
 import co.nemo.chess.domain.player.Player;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,18 +16,18 @@ public class ChessGame {
 	private final Board board;
 
 	private final Player whitePlayer;
-	private final Player blackPlayer;
-	private Player currentPlayer;
+	private final Player darkPlayer;
 	private final InputStrategy inputStrategy;
 	private final OutputStrategy outputStrategy;
+	private final CommandProcessor processor;
 
 	public ChessGame(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
 		this.board = board;
 		this.whitePlayer = new Player(Color.WHITE);
-		this.blackPlayer = new Player(Color.DARK);
-		this.currentPlayer = whitePlayer;
+		this.darkPlayer = new Player(Color.DARK);
 		this.inputStrategy = inputStrategy;
 		this.outputStrategy = outputStrategy;
+		this.processor = new CommandProcessor(board, inputStrategy, outputStrategy, whitePlayer);
 	}
 
 	public static ChessGame consoleBased() {
@@ -45,33 +45,30 @@ public class ChessGame {
 
 		while (!isCheckmate()) {
 			printGameStatus();
-			outputStrategy.print("> ");
-			Optional<String> inputLine = inputStrategy.readLine();
-			if (inputLine.isEmpty()) {
-				outputStrategy.print("No input received. Exiting game.");
+			AbstractCommand command = inputPlayerCommand();
+
+			if (command.isExistCommand()) {
 				break;
 			}
 
-			AbstractCommand command = currentPlayer.inputCommand(inputLine.get());
-			if (command.isTypeOf(CommandType.EXIT)) {
-				break;
-			} else if (command.isTypeOf(CommandType.LOCATIONS) ||
-				command.isTypeOf(CommandType.HELP)) {
-				command.process(board, inputStrategy, outputStrategy, currentPlayer);
-				continue;
-			} else if (command.isTypeOf(CommandType.NONE)) {
-				continue;
+			boolean isChangedTurn = processor.process(command);
+			if (isChangedTurn) {
+				switchPlayer();
 			}
-
-			try {
-				command.process(board, inputStrategy, outputStrategy, currentPlayer);
-			} catch (IllegalArgumentException e) {
-				outputStrategy.println(e.getMessage());
-				continue;
-			}
-			this.switchPlayer();
 		}
 		inputStrategy.close();
+	}
+
+	private AbstractCommand inputPlayerCommand() {
+		outputStrategy.print("> ");
+		try {
+			return inputStrategy.readLine()
+				.map(text -> CommandParser.getInstance().parse(text))
+				.orElseThrow(() -> new IllegalArgumentException("No input received. Exiting game."));
+		} catch (IllegalArgumentException e) {
+			outputStrategy.print(e.getMessage());
+			return AbstractCommand.exitCommand();
+		}
 	}
 
 	private boolean isCheckmate() {
@@ -81,11 +78,11 @@ public class ChessGame {
 		}
 		Piece checkmatedPiece = piece.orElseThrow();
 		if (checkmatedPiece.isColorOf(Color.WHITE)) {
-			outputStrategy.println("win Black Player");
+			outputStrategy.println("흑 플레이어 승리!");
 			outputStrategy.printBoard(board);
 			return true;
 		} else if (checkmatedPiece.isColorOf(Color.DARK)) {
-			outputStrategy.println("win White Player");
+			outputStrategy.println("백 플레이어 승리!");
 			outputStrategy.printBoard(board);
 			return true;
 		}
@@ -93,11 +90,11 @@ public class ChessGame {
 	}
 
 	private void printGameStatus() {
-		outputStrategy.println("CurrentPlayer: " + currentPlayer);
+		outputStrategy.println("현재 차례: " + processor.getCurrentPlayer());
 		outputStrategy.printBoard(board);
 	}
 
 	public void switchPlayer() {
-		currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+		processor.switchPlayer(whitePlayer, darkPlayer);
 	}
 }

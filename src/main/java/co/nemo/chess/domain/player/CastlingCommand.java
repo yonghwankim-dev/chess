@@ -28,7 +28,8 @@ public class CastlingCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) throws
+	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy,
+		Player player) throws
 		IllegalArgumentException {
 		// kingSrc와 rookSrc 위치에 있는 기물이 킹과 룩인지 검증
 		Piece findKingPiece = board.findPiece(kingSrc)
@@ -67,6 +68,7 @@ public class CastlingCommand extends AbstractCommand {
 		} else {
 			throw new IllegalArgumentException("invalid locations, kingSrc=" + kingSrc + " rookSrc=" + rookSrc);
 		}
+		return true;
 	}
 
 	private boolean isWhiteKingSideCastling(Board board) {

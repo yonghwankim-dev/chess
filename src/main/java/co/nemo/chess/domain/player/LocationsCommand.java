@@ -22,7 +22,7 @@ public class LocationsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
+	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
 		List<Location> possibleLocations = board.findPossibleLocations(src);
@@ -30,6 +30,7 @@ public class LocationsCommand extends AbstractCommand {
 			.map(Location::toString)
 			.collect(Collectors.joining(",", "[", "]"));
 		outputStrategy.println(message);
+		return false;
 	}
 
 	private void validatePieceOwnership(Piece piece, Player player) {

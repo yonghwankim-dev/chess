@@ -15,7 +15,7 @@ public class HelpCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
+	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
 		StringBuilder guide = new StringBuilder();
 		guide.append("=== Chess Command Guide ===\n\n");
 		guide.append("1. 이동 명령어:\n");
@@ -35,5 +35,6 @@ public class HelpCommand extends AbstractCommand {
 		guide.append("   - 설명: 체스 게임을 종료합니다.\n\n");
 		guide.append("=== 명령어를 입력하여 게임을 시작하세요! ===\n");
 		outputStrategy.print(guide.toString());
+		return false;
 	}
 }

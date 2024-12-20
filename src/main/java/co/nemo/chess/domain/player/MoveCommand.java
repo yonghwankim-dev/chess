@@ -26,7 +26,8 @@ public class MoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) throws
+	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy,
+		Player player) throws
 		IllegalArgumentException {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
@@ -34,6 +35,7 @@ public class MoveCommand extends AbstractCommand {
 			log.info("{}, move {}->{}", piece, src, dst);
 			piece.handleMoveEvent(board, inputStrategy, outputStrategy);
 		});
+		return true;
 	}
 
 	private void validatePieceOwnership(Piece piece, Player player) throws IllegalArgumentException {
