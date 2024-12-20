@@ -59,7 +59,7 @@ public class Bishop extends AbstractChessPiece {
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
 		// 중간 경로에 기물이 있으면 이동 불가능
-		if (existPieceBetween(location, repository)) {
+		if (existPieceUntil(location, repository)) {
 			return false;
 		}
 		// 일반적인 이동인 경우 검사

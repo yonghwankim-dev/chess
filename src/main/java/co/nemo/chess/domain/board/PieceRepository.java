@@ -64,6 +64,10 @@ public class PieceRepository {
 		return pieces.contains(piece);
 	}
 
+	public boolean contains(Location location) {
+		return pieces.stream().anyMatch(piece -> piece.match(location));
+	}
+
 	public int size() {
 		return pieces.size();
 	}

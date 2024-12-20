@@ -57,7 +57,7 @@ public class Queen extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		if (this.existPieceBetween(location, repository)) {
+		if (this.existPieceUntil(location, repository)) {
 			return false;
 		}
 		// 일반적인 이동인 경우 검사

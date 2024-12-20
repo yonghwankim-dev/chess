@@ -16,7 +16,7 @@ import co.nemo.chess.domain.game.OutputStrategy;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class Pawn extends AbstractChessPiece implements Promotable {
+public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy {
 
 	private Pawn(Location location, Color color, boolean isMoved, Deque<Location> moveHistory) {
 		super(location, color, isMoved, moveHistory);
@@ -124,40 +124,29 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 		return this.isDark() && this.isOnRank(currentRank);
 	}
 
-	private boolean isOneForward(Location newLocation, PieceRepository repository) {
-		// 중간 경로(목적지 포함)에 다른 기물이 존재하면 안된다
-		if (existPieceBetween(newLocation, repository)) {
+	private boolean isOneForward(Location destination, PieceRepository repository) {
+		if (super.existPieceUntil(destination, repository)) {
 			return false;
 		}
 
-		Direction moveDirection = calDirection(newLocation);
-		if (isWhite() && moveDirection == UP) {
-			return moveDirection.isEqualDistance(this, newLocation);
-		} else if (isDark() && moveDirection == DOWN) {
-			return moveDirection.isEqualDistance(this, newLocation);
-		} else {
-			return false;
-		}
+		Direction moveDirection = calDirection(destination);
+		return moveDirection == getForwardDirection() &&
+			moveDirection.isEqualDistance(this, destination);
 	}
 
 	/**
-	 * 목적지(dst)를 포함한 중간 경로에 다른 기물이 존재하는지 여부 검사
-	 * 폰 기물은 전진해서 기물을 잡을 수 없기 때문에 중간 경로에 목적지를 포함한다
-	 * @param dst 목적지
-	 * @param repository 기물 저장소
-	 * @return 기물 존재 여부
+	 * 중간 경로에 기물이 있는지 여부에서 목적지를 포함하느냐의 여부
+	 * @param curLocation 현재 위치
+	 * @param destination 목적지
+	 * @return true: 목적지 포함, false: 목적지 마포함
 	 */
 	@Override
-	boolean existPieceBetween(Location dst, PieceRepository repository) {
-		return super.calBetweenLocations(dst).stream()
-			.anyMatch(location -> repository.find(location)
-				.filter(this::existPiece)
-				.isPresent()
-			);
+	boolean shouldContainDestination(Location curLocation, Location destination) {
+		return false;
 	}
 
 	private boolean isTwoForward(Location newLocation, PieceRepository repository) {
-		if (existPieceBetween(newLocation, repository)) {
+		if (existPieceUntil(newLocation, repository)) {
 			return false;
 		}
 		int fileDifference = 0;
@@ -265,5 +254,10 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 				return this.isValidLocationDifference(location, fileDiff, rankDiff);
 			})
 			.orElse(false);
+	}
+
+	@Override
+	public Direction getForwardDirection() {
+		return isWhite() ? UP : DOWN;
 	}
 }

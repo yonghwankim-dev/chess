@@ -67,7 +67,7 @@ public class Rook extends AbstractChessPiece {
 			return true;
 		}
 		// 중간에 기물이 없어야 한다
-		if (existPieceBetween(destination, repository)) {
+		if (existPieceUntil(destination, repository)) {
 			return false;
 		}
 		return canMoveStraight(destination);

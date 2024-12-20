@@ -123,6 +123,21 @@ class PawnTest {
 			assertThat(actual).isEmpty();
 		}
 
+		@DisplayName("백폰이 2칸 전진시 중간 경로에 기물이 있는 경우 이동할 수 없다")
+		@Test
+		void givenWhitePawn_whenExistPieceBetweenLocation_thenNotMovePawn() {
+			// given
+			Piece pawn = PieceFactory.getInstance().whitePawn("a2");
+			Piece a3DarkPawn = PieceFactory.getInstance().darkPawn("a3").withMoved();
+			repository.add(pawn);
+			repository.add(a3DarkPawn);
+			Location dst = Location.from("a4");
+			// when
+			Optional<AbstractChessPiece> actual = pawn.move(dst, repository);
+			// then
+			assertThat(actual).isEmpty();
+		}
+
 	}
 
 	public static Stream<Arguments> validPawnPossibleLocations() {

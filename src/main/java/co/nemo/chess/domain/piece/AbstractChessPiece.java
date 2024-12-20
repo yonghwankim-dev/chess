@@ -200,13 +200,15 @@ public abstract class AbstractChessPiece implements Piece {
 		return !(piece instanceof NullPiece);
 	}
 
-	boolean existPieceBetween(Location dst, PieceRepository repository) {
-		return this.calBetweenLocations(dst).stream()
-			.filter(loc -> !loc.equals(dst))
-			.anyMatch(loc -> repository.find(loc)
-				.filter(this::existPiece)
-				.isPresent()
-			);
+	boolean existPieceUntil(Location dst, PieceRepository repository) {
+		List<Location> interLocations = this.calBetweenLocations(dst).stream()
+			.filter(loc -> !this.shouldContainDestination(loc, dst))
+			.toList();
+		return interLocations.stream().anyMatch(repository::contains);
+	}
+
+	boolean shouldContainDestination(Location curLocation, Location destination) {
+		return curLocation.equals(destination);
 	}
 
 	boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
