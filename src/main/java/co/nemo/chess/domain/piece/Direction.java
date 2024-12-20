@@ -59,4 +59,11 @@ public enum Direction {
 	public boolean isEqualDistance(int fileDiff, int rankDiff) {
 		return this.fileDirection == fileDiff && this.rankDirection == rankDiff;
 	}
+
+	public boolean isEqualDistance(AbstractChessPiece piece, Location destination) {
+		LocationDifference locationDifference = piece.diffLocation(destination);
+		int fileDiff = Math.abs(fileDirection);
+		int rankDiff = Math.abs(rankDirection);
+		return locationDifference.isEqualDistance(fileDiff, rankDiff);
+	}
 }

@@ -65,6 +65,11 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	@Override
+	public boolean isSameColor(Piece piece) {
+		return piece.isColorOf(this.color);
+	}
+
+	@Override
 	public String toSymbol() {
 		if (this instanceof Pawn) {
 			return color == Color.WHITE ? "♙" : "♟";

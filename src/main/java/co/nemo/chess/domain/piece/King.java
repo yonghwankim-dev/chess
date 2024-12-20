@@ -54,39 +54,13 @@ public class King extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		int fileDiff;
-		int rankDiff;
-		Direction direction = this.calDirection(location);
-
-		// 이동 후 체크 상태에 빠지는지 여부 검사
 		if (isInCheckAfterMove(location, repository)) {
 			return false;
 		}
-
-		// 이동이 캐슬링 이동인 경우를 검사한다
 		if (isCastling(location, repository)) {
 			return true;
 		}
-
-		// 일반적인 이동인 경우 검사
-		return switch (direction) {
-			case UP, DOWN -> {
-				fileDiff = 0;
-				rankDiff = 1;
-				yield this.isValidLocationDifference(location, fileDiff, rankDiff);
-			}
-			case LEFT, RIGHT -> {
-				fileDiff = 1;
-				rankDiff = 0;
-				yield this.isValidLocationDifference(location, fileDiff, rankDiff);
-			}
-			case UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT -> {
-				fileDiff = 1;
-				rankDiff = 1;
-				yield this.isValidLocationDifference(location, fileDiff, rankDiff);
-			}
-			default -> false;
-		};
+		return this.calDirection(location).isEqualDistance(this, location);
 	}
 
 	private boolean isCastling(Location location, PieceRepository repository) {
@@ -118,20 +92,22 @@ public class King extends AbstractChessPiece {
 			);
 	}
 
+	/**
+	 * 킹 기물이 목적지(destination)으로 이동한 후에 체크 상태가 되는지 여부 검사
+	 * @param destination 킹 기물의 목적지
+	 * @param repository 기물 저장소
+	 * @return 체크 여부
+	 */
 	private boolean isInCheckAfterMove(Location destination, PieceRepository repository) {
-		AbstractChessPiece king = movedPiece(destination);
+		Piece king = super.movedPiece(destination);
 		List<Piece> pieces = repository.findAll();
 		pieces.remove(this);
 		pieces.add(king);
-		try {
-			Color kingColor = isWhite() ? Color.WHITE : Color.DARK;
-			return pieces.stream()
-				.filter(piece -> !(piece instanceof King))
-				.filter(piece -> !piece.isColorOf(kingColor))
-				.anyMatch(piece -> piece.canAttack(king, pieces));
-		} catch (Exception e) {
-			throw new IllegalArgumentException("invalid destination, destination=" + destination);
-		}
+
+		return pieces.stream()
+			.filter(piece -> !(piece instanceof King))
+			.filter(piece -> !piece.isSameColor(this))
+			.anyMatch(piece -> piece.canAttack(king, pieces));
 	}
 
 	public boolean isCheckedStatus(PieceRepository repository) {

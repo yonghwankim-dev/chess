@@ -36,6 +36,8 @@ public interface Piece {
 
 	boolean isColorOf(Color color);
 
+	boolean isSameColor(Piece piece);
+
 	String toSymbol();
 
 	default void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {

@@ -130,18 +130,23 @@ public class Pawn extends AbstractChessPiece implements Promotable {
 			return false;
 		}
 
-		int fileDiff = 0;
-		int rankDiff = 1;
-		Direction direction = calDirection(newLocation);
-		if (isWhite() && direction == UP) {
-			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
-		} else if (isDark() && direction == DOWN) {
-			return this.isValidLocationDifference(newLocation, fileDiff, rankDiff);
+		Direction moveDirection = calDirection(newLocation);
+		if (isWhite() && moveDirection == UP) {
+			return moveDirection.isEqualDistance(this, newLocation);
+		} else if (isDark() && moveDirection == DOWN) {
+			return moveDirection.isEqualDistance(this, newLocation);
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * 목적지(dst)를 포함한 중간 경로에 다른 기물이 존재하는지 여부 검사
+	 * 폰 기물은 전진해서 기물을 잡을 수 없기 때문에 중간 경로에 목적지를 포함한다
+	 * @param dst 목적지
+	 * @param repository 기물 저장소
+	 * @return 기물 존재 여부
+	 */
 	@Override
 	boolean existPieceBetween(Location dst, PieceRepository repository) {
 		return super.calBetweenLocations(dst).stream()
