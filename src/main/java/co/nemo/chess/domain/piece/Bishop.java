@@ -58,11 +58,7 @@ public class Bishop extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		// 중간 경로에 기물이 있으면 이동 불가능
-		if (existPieceUntil(location, repository)) {
-			return false;
-		}
-		// 일반적인 이동인 경우 검사
-		return List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT).contains(calDirection(location));
+		return emptyPieceUntil(location, repository) &&
+			Direction.bishopDirections().contains(calDirection(location));
 	}
 }

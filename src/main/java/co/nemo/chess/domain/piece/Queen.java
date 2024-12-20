@@ -1,7 +1,5 @@
 package co.nemo.chess.domain.piece;
 
-import static co.nemo.chess.domain.piece.Direction.*;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -43,7 +41,7 @@ public class Queen extends AbstractChessPiece {
 	@Override
 	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
-		for (Direction direction : List.of(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)) {
+		for (Direction direction : Direction.queenDirections()) {
 			int distance = 1;
 			Optional<Location> location;
 
@@ -57,11 +55,7 @@ public class Queen extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		if (this.existPieceUntil(location, repository)) {
-			return false;
-		}
-		// 일반적인 이동인 경우 검사
-		return List.of(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)
-			.contains(calDirection(location));
+		return emptyPieceUntil(location, repository) &&
+			Direction.queenDirections().contains(calDirection(location));
 	}
 }

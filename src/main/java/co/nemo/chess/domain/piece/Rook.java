@@ -1,7 +1,5 @@
 package co.nemo.chess.domain.piece;
 
-import static co.nemo.chess.domain.piece.Direction.*;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -13,7 +11,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 public class Rook extends AbstractChessPiece {
-	Rook(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
+	private Rook(Location location, Color color, boolean isMoved, Deque<Location> locationHistory) {
 		super(location, color, isMoved, locationHistory);
 	}
 
@@ -47,13 +45,12 @@ public class Rook extends AbstractChessPiece {
 	@Override
 	public List<Location> findAllMoveLocations() {
 		List<Location> result = new ArrayList<>();
-		List<Direction> directions = List.of(UP, DOWN, LEFT, RIGHT);
-		for (Direction direction : directions) {
+		for (Direction direction : Direction.rookDirections()) {
 			Optional<Location> optional;
 			int distance = 1;
 			// 해당 방향으로 더이상 움직일 수 없을때까지 반복한다
 			do {
-				optional = this.calLocation(direction, distance);
+				optional = super.calLocation(direction, distance);
 				optional.ifPresent(result::add);
 				distance++;
 			} while (optional.isPresent());
@@ -63,33 +60,29 @@ public class Rook extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location destination, PieceRepository repository) {
-		if (isCastling(destination, repository)) {
+		if (isCastlingMove(destination, repository)) {
 			return true;
 		}
-		// 중간에 기물이 없어야 한다
-		if (existPieceUntil(destination, repository)) {
-			return false;
-		}
-		return canMoveStraight(destination);
+		return emptyPieceUntil(destination, repository) &&
+			canMoveStraight(destination);
 	}
 
-	private boolean isCastling(Location destination, PieceRepository repository) {
-		if (isMoved() || isExistPieceOnCastling(destination, repository)) {
-			return false;
-		}
-		if (isWhite()) {
-			return destination.equals(Location.from("f1")) || destination.equals(Location.from("d1"));
-		} else if (isDark()) {
-			return destination.equals(Location.from("f8")) || destination.equals(Location.from("d8"));
-		}
-		return false;
+	private boolean isCastlingMove(Location destination, PieceRepository repository) {
+		return super.isNotMoved() &&
+			isEmptyPieceOnCastling(destination, repository) &&
+			getCastlingLocations().contains(destination);
 	}
 
-	// 킹 기물을 제외한 다른 목적지까지의 다른 기물이 있는지 검사
-	private boolean isExistPieceOnCastling(Location destination, PieceRepository repository) {
+	private List<Location> getCastlingLocations() {
+		return super.isWhite() ?
+			List.of(Location.from("f1"), Location.from("d1")) :
+			List.of(Location.from("f8"), Location.from("d8"));
+	}
+
+	// 킹 기물을 제외한 다른 목적지까지의 다른 기물이 없는지 검사
+	private boolean isEmptyPieceOnCastling(Location destination, PieceRepository repository) {
 		return this.calBetweenLocations(destination).stream()
-			.filter(loc -> !loc.equals(destination))
-			.anyMatch(loc -> repository.find(loc)
+			.noneMatch(loc -> repository.find(loc)
 				.filter(piece -> !(piece instanceof King))
 				.filter(this::existPiece)
 				.isPresent()
@@ -97,6 +90,6 @@ public class Rook extends AbstractChessPiece {
 	}
 
 	private boolean canMoveStraight(Location destination) {
-		return List.of(UP, DOWN, LEFT, RIGHT).contains(calDirection(destination));
+		return Direction.rookDirections().contains(super.calDirection(destination));
 	}
 }

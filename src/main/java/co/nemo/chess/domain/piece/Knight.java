@@ -48,6 +48,6 @@ public class Knight extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
-		return Direction.knightDirections().contains(this.calDirection(location));
+		return Direction.knightDirections().contains(super.calDirection(location));
 	}
 }

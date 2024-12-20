@@ -207,6 +207,13 @@ public abstract class AbstractChessPiece implements Piece {
 		return interLocations.stream().anyMatch(repository::contains);
 	}
 
+	boolean emptyPieceUntil(Location dst, PieceRepository repository) {
+		List<Location> interLocations = this.calBetweenLocations(dst).stream()
+			.filter(loc -> !this.shouldContainDestination(loc, dst))
+			.toList();
+		return interLocations.stream().noneMatch(repository::contains);
+	}
+
 	boolean shouldContainDestination(Location curLocation, Location destination) {
 		return curLocation.equals(destination);
 	}

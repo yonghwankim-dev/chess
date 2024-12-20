@@ -56,6 +56,18 @@ public enum Direction {
 		);
 	}
 
+	public static List<Direction> rookDirections() {
+		return List.of(UP, DOWN, LEFT, RIGHT);
+	}
+
+	public static List<Direction> bishopDirections() {
+		return List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT);
+	}
+
+	public static List<Direction> queenDirections() {
+		return List.of(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT);
+	}
+
 	public boolean isEqualDistance(int fileDiff, int rankDiff) {
 		return this.fileDirection == fileDiff && this.rankDirection == rankDiff;
 	}
