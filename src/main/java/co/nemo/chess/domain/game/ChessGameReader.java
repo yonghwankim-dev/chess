@@ -1,13 +1,14 @@
 package co.nemo.chess.domain.game;
 
+import co.nemo.chess.domain.piece.PieceType;
 import co.nemo.chess.domain.player.AbstractCommand;
 import co.nemo.chess.domain.player.CommandParser;
 
 public class ChessGameReader {
 	private final InputStrategy inputStrategy;
-	private final ChessGameStatusPrinter statusPrinter;
+	private final ChessGameWriter statusPrinter;
 
-	public ChessGameReader(InputStrategy inputStrategy, ChessGameStatusPrinter statusPrinter) {
+	public ChessGameReader(InputStrategy inputStrategy, ChessGameWriter statusPrinter) {
 		this.inputStrategy = inputStrategy;
 		this.statusPrinter = statusPrinter;
 	}
@@ -22,6 +23,13 @@ public class ChessGameReader {
 			statusPrinter.printErrorMessage(e);
 			return AbstractCommand.exitCommand();
 		}
+	}
+
+	public PieceType readPieceType() throws IllegalArgumentException {
+		return inputStrategy.readLine()
+			.map(PieceType::valueOfText)
+			.orElseThrow(() ->
+				new IllegalArgumentException("Invalid input, possible options: Queen, Rook, Bishop, Knight"));
 	}
 
 	public void close() {

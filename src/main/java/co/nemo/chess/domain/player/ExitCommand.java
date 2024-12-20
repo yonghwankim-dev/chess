@@ -1,8 +1,8 @@
 package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 
 public class ExitCommand extends AbstractCommand {
 
@@ -15,8 +15,8 @@ public class ExitCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
-		outputStrategy.print("shutdown the game");
+	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter, Player player) {
+		gameWriter.printExitMessage();
 		return false;
 	}
 }

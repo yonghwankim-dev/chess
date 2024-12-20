@@ -19,7 +19,7 @@ class FileChessGameTest {
 		ClassPathResource resource = new ClassPathResource("test/test1.txt");
 		InputStrategy inputStrategy = FileInputStrategy.from(resource.getFile());
 		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
-		ChessGame chessGame = FileChessGame.init(inputStrategy, outputStrategy);
+		ChessGame chessGame = ChessGame.init(inputStrategy, outputStrategy);
 		// when
 		Optional<Player> actual = chessGame.startGame();
 		// then

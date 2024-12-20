@@ -1,8 +1,8 @@
 package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,8 +16,8 @@ public class InvalidCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
-		outputStrategy.print("invalid command.");
+	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter, Player player) {
+		gameWriter.printInvalidCommandMessage();
 		return false;
 	}
 }

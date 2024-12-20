@@ -3,8 +3,8 @@ package co.nemo.chess.domain.player;
 import java.util.function.Consumer;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.King;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
@@ -28,7 +28,7 @@ public class CastlingCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy,
+	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter,
 		Player player) throws
 		IllegalArgumentException {
 		// kingSrc와 rookSrc 위치에 있는 기물이 킹과 룩인지 검증

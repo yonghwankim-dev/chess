@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 
 public interface Piece {
 	/**
@@ -40,7 +40,7 @@ public interface Piece {
 
 	String toSymbol();
 
-	default void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+	default void handleMoveEvent(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter) {
 
 	}
 }

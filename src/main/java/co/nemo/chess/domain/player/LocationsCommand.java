@@ -1,11 +1,10 @@
 package co.nemo.chess.domain.player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
 
@@ -22,14 +21,11 @@ public class LocationsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy, Player player) {
+	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter, Player player) {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
 		List<Location> possibleLocations = board.findPossibleLocations(src);
-		String message = possibleLocations.stream()
-			.map(Location::toString)
-			.collect(Collectors.joining(",", "[", "]"));
-		outputStrategy.println(message);
+		gameWriter.printLocations(possibleLocations);
 		return false;
 	}
 

@@ -11,19 +11,22 @@ import co.nemo.chess.domain.player.Player;
 public class CommandProcessor {
 
 	private final Board board;
-	private final InputStrategy inputStrategy;
-	private final OutputStrategy outputStrategy;
+	private final ChessGameReader gameReader;
+	private final ChessGameWriter gameWriter;
 	private final Player whitePlayer;
 	private final Player darkPlayer;
 	private Player currentPlayer;
+	private final CheckmateChecker checkmateChecker;
 
-	public CommandProcessor(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+	public CommandProcessor(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter,
+		CheckmateChecker checkmateChecker) {
 		this.board = board;
-		this.inputStrategy = inputStrategy;
-		this.outputStrategy = outputStrategy;
+		this.gameReader = gameReader;
+		this.gameWriter = gameWriter;
 		this.whitePlayer = Player.white();
 		this.darkPlayer = Player.dark();
 		this.currentPlayer = this.whitePlayer;
+		this.checkmateChecker = checkmateChecker;
 	}
 
 	public void setupPieces() {
@@ -37,9 +40,9 @@ public class CommandProcessor {
 	public void process(AbstractCommand command) {
 		boolean isChangedTurn = false;
 		try {
-			isChangedTurn = command.process(board, inputStrategy, outputStrategy, currentPlayer);
+			isChangedTurn = command.process(board, gameReader, gameWriter, currentPlayer);
 		} catch (IllegalArgumentException e) {
-			outputStrategy.println(e.getMessage());
+			gameWriter.printErrorMessage(e);
 		}
 		if (isChangedTurn) {
 			switchPlayer();
@@ -50,13 +53,13 @@ public class CommandProcessor {
 		currentPlayer = (currentPlayer == whitePlayer) ? darkPlayer : whitePlayer;
 	}
 
-	public void printGameStatus(ChessGameStatusPrinter statusPrinter) {
+	public void printGameStatus(ChessGameWriter statusPrinter) {
 		statusPrinter.printCurrentPlayer(currentPlayer);
 		statusPrinter.printBoard(board);
 	}
 
-	public boolean isCheckmate(CheckmateChecker statusManager) {
-		return statusManager.isCheckmate(board);
+	public boolean isCheckmate() {
+		return checkmateChecker.isCheckmate(board);
 	}
 
 	public Optional<Player> getWinner() {

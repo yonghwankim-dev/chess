@@ -6,9 +6,9 @@ import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 
 public class CheckmateChecker {
-	private final ChessGameStatusPrinter printer;
+	private final ChessGameWriter printer;
 
-	public CheckmateChecker(ChessGameStatusPrinter printer) {
+	public CheckmateChecker(ChessGameWriter printer) {
 		this.printer = printer;
 	}
 

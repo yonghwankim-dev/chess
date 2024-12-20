@@ -52,6 +52,17 @@ public enum CommandType {
 			}
 		}
 	},
+	PROMOTION {
+		/**
+		 * 해당 메서드는 지원하지 않습니다.
+		 * @param commands 명령어 및 매개변수
+		 * @return 명령어
+		 */
+		@Override
+		public AbstractCommand createCommand(String[] commands) {
+			return AbstractCommand.invalidCommand();
+		}
+	},
 	EXIT {
 		@Override
 		public AbstractCommand createCommand(String[] commands) {

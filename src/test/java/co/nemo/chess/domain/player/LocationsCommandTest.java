@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.game.ConsoleOutputStrategy;
 import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
@@ -17,6 +19,8 @@ class LocationsCommandTest {
 
 	private Board board;
 	private InputStrategy inputStrategy;
+	private ChessGameWriter gameWriter;
+	private ChessGameReader gameReader;
 	private OutputStrategy outputStrategy;
 	private Player whitePlayer;
 
@@ -26,6 +30,8 @@ class LocationsCommandTest {
 		board.setupPieces();
 		this.inputStrategy = new StringInputStrategy(Strings.EMPTY);
 		this.outputStrategy = ConsoleOutputStrategy.getInstance();
+		this.gameWriter = new ChessGameWriter(outputStrategy);
+		this.gameReader = new ChessGameReader(inputStrategy, gameWriter);
 		this.whitePlayer = Player.white();
 	}
 
@@ -34,9 +40,10 @@ class LocationsCommandTest {
 	void givenWhitePlayer_whenAttemptingToLocationsBlackPiece_thenLocationsIsInvalid() {
 		// given
 		AbstractCommand command = LocationsCommand.from(Location.from("a7"));
+
 		// when
 		Throwable throwable = Assertions.catchThrowable(
-			() -> command.process(board, inputStrategy, outputStrategy, whitePlayer));
+			() -> command.process(board, gameReader, gameWriter, whitePlayer));
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}

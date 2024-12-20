@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.game.ConsoleOutputStrategy;
 import co.nemo.chess.domain.game.InputStrategy;
 import co.nemo.chess.domain.game.OutputStrategy;
@@ -17,6 +20,18 @@ import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.PieceFactory;
 
 class CastlingCommandTest {
+
+	private OutputStrategy outputStrategy;
+	private ChessGameWriter gameWriter;
+	private ChessGameReader gameReader;
+
+	@BeforeEach
+	void setUp() {
+		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
+		outputStrategy = ConsoleOutputStrategy.getInstance();
+		this.gameWriter = new ChessGameWriter(outputStrategy);
+		this.gameReader = new ChessGameReader(inputStrategy, gameWriter);
+	}
 
 	@DisplayName("백 플레이어가 백킹과 백룩을 가지고 킹 사이드 캐슬링한다")
 	@Test
@@ -31,11 +46,9 @@ class CastlingCommandTest {
 		board.addPiece(e1WhiteKing);
 		board.addPiece(h1WhiteRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player whitePlayer = Player.white();
 		// when
-		command.process(board, inputStrategy, outputStrategy, whitePlayer);
+		command.process(board, gameReader, gameWriter, whitePlayer);
 		// then
 		Piece expectedWhiteKing = PieceFactory.getInstance().whiteKing("g1").withMoved();
 		assertThat(board.findPiece(Location.from("g1"))).contains(expectedWhiteKing);
@@ -57,11 +70,9 @@ class CastlingCommandTest {
 		board.addPiece(e1WhiteKing);
 		board.addPiece(h1WhiteRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player whitePlayer = Player.white();
 		// when
-		command.process(board, inputStrategy, outputStrategy, whitePlayer);
+		command.process(board, gameReader, gameWriter, whitePlayer);
 		// then
 		Piece expectedWhiteKing = PieceFactory.getInstance().whiteKing("c1").withMoved();
 		assertThat(board.findPiece(Location.from("c1"))).contains(expectedWhiteKing);
@@ -83,11 +94,9 @@ class CastlingCommandTest {
 		board.addPiece(e8DarkKing);
 		board.addPiece(h8DarkRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player darkPlayer = Player.dark();
 		// when
-		command.process(board, inputStrategy, outputStrategy, darkPlayer);
+		command.process(board, gameReader, gameWriter, darkPlayer);
 		// then
 		Piece expectedDarkKing = PieceFactory.getInstance().darkKing("g8").withMoved();
 		assertThat(board.findPiece(Location.from("g8"))).contains(expectedDarkKing);
@@ -109,11 +118,9 @@ class CastlingCommandTest {
 		board.addPiece(e8DarkKing);
 		board.addPiece(a8DarkRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player darkPlayer = Player.dark();
 		// when
-		command.process(board, inputStrategy, outputStrategy, darkPlayer);
+		command.process(board, gameReader, gameWriter, darkPlayer);
 		// then
 		Piece expectedDarkKing = PieceFactory.getInstance().darkKing("c8").withMoved();
 		assertThat(board.findPiece(Location.from("c8"))).contains(expectedDarkKing);
@@ -135,11 +142,9 @@ class CastlingCommandTest {
 		board.addPiece(e8DarkKing);
 		board.addPiece(h8DarkRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player whitePlayer = Player.white();
 		// when
-		Throwable throwable = catchThrowable(() -> command.process(board, inputStrategy, outputStrategy, whitePlayer));
+		Throwable throwable = catchThrowable(() -> command.process(board, gameReader, gameWriter, whitePlayer));
 		// then
 		Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -159,11 +164,9 @@ class CastlingCommandTest {
 		board.addPiece(h1WhiteRook);
 		board.addPiece(g3DarkRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player whitePlayer = Player.white();
 		// when
-		command.process(board, inputStrategy, outputStrategy, whitePlayer);
+		command.process(board, gameReader, gameWriter, whitePlayer);
 		// then
 		Piece expectedWhiteKing = PieceFactory.getInstance().whiteKing("e1");
 		assertThat(board.findPiece(Location.from("e1"))).contains(expectedWhiteKing);
@@ -187,11 +190,9 @@ class CastlingCommandTest {
 		board.addPiece(h1WhiteRook);
 		board.addPiece(e3DarkRook);
 
-		InputStrategy inputStrategy = new StringInputStrategy(Strings.EMPTY);
-		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
 		Player whitePlayer = Player.white();
 		// when
-		command.process(board, inputStrategy, outputStrategy, whitePlayer);
+		command.process(board, gameReader, gameWriter, whitePlayer);
 		// then
 		Piece expectedWhiteKing = PieceFactory.getInstance().whiteKing("e1");
 		assertThat(board.findPiece(Location.from("e1"))).contains(expectedWhiteKing);

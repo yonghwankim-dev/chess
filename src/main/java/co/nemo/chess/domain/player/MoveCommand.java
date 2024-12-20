@@ -1,8 +1,8 @@
 package co.nemo.chess.domain.player;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
 import lombok.EqualsAndHashCode;
@@ -26,14 +26,14 @@ public class MoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean process(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy,
+	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter,
 		Player player) throws
 		IllegalArgumentException {
 		Piece findPiece = board.findPiece(src).orElse(null);
 		validatePieceOwnership(findPiece, player);
 		board.movePiece(src, dst).ifPresent(piece -> {
 			log.info("{}, move {}->{}", piece, src, dst);
-			piece.handleMoveEvent(board, inputStrategy, outputStrategy);
+			piece.handleMoveEvent(board, gameReader, gameWriter);
 		});
 		return true;
 	}

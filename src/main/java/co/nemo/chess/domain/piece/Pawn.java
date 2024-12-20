@@ -7,15 +7,17 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import org.apache.logging.log4j.util.Strings;
-
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
-import co.nemo.chess.domain.game.InputStrategy;
-import co.nemo.chess.domain.game.OutputStrategy;
+import co.nemo.chess.domain.game.ChessGameReader;
+import co.nemo.chess.domain.game.ChessGameWriter;
+import co.nemo.chess.domain.player.AbstractCommand;
+import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 @EqualsAndHashCode(callSuper = true)
+@Slf4j
 public class Pawn extends AbstractChessPiece implements PawnStrategy {
 
 	private Pawn(Location location, Color color, boolean isMoved, Deque<Location> moveHistory) {
@@ -236,29 +238,26 @@ public class Pawn extends AbstractChessPiece implements PawnStrategy {
 			isEnPassant(newLocation, repository);
 	}
 
+	// TODO: 12/20/24 프로모션 이벤트 리팩토링 
 	@Override
-	public void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+	public void handleMoveEvent(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter) {
 		if (!this.canPromote()) {
 			return;
 		}
-		outputStrategy.println(
-			"Your phone has reached the end of your opponent's camp! Promote with any craft you want.");
-		outputStrategy.println("Possible options: Queen, Rook, Bishop, Knight (Case free)");
-		outputStrategy.println(
-			"Type: Please enter the first letter of the object in capital letters (e.g., Queen, Rook, Bishop, Knight).");
+		gameWriter.printPromotionMessage();
 		PieceType type;
 		while (true) {
 			try {
-				String promotionText = inputStrategy.readLine().orElse(Strings.EMPTY);
-				type = PieceType.valueOfText(promotionText);
+				type = gameReader.readPieceType();
 				break;
 			} catch (IllegalArgumentException e) {
-				outputStrategy.println("Invalid input, possible options: Queen, Rook, Bishop, Knight");
+				gameWriter.printErrorMessage(e);
 			}
 		}
-		Piece promoPiece = this.promoTo(type);
-		board.removePiece(this);
-		board.addPiece(promoPiece);
+		AbstractCommand command = AbstractCommand.promotionCommand(this, type);
+		Player curPlayer = isWhite() ? Player.white() : Player.dark();
+		boolean result = command.process(board, gameReader, gameWriter, curPlayer);
+		log.info("promotion result is {}", result);
 	}
 
 	@Override
