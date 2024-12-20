@@ -1,7 +1,12 @@
 package co.nemo.chess.domain.game;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.core.io.ClassPathResource;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.Location;
@@ -61,8 +66,16 @@ public class ChessGameWriter {
 		outputStrategy.println(message);
 	}
 
-	public void printHelpMessage(String helpMessage) {
-		outputStrategy.println(helpMessage);
+	public void printHelpMessage() {
+		ClassPathResource resource = new ClassPathResource("chess_command_guide.txt");
+		String message;
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+			message = reader.lines()
+				.collect(Collectors.joining(System.lineSeparator()));
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Failed to load help message");
+		}
+		outputStrategy.println(message);
 	}
 
 	public void printExitMessage() {
