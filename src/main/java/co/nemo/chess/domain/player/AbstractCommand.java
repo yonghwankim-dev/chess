@@ -37,11 +37,7 @@ public abstract class AbstractCommand {
 	public static AbstractCommand castlingCommand(Location kingSrc, Location rookSrc) {
 		return CastlingCommand.create(kingSrc, rookSrc);
 	}
-
-	public boolean isTypeOf(CommandType type) {
-		return this.type == type;
-	}
-
+	
 	/**
 	 * 명령어를 실행한다
 	 * 반환값으로 true를 반환하면 턴을 변경해야 함을 의미하고, false를 반환하면 턴을 변경하지 말아야 한다는 의미

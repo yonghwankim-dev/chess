@@ -26,6 +26,10 @@ public class CommandProcessor {
 		board.setupPieces();
 	}
 
+	/**
+	 * 매개변수로 받은 명령어를 실행시킨다
+	 * @param command 명령어
+	 */
 	public void process(AbstractCommand command) {
 		boolean isChangedTurn = false;
 		try {
@@ -42,11 +46,8 @@ public class CommandProcessor {
 		currentPlayer = (currentPlayer == whitePlayer) ? darkPlayer : whitePlayer;
 	}
 
-	public void printCurrentPlayer(ChessGameStatusPrinter statusPrinter) {
+	public void printGameStatus(ChessGameStatusPrinter statusPrinter) {
 		statusPrinter.printCurrentPlayer(currentPlayer);
-	}
-
-	public void printBoard(ChessGameStatusPrinter statusPrinter) {
 		statusPrinter.printBoard(board);
 	}
 }

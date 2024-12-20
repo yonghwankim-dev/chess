@@ -18,6 +18,10 @@ public class NullPiece extends AbstractChessPiece {
 		super(location, color, isMoved, locationHistory);
 	}
 
+	public static NullPiece empty() {
+		return new NullPiece(null, Color.NONE, false, new ArrayDeque<>());
+	}
+
 	public static NullPiece from(Location location) {
 		return new NullPiece(location, Color.NONE, false, new ArrayDeque<>());
 	}

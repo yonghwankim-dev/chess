@@ -29,4 +29,12 @@ public class ChessGameStatusPrinter {
 	public void printBoard(Board board) {
 		outputStrategy.printBoard(board);
 	}
+
+	public void printDarkPlayerWin() {
+		outputStrategy.println("흑 플레이어 승리!");
+	}
+
+	public void printWhitePlayerWin() {
+		outputStrategy.println("백 플레이어 승리!");
+	}
 }

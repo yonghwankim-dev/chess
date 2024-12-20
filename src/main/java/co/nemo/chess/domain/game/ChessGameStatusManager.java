@@ -1,36 +1,31 @@
 package co.nemo.chess.domain.game;
 
-import java.util.Optional;
-
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.Color;
+import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 
 public class ChessGameStatusManager {
 	private final Board board;
-	private final OutputStrategy outputStrategy;
+	private final ChessGameStatusPrinter printer;
 
-	public ChessGameStatusManager(Board board, OutputStrategy outputStrategy) {
+	public ChessGameStatusManager(Board board, ChessGameStatusPrinter printer) {
 		this.board = board;
-		this.outputStrategy = outputStrategy;
+		this.printer = printer;
 	}
 
 	public boolean isCheckmate() {
-		Optional<Piece> piece = board.getCheckmatePiece();
-		if (piece.isEmpty()) {
-			return false;
-		}
-
-		Piece checkmatedPiece = piece.orElseThrow();
+		Piece checkmatedPiece = board.getCheckmatePiece().orElseGet(NullPiece::empty);
 		if (checkmatedPiece.isColorOf(Color.WHITE)) {
-			outputStrategy.println("흑 플레이어 승리!");
-			outputStrategy.printBoard(board);
+			printer.printDarkPlayerWin();
+			printer.printBoard(board);
 			return true;
 		} else if (checkmatedPiece.isColorOf(Color.DARK)) {
-			outputStrategy.println("백 플레이어 승리!");
-			outputStrategy.printBoard(board);
+			printer.printWhitePlayerWin();
+			printer.printBoard(board);
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 }
