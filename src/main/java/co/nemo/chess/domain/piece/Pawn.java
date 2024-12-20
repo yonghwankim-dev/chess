@@ -100,22 +100,23 @@ public class Pawn extends AbstractChessPiece implements PawnStrategy {
 		return false;
 	}
 
-	private boolean isTwoForward(Location newLocation, PieceRepository repository) {
-		if (existPieceUntil(newLocation, repository)) {
+	private boolean isTwoForward(Location destination, PieceRepository repository) {
+		if (existPieceUntil(destination, repository)) {
 			return false;
+		} else if (isWhiteTwoForward(destination) || isDarkTwoForward(destination)) {
+			int fileDifference = 0;
+			int rankDifference = 2;
+			return this.isValidLocationDifference(destination, fileDifference, rankDifference);
 		}
-		int fileDifference = 0;
-		int rankDifference = 2;
-		Direction direction = calDirection(newLocation);
-		if (isMoved()) {
-			return false;
-		} else if (isWhite() && isNotMoved() && direction == UP) {
-			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
-		} else if (isDark() && isNotMoved() && direction == DOWN) {
-			return this.isValidLocationDifference(newLocation, fileDifference, rankDifference);
-		} else {
-			return false;
-		}
+		return false;
+	}
+
+	private boolean isWhiteTwoForward(Location destination) {
+		return isWhite() && super.calDirection(destination) == UP && isNotMoved();
+	}
+
+	private boolean isDarkTwoForward(Location destination) {
+		return isDark() && super.calDirection(destination) == DOWN && isNotMoved();
 	}
 
 	/**
