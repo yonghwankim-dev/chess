@@ -61,4 +61,9 @@ public class Bishop extends AbstractChessPiece {
 		return emptyPieceUntil(location, repository) &&
 			Direction.bishopDirections().contains(calDirection(location));
 	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♗" : "♝";
+	}
 }

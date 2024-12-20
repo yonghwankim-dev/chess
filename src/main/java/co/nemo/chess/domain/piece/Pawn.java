@@ -78,12 +78,12 @@ public class Pawn extends AbstractChessPiece implements PawnStrategy {
 	public boolean canPromote() {
 		final int WHITE_END_RANK = 8;
 		Rank currentRank = Rank.from(WHITE_END_RANK);
-		if (this.isWhite() && this.isOnRank(currentRank)) {
+		if (isWhite() && this.isOnRank(currentRank)) {
 			return true;
 		}
 		final int DARK_END_RANK = 1;
 		currentRank = Rank.from(DARK_END_RANK);
-		return this.isDark() && this.isOnRank(currentRank);
+		return isDark() && this.isOnRank(currentRank);
 	}
 
 	/**
@@ -259,5 +259,10 @@ public class Pawn extends AbstractChessPiece implements PawnStrategy {
 		Piece promoPiece = this.promoTo(type);
 		board.removePiece(this);
 		board.addPiece(promoPiece);
+	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♙" : "♟";
 	}
 }

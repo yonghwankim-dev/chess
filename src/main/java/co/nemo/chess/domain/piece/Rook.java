@@ -92,4 +92,9 @@ public class Rook extends AbstractChessPiece {
 	private boolean canMoveStraight(Location destination) {
 		return Direction.rookDirections().contains(super.calDirection(destination));
 	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♖" : "♜";
+	}
 }

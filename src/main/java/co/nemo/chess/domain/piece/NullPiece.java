@@ -6,6 +6,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 
@@ -42,7 +44,7 @@ public class NullPiece extends AbstractChessPiece {
 
 	@Override
 	AbstractChessPiece movedPiece(Location location, Color color, Deque<Location> moveHistory) {
-		throw new UnsupportedOperationException("NullPiece cannot be moved");
+		return new NullPiece(location, color, false, moveHistory);
 	}
 
 	@Override
@@ -54,5 +56,10 @@ public class NullPiece extends AbstractChessPiece {
 	protected AbstractChessPiece withLocationHistory(Location location, Color color, boolean isMoved,
 		Deque<Location> locationHistory) {
 		return new NullPiece(location, color, isMoved, locationHistory);
+	}
+
+	@Override
+	public String toSymbol() {
+		return Strings.EMPTY;
 	}
 }

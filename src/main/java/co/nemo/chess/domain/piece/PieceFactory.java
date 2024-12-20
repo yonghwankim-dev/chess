@@ -52,6 +52,10 @@ public class PieceFactory {
 		return King.notMOvedDarkKing(Location.from(position));
 	}
 
+	public AbstractChessPiece bishop(String position, Color color) {
+		return color == Color.WHITE ? whiteBishop(position) : darkBishop(position);
+	}
+
 	public AbstractChessPiece whiteBishop(String position) {
 		return Bishop.notMovedWhiteBishop(Location.from(position));
 	}
@@ -60,12 +64,20 @@ public class PieceFactory {
 		return Bishop.notMovedDarkBishop(Location.from(position));
 	}
 
+	public AbstractChessPiece queen(String position, Color color) {
+		return color == Color.WHITE ? whiteQueen(position) : darkQueen(position);
+	}
+
 	public AbstractChessPiece whiteQueen(String position) {
 		return Queen.notMovedWhiteQueen(Location.from(position));
 	}
 
 	public AbstractChessPiece darkQueen(String position) {
 		return Queen.notMovedDarkQueen(Location.from(position));
+	}
+
+	public AbstractChessPiece knight(String position, Color color) {
+		return color == Color.WHITE ? whiteKnight(position) : darkKnight(position);
 	}
 
 	public AbstractChessPiece whiteKnight(String position) {

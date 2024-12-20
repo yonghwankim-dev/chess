@@ -50,4 +50,9 @@ public class Knight extends AbstractChessPiece {
 	public boolean canMove(Location location, PieceRepository repository) {
 		return Direction.knightDirections().contains(super.calDirection(location));
 	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♘" : "♞";
+	}
 }

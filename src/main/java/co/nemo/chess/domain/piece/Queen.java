@@ -58,4 +58,9 @@ public class Queen extends AbstractChessPiece {
 		return emptyPieceUntil(location, repository) &&
 			Direction.queenDirections().contains(calDirection(location));
 	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♕" : "♛";
+	}
 }

@@ -200,4 +200,9 @@ public class King extends AbstractChessPiece {
 		}
 		return false;
 	}
+
+	@Override
+	public String toSymbol() {
+		return isWhite() ? "♔" : "♚";
+	}
 }

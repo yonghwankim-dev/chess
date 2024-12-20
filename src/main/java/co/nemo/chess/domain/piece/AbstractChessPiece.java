@@ -4,8 +4,6 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.util.Strings;
-
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -67,25 +65,6 @@ public abstract class AbstractChessPiece implements Piece {
 	@Override
 	public boolean isSameColor(Piece piece) {
 		return piece.isColorOf(this.color);
-	}
-
-	@Override
-	public String toSymbol() {
-		if (this instanceof Pawn) {
-			return color == Color.WHITE ? "♙" : "♟";
-		} else if (this instanceof Rook) {
-			return color == Color.WHITE ? "♖" : "♜";
-		} else if (this instanceof King) {
-			return color == Color.WHITE ? "♔" : "♚";
-		} else if (this instanceof Bishop) {
-			return color == Color.WHITE ? "♗" : "♝";
-		} else if (this instanceof Queen) {
-			return color == Color.WHITE ? "♕" : "♛";
-		} else if (this instanceof Knight) {
-			return color == Color.WHITE ? "♘" : "♞";
-		} else {
-			return Strings.EMPTY;
-		}
 	}
 
 	public boolean isWhite() {
@@ -188,6 +167,9 @@ public abstract class AbstractChessPiece implements Piece {
 		String position = location.toPositionText();
 		return switch (type) {
 			case ROOK -> PieceFactory.getInstance().rook(position, color);
+			case KNIGHT -> PieceFactory.getInstance().knight(position, color);
+			case BISHOP -> PieceFactory.getInstance().bishop(position, color);
+			case QUEEN -> PieceFactory.getInstance().queen(position, color);
 			default -> throw new IllegalArgumentException("Invalid piece type for promotion.");
 		};
 	}
@@ -201,21 +183,23 @@ public abstract class AbstractChessPiece implements Piece {
 	}
 
 	boolean existPieceUntil(Location dst, PieceRepository repository) {
-		List<Location> interLocations = this.calBetweenLocations(dst).stream()
-			.filter(loc -> !this.shouldContainDestination(loc, dst))
-			.toList();
-		return interLocations.stream().anyMatch(repository::contains);
+		return getInterLocationsUntil(dst).stream()
+			.anyMatch(repository::contains);
 	}
 
-	boolean emptyPieceUntil(Location dst, PieceRepository repository) {
-		List<Location> interLocations = this.calBetweenLocations(dst).stream()
+	private List<Location> getInterLocationsUntil(Location dst) {
+		return this.calBetweenLocations(dst).stream()
 			.filter(loc -> !this.shouldContainDestination(loc, dst))
 			.toList();
-		return interLocations.stream().noneMatch(repository::contains);
 	}
 
 	boolean shouldContainDestination(Location curLocation, Location destination) {
 		return curLocation.equals(destination);
+	}
+
+	boolean emptyPieceUntil(Location dst, PieceRepository repository) {
+		return getInterLocationsUntil(dst).stream()
+			.noneMatch(repository::contains);
 	}
 
 	boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
