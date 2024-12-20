@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 public class CommandParser {
 	private static final String COMMAND_SEPARATOR_REGEX = " ";

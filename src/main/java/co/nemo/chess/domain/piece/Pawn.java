@@ -11,7 +11,7 @@ import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
-import co.nemo.chess.domain.player.AbstractCommand;
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

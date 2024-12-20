@@ -1,8 +1,9 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
+import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
@@ -11,7 +12,7 @@ public class InvalidCommand extends AbstractCommand {
 		super(type);
 	}
 
-	public static InvalidCommand create() {
+	static InvalidCommand create() {
 		return new InvalidCommand(CommandType.NONE);
 	}
 

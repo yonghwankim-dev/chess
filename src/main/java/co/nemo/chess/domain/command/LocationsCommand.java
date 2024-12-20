@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
+import co.nemo.chess.domain.player.Player;
 
 public class LocationsCommand extends AbstractCommand {
 	private final Location src;
@@ -16,7 +17,7 @@ public class LocationsCommand extends AbstractCommand {
 		this.src = src;
 	}
 
-	public static LocationsCommand from(Location src) {
+	static LocationsCommand from(Location src) {
 		return new LocationsCommand(CommandType.LOCATIONS, src);
 	}
 

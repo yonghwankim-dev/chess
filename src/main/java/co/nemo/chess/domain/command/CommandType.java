@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.piece.Location;
 

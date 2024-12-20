@@ -3,7 +3,7 @@ package co.nemo.chess.domain.game;
 import java.util.Optional;
 
 import co.nemo.chess.domain.board.Board;
-import co.nemo.chess.domain.player.AbstractCommand;
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 
 public class ChessGame {

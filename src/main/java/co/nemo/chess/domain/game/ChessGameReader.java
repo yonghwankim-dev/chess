@@ -1,8 +1,8 @@
 package co.nemo.chess.domain.game;
 
 import co.nemo.chess.domain.piece.PieceType;
-import co.nemo.chess.domain.player.AbstractCommand;
-import co.nemo.chess.domain.player.CommandParser;
+import co.nemo.chess.domain.command.AbstractCommand;
+import co.nemo.chess.domain.command.CommandParser;
 
 public class ChessGameReader {
 	private final InputStrategy inputStrategy;

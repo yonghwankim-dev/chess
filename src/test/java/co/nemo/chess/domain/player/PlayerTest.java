@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.piece.Location;
 
 class PlayerTest {

@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ChessGameReader;
@@ -6,6 +6,7 @@ import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.PieceType;
+import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode

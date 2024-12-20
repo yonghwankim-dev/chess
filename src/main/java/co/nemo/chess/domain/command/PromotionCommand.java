@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ChessGameReader;
@@ -6,6 +6,7 @@ import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Pawn;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.PieceType;
+import co.nemo.chess.domain.player.Player;
 
 public class PromotionCommand extends AbstractCommand {
 	private final Pawn pawn;
@@ -17,7 +18,7 @@ public class PromotionCommand extends AbstractCommand {
 		this.promotionPieceType = promotionPieceType;
 	}
 
-	public static AbstractCommand create(Piece piece, PieceType pieceType) {
+	static AbstractCommand create(Piece piece, PieceType pieceType) {
 		if (piece instanceof Pawn pawn) {
 			return new PromotionCommand(CommandType.PROMOTION, pawn, pieceType);
 		}

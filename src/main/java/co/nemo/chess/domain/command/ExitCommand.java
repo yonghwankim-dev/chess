@@ -1,22 +1,23 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
+import co.nemo.chess.domain.player.Player;
 
-public class HelpCommand extends AbstractCommand {
+public class ExitCommand extends AbstractCommand {
 
-	private HelpCommand(CommandType type) {
+	private ExitCommand(CommandType type) {
 		super(type);
 	}
 
-	public static AbstractCommand create() {
-		return new HelpCommand(CommandType.HELP);
+	static ExitCommand create() {
+		return new ExitCommand(CommandType.EXIT);
 	}
 
 	@Override
 	public boolean process(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter, Player player) {
-		gameWriter.printHelpMessage();
+		gameWriter.printExitMessage();
 		return false;
 	}
 }

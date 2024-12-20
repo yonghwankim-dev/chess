@@ -59,6 +59,11 @@ public class Board implements PieceMovable {
 		return result;
 	}
 
+	@Override
+	public Optional<Piece> findPiece(Location location) {
+		return repository.find(location);
+	}
+
 	public List<Piece> setupPieces() {
 		repository.clear();
 		List<Piece> pieces = PieceFactory.getInstance().initializedPieces();
@@ -68,11 +73,6 @@ public class Board implements PieceMovable {
 
 	public List<Piece> getAllPieces() {
 		return Collections.unmodifiableList(repository.findAll());
-	}
-
-	@Override
-	public Optional<Piece> findPiece(Location location) {
-		return repository.find(location);
 	}
 
 	public void addPiece(Piece piece) {

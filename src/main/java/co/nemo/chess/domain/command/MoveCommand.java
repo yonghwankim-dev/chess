@@ -1,10 +1,11 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
+import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +22,7 @@ public class MoveCommand extends AbstractCommand {
 		this.dst = dst;
 	}
 
-	public static MoveCommand of(Location src, Location dst) {
+	static MoveCommand of(Location src, Location dst) {
 		return new MoveCommand(CommandType.MOVE, src, dst);
 	}
 

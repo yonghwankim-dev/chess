@@ -1,4 +1,4 @@
-package co.nemo.chess.domain.player;
+package co.nemo.chess.domain.command;
 
 import java.util.function.Consumer;
 
@@ -9,6 +9,7 @@ import co.nemo.chess.domain.piece.King;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.Rook;
+import co.nemo.chess.domain.player.Player;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class CastlingCommand extends AbstractCommand {
 		this.rookSrc = rookSrc;
 	}
 
-	public static CastlingCommand create(Location kingSrc, Location rookSrc) {
+	static CastlingCommand create(Location kingSrc, Location rookSrc) {
 		return new CastlingCommand(CommandType.CASTLING, kingSrc, rookSrc);
 	}
 

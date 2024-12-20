@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
 import co.nemo.chess.domain.game.ConsoleOutputStrategy;
