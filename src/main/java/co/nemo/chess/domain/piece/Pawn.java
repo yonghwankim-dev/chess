@@ -16,7 +16,7 @@ import co.nemo.chess.domain.game.OutputStrategy;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy {
+public class Pawn extends AbstractChessPiece implements PawnStrategy {
 
 	private Pawn(Location location, Color color, boolean isMoved, Deque<Location> moveHistory) {
 		super(location, color, isMoved, moveHistory);
@@ -54,54 +54,19 @@ public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy
 		}
 	}
 
-	@Override
-	public List<Location> findAllMoveLocations() {
-		List<Location> result = new ArrayList<>();
-		if (isWhite()) {
-			super.calLocation(UP, 1).ifPresent(result::add);
-			super.calLocation(UP, 2).ifPresent(result::add);
-			super.calLocation(UP_LEFT, 1).ifPresent(result::add);
-			super.calLocation(UP_RIGHT, 1).ifPresent(result::add);
-		} else {
-			super.calLocation(DOWN, 1).ifPresent(result::add);
-			super.calLocation(DOWN, 2).ifPresent(result::add);
-			super.calLocation(DOWN_LEFT, 1).ifPresent(result::add);
-			super.calLocation(DOWN_RIGHT, 1).ifPresent(result::add);
+	private boolean isOneForward(Location destination, PieceRepository repository) {
+		if (super.existPieceUntil(destination, repository)) {
+			return false;
 		}
-		return result;
+
+		Direction moveDirection = calDirection(destination);
+		return moveDirection == getForwardDirection() &&
+			moveDirection.isEqualDistance(this, destination);
 	}
 
 	@Override
-	public boolean canMove(Location newLocation, PieceRepository repository) {
-		return isOneForward(newLocation, repository) ||
-			isTwoForward(newLocation, repository) ||
-			isDiagonalMove(newLocation, repository) ||
-			isEnPassant(newLocation, repository);
-	}
-
-	@Override
-	public void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
-		if (!this.canPromote()) {
-			return;
-		}
-		outputStrategy.println(
-			"Your phone has reached the end of your opponent's camp! Promote with any craft you want.");
-		outputStrategy.println("Possible options: Queen, Rook, Bishop, Knight (Case free)");
-		outputStrategy.println(
-			"Type: Please enter the first letter of the object in capital letters (e.g., Queen, Rook, Bishop, Knight).");
-		PieceType type;
-		while (true) {
-			try {
-				String promotionText = inputStrategy.readLine().orElse(Strings.EMPTY);
-				type = PieceType.valueOfText(promotionText);
-				break;
-			} catch (IllegalArgumentException e) {
-				outputStrategy.println("Invalid input, possible options: Queen, Rook, Bishop, Knight");
-			}
-		}
-		Piece promoPiece = this.promoTo(type);
-		board.removePiece(this);
-		board.addPiece(promoPiece);
+	public Direction getForwardDirection() {
+		return isWhite() ? UP : DOWN;
 	}
 
 	@Override
@@ -122,16 +87,6 @@ public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy
 		final int DARK_END_RANK = 1;
 		currentRank = Rank.from(DARK_END_RANK);
 		return this.isDark() && this.isOnRank(currentRank);
-	}
-
-	private boolean isOneForward(Location destination, PieceRepository repository) {
-		if (super.existPieceUntil(destination, repository)) {
-			return false;
-		}
-
-		Direction moveDirection = calDirection(destination);
-		return moveDirection == getForwardDirection() &&
-			moveDirection.isEqualDistance(this, destination);
 	}
 
 	/**
@@ -235,13 +190,6 @@ public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy
 			.orElse(false);
 	}
 
-	private Boolean isSameColorOnDirection(Direction direction, Color color, PieceRepository repository, int distance) {
-		return this.calLocation(direction, distance)
-			.flatMap(repository::find)
-			.map(piece -> piece.isColorOf(color))
-			.orElse(false);
-	}
-
 	/**
 	 * 기물이 초기 배치에서 2칸 전진한 직후인지 여부 확인
 	 * @return true: 바로 직전에 2칸 전진함, false: 바로 직전에 2칸 전진하지 않음
@@ -256,8 +204,60 @@ public class Pawn extends AbstractChessPiece implements Promotable, PawnStrategy
 			.orElse(false);
 	}
 
+	private Boolean isSameColorOnDirection(Direction direction, Color color, PieceRepository repository, int distance) {
+		return this.calLocation(direction, distance)
+			.flatMap(repository::find)
+			.map(piece -> piece.isColorOf(color))
+			.orElse(false);
+	}
+
 	@Override
-	public Direction getForwardDirection() {
-		return isWhite() ? UP : DOWN;
+	public List<Location> findAllMoveLocations() {
+		List<Location> result = new ArrayList<>();
+		if (isWhite()) {
+			super.calLocation(UP, 1).ifPresent(result::add);
+			super.calLocation(UP, 2).ifPresent(result::add);
+			super.calLocation(UP_LEFT, 1).ifPresent(result::add);
+			super.calLocation(UP_RIGHT, 1).ifPresent(result::add);
+		} else {
+			super.calLocation(DOWN, 1).ifPresent(result::add);
+			super.calLocation(DOWN, 2).ifPresent(result::add);
+			super.calLocation(DOWN_LEFT, 1).ifPresent(result::add);
+			super.calLocation(DOWN_RIGHT, 1).ifPresent(result::add);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean canMove(Location newLocation, PieceRepository repository) {
+		return isOneForward(newLocation, repository) ||
+			isTwoForward(newLocation, repository) ||
+			isDiagonalMove(newLocation, repository) ||
+			isEnPassant(newLocation, repository);
+	}
+
+	@Override
+	public void handleMoveEvent(Board board, InputStrategy inputStrategy, OutputStrategy outputStrategy) {
+		if (!this.canPromote()) {
+			return;
+		}
+		outputStrategy.println(
+			"Your phone has reached the end of your opponent's camp! Promote with any craft you want.");
+		outputStrategy.println("Possible options: Queen, Rook, Bishop, Knight (Case free)");
+		outputStrategy.println(
+			"Type: Please enter the first letter of the object in capital letters (e.g., Queen, Rook, Bishop, Knight).");
+		PieceType type;
+		while (true) {
+			try {
+				String promotionText = inputStrategy.readLine().orElse(Strings.EMPTY);
+				type = PieceType.valueOfText(promotionText);
+				break;
+			} catch (IllegalArgumentException e) {
+				outputStrategy.println("Invalid input, possible options: Queen, Rook, Bishop, Knight");
+			}
+		}
+		Piece promoPiece = this.promoTo(type);
+		board.removePiece(this);
+		board.addPiece(promoPiece);
 	}
 }
