@@ -49,11 +49,11 @@ public abstract class AbstractCommand {
 	 * 명령어를 실행한다
 	 * 반환값으로 true를 반환하면 턴을 변경해야 함을 의미하고, false를 반환하면 턴을 변경하지 말아야 한다는 의미
 	 *
-	 * @param inputStrategy the input strategy
 	 * @param board         the board
-	 * @param gameWriter    the output strategy
+	 * @param reader        the ChessGameReader
+	 * @param gameWriter    the ChessGameWriter
 	 * @param player        the player
-	 * @return the boolean
+	 * @return the boolean the changedTurn
 	 * @throws IllegalArgumentException the illegal argument exception
 	 */
 	public abstract boolean process(Board board, ChessGameReader reader, ChessGameWriter gameWriter,

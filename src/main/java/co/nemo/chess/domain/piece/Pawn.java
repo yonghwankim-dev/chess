@@ -9,9 +9,9 @@ import java.util.List;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.game.ChessGameReader;
 import co.nemo.chess.domain.game.ChessGameWriter;
-import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -238,7 +238,6 @@ public class Pawn extends AbstractChessPiece implements PawnStrategy {
 			isEnPassant(newLocation, repository);
 	}
 
-	// TODO: 12/20/24 프로모션 이벤트 리팩토링 
 	@Override
 	public void handleMoveEvent(Board board, ChessGameReader gameReader, ChessGameWriter gameWriter) {
 		if (!this.canPromote()) {
