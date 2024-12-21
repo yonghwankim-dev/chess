@@ -42,7 +42,7 @@ public class ChessGame {
 		gameWriter.printGameStart();
 
 		Optional<Player> winner = Optional.empty();
-		while (!processor.isCheckmate() && !processor.isStalemate()) {
+		while (true) {
 			processor.printGameStatus(gameWriter);
 			AbstractCommand command = gameReader.readCommand();
 			if (command instanceof ExitCommand exit) {
@@ -54,15 +54,16 @@ public class ChessGame {
 				break;
 			}
 			processor.process(command);
+
+			if (processor.isStalemate()) {
+				gameWriter.printStalemateMessage();
+				break;
+			} else if (processor.isCheckmate()) {
+				winner = processor.getWinner();
+				break;
+			}
 		}
 		gameReader.close();
-		if (processor.isStalemate()) {
-			gameWriter.printStalemateMessage();
-			return Optional.empty();
-		} else if (winner.isEmpty()) {
-			return processor.getWinner();
-		} else {
-			return winner;
-		}
+		return winner;
 	}
 }
