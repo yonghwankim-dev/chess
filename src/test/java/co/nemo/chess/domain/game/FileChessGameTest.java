@@ -14,7 +14,7 @@ class FileChessGameTest {
 
 	@DisplayName("입력 파일이 주어지고 체스 게임을 시작할 때 백 플레이어가 이긴다")
 	@Test
-	void givenFile_whenStartGame_thenWinWhitePlayer() throws IOException {
+	void test1() throws IOException {
 		// given
 		ClassPathResource resource = new ClassPathResource("test/test1.txt");
 		InputStrategy inputStrategy = FileInputStrategy.from(resource.getFile());
@@ -26,4 +26,20 @@ class FileChessGameTest {
 		Player expected = Player.white();
 		Assertions.assertThat(actual).contains(expected);
 	}
+
+	@DisplayName("test2.txt 테스트 시나리오")
+	@Test
+	void test2() throws IOException {
+		// given
+		ClassPathResource resource = new ClassPathResource("test/test2.txt");
+		InputStrategy inputStrategy = FileInputStrategy.from(resource.getFile());
+		OutputStrategy outputStrategy = ConsoleOutputStrategy.getInstance();
+		ChessGame chessGame = ChessGame.init(inputStrategy, outputStrategy);
+		// when
+		Optional<Player> actual = chessGame.startGame();
+		// then
+		Player expected = Player.dark();
+		Assertions.assertThat(actual).contains(expected);
+	}
+
 }

@@ -45,6 +45,10 @@ public abstract class AbstractCommand {
 		return PromotionCommand.create(piece, pieceType);
 	}
 
+	public static AbstractCommand resignCommand() {
+		return ResignCommand.create();
+	}
+
 	/**
 	 * 명령어를 실행한다
 	 * 반환값으로 true를 반환하면 턴을 변경해야 함을 의미하고, false를 반환하면 턴을 변경하지 말아야 한다는 의미
@@ -57,12 +61,7 @@ public abstract class AbstractCommand {
 	 * @throws IllegalArgumentException the illegal argument exception
 	 */
 	public abstract boolean process(Board board, ChessGameReader reader, ChessGameWriter gameWriter,
-		Player player) throws
-		IllegalArgumentException;
-
-	public boolean isExistCommand() {
-		return this instanceof ExitCommand;
-	}
+		Player player) throws IllegalArgumentException;
 
 	@Override
 	public String toString() {

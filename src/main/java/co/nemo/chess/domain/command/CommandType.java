@@ -63,6 +63,12 @@ public enum CommandType {
 			return AbstractCommand.invalidCommand();
 		}
 	},
+	RESIGN {
+		@Override
+		public AbstractCommand createCommand(String[] commands) {
+			return AbstractCommand.resignCommand();
+		}
+	},
 	EXIT {
 		@Override
 		public AbstractCommand createCommand(String[] commands) {

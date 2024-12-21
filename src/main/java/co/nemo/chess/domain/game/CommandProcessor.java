@@ -3,9 +3,9 @@ package co.nemo.chess.domain.game;
 import java.util.Optional;
 
 import co.nemo.chess.domain.board.Board;
+import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
-import co.nemo.chess.domain.command.AbstractCommand;
 import co.nemo.chess.domain.player.Player;
 
 public class CommandProcessor {
@@ -71,5 +71,13 @@ public class CommandProcessor {
 		} else {
 			return Optional.empty();
 		}
+	}
+
+	public Player getEnemyPlayer() {
+		return currentPlayer == whitePlayer ? darkPlayer : whitePlayer;
+	}
+
+	public boolean isStalemate() {
+		return board.isStalemate(currentPlayer);
 	}
 }

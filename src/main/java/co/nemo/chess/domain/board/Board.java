@@ -12,6 +12,7 @@ import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.NullPiece;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.PieceFactory;
+import co.nemo.chess.domain.player.Player;
 
 public class Board implements PieceMovable {
 	private final PieceRepository repository;
@@ -110,5 +111,33 @@ public class Board implements PieceMovable {
 			.filter(King.class::isInstance)
 			.filter(king -> ((King)king).isCheckmate(repository))
 			.findAny();
+	}
+
+	/**
+	 * 매개변수로 받은 플레이어 차례 시점에서 스테일 메이트인지 여부를 확인한다
+	 * 플레이어의 어떠한 기물을 움직여도 스스로 체크가 되는 상태이면 스테일메이트이다
+	 * @param currentPlayer 현재 차례 플레이어
+	 * @return 스테일메이트 여부
+	 */
+	public boolean isStalemate(Player currentPlayer) {
+		List<Piece> playerPieces = repository.findAll().stream()
+			.filter(currentPlayer::isOwnPiece)
+			.toList();
+		// 플레이어의 어떠한 기물도 움직일수 없어야 합니다.
+		for (Piece piece : playerPieces) {
+			List<Location> possibleLocations = piece.findPossibleLocations(this);
+			if (!possibleLocations.isEmpty()) {
+				return false;
+			}
+		}
+		// 킹이 체크 상태가 아니어야 한다
+		boolean checkedStatus = playerPieces.stream()
+			.filter(currentPlayer::isOwnPiece)
+			.filter(King.class::isInstance)
+			.map(King.class::cast)
+			.map(king -> king.isCheckedStatus(repository))
+			.findAny()
+			.orElse(false);
+		return !checkedStatus;
 	}
 }

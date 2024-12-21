@@ -81,4 +81,16 @@ public class ChessGameWriter {
 	public void printExitMessage() {
 		outputStrategy.print("shutdown the game");
 	}
+
+	public void printWinner(Player player) {
+		outputStrategy.println("winner is " + player + " player");
+	}
+
+	public void printResignMessage(Player player) {
+		outputStrategy.println(player + " player resign");
+	}
+
+	public void printStalemateMessage() {
+		outputStrategy.println("This game is Stalemate, draw");
+	}
 }

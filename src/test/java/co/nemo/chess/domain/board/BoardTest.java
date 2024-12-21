@@ -21,6 +21,7 @@ import co.nemo.chess.domain.piece.Color;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.Piece;
 import co.nemo.chess.domain.piece.PieceFactory;
+import co.nemo.chess.domain.player.Player;
 
 class BoardTest {
 
@@ -263,5 +264,40 @@ class BoardTest {
 		boolean actual = board.existPieceBetween(e1, h1);
 		// then
 		Assertions.assertThat(actual).isFalse();
+	}
+
+	@DisplayName("스테일메이트된다")
+	@Test
+	void stalemate() {
+		// given
+		Board board = Board.empty();
+		AbstractChessPiece a8DarkKing = PieceFactory.getInstance().darkKing("a8");
+		AbstractChessPiece c7WhiteQueen = PieceFactory.getInstance().whiteQueen("c7");
+		AbstractChessPiece e4WhiteKing = PieceFactory.getInstance().whiteKing("e4");
+		Stream.of(a8DarkKing, c7WhiteQueen, e4WhiteKing).forEach(board::addPiece);
+
+		Player curPlayer = Player.dark();
+		// when
+		boolean actual = board.isStalemate(curPlayer);
+		// then
+		Assertions.assertThat(actual).isTrue();
+	}
+
+	@DisplayName("A1 백킹은 이동할 수 없어서 스테일 메이트된다")
+	@Test
+	void givenA1WhiteKing_whenNotMoveLocation_thenStalemate() {
+		// given
+		Board board = Board.empty();
+		AbstractChessPiece a1WhiteKing = PieceFactory.getInstance().whiteKing("a1");
+		AbstractChessPiece b2DarkRook = PieceFactory.getInstance().darkRook("b2");
+		AbstractChessPiece b3DarkPawn = PieceFactory.getInstance().darkPawn("b3");
+		AbstractChessPiece c3DarkKing = PieceFactory.getInstance().darkKing("c3");
+		Stream.of(a1WhiteKing, b2DarkRook, b3DarkPawn, c3DarkKing).forEach(board::addPiece);
+
+		Player curPlayer = Player.white();
+		// when
+		boolean actual = board.isStalemate(curPlayer);
+		// then
+		Assertions.assertThat(actual).isTrue();
 	}
 }

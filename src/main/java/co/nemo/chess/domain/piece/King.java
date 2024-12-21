@@ -53,6 +53,10 @@ public class King extends AbstractChessPiece {
 
 	@Override
 	public boolean canMove(Location location, PieceRepository repository) {
+		// 이동한 위치가 상대 킹의 범위에 있으면 false 반환해야 한다
+		if (isDestinationUnderEnemyKingAttack(location, repository)) {
+			return false;
+		}
 		if (isInCheckAfterMove(location, repository)) {
 			return false;
 		}
@@ -60,6 +64,25 @@ public class King extends AbstractChessPiece {
 			return true;
 		}
 		return this.calDirection(location).isEqualDistance(this, location);
+	}
+
+	// 상대 킹의 공격 범위인지 여부 확인
+	private boolean isDestinationUnderEnemyKingAttack(Location location, PieceRepository repository) throws
+		IllegalArgumentException {
+		AbstractChessPiece piece;
+		try {
+			// 상대 킹 기물 찾기
+			piece = repository.findAll().stream()
+				.filter(King.class::isInstance)
+				.filter(p -> !p.equals(this))
+				.filter(p -> !p.isSameColor(this))
+				.findAny()
+				.map(AbstractChessPiece.class::cast)
+				.orElseThrow(() -> new IllegalArgumentException("not found king"));
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		return piece.calDirection(location).isEqualDistance(piece, location);
 	}
 
 	private boolean isCastling(Location location, PieceRepository repository) {
@@ -112,6 +135,7 @@ public class King extends AbstractChessPiece {
 		Color color = this.isWhite() ? Color.WHITE : Color.DARK;
 		return repository.findAll().stream()
 			.filter(piece -> !piece.equals(this)) // 자신 제외
+			.filter(piece -> !(piece instanceof King))
 			.filter(piece -> !piece.isColorOf(color)) // 반대 색상
 			.anyMatch(piece -> piece.canAttack(this, repository));
 	}

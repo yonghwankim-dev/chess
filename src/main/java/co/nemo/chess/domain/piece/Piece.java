@@ -28,6 +28,8 @@ public interface Piece {
 	 */
 	List<Location> findAllMoveLocations();
 
+	List<Location> findPossibleLocations(Board board);
+
 	boolean canAttack(Piece target, List<Piece> pieces);
 
 	boolean canAttack(Piece target, PieceRepository repository);

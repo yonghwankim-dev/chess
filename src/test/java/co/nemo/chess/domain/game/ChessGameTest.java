@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,6 +19,7 @@ import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.piece.AbstractChessPiece;
 import co.nemo.chess.domain.piece.Location;
 import co.nemo.chess.domain.piece.PieceFactory;
+import co.nemo.chess.domain.player.Player;
 
 class ChessGameTest {
 
@@ -186,7 +188,7 @@ class ChessGameTest {
 
 	@DisplayName("파일을 읽은 다음에 시나리오를 실행시킨다")
 	@Test
-	void senario1() throws IOException {
+	void test1() throws IOException {
 		// given
 		InputStream inputStream = new ClassPathResource("test/test1.txt").getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -196,7 +198,9 @@ class ChessGameTest {
 		Board board = Board.empty();
 		ChessGame game = new ChessGame(board, inputStrategy, ConsoleOutputStrategy.getInstance());
 		// when
-		game.startGame();
+		Optional<Player> actual = game.startGame();
 		// then
+		Player expected = Player.white();
+		Assertions.assertThat(actual).contains(expected);
 	}
 }

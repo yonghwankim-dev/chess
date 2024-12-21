@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.command.AbstractCommand;
+import co.nemo.chess.domain.command.ExitCommand;
+import co.nemo.chess.domain.command.ResignCommand;
 import co.nemo.chess.domain.player.Player;
 
 public class ChessGame {
@@ -39,15 +41,28 @@ public class ChessGame {
 		processor.setupPieces();
 		gameWriter.printGameStart();
 
-		while (!processor.isCheckmate()) {
+		Optional<Player> winner = Optional.empty();
+		while (!processor.isCheckmate() && !processor.isStalemate()) {
 			processor.printGameStatus(gameWriter);
 			AbstractCommand command = gameReader.readCommand();
-			if (command.isExistCommand()) {
+			if (command instanceof ExitCommand exit) {
+				processor.process(exit);
+				break;
+			} else if (command instanceof ResignCommand resign) {
+				processor.process(resign);
+				winner = Optional.of(processor.getEnemyPlayer());
 				break;
 			}
 			processor.process(command);
 		}
 		gameReader.close();
-		return processor.getWinner();
+		if (processor.isStalemate()) {
+			gameWriter.printStalemateMessage();
+			return Optional.empty();
+		} else if (winner.isEmpty()) {
+			return processor.getWinner();
+		} else {
+			return winner;
+		}
 	}
 }

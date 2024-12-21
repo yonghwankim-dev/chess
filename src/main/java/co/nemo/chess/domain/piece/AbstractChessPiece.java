@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+import co.nemo.chess.domain.board.Board;
 import co.nemo.chess.domain.board.PieceRepository;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -205,5 +206,10 @@ public abstract class AbstractChessPiece implements Piece {
 	boolean isValidLocationDifference(Location location, int fileDiff, int rankDiff) {
 		LocationDifference locationDifference = diffLocation(location);
 		return locationDifference.isEqualDistance(fileDiff, rankDiff);
+	}
+
+	@Override
+	public List<Location> findPossibleLocations(Board board) {
+		return board.findPossibleLocations(location);
 	}
 }
